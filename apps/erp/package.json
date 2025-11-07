@@ -8,6 +8,7 @@
     "@ai-sdk-tools/memory": "1.0.8",
     "@ai-sdk-tools/agents": "1.0.8",
     "@ai-sdk-tools/store": "1.0.8",
+    "@ai-sdk/anthropic": "^2.0.41",
     "@ai-sdk/openai": "^2.0.60",
     "@ai-sdk/react": "^2.0.86",
     "@carbon/auth": "*",

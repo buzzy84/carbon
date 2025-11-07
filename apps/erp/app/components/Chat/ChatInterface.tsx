@@ -100,13 +100,13 @@ export function ChatInterface({ geo }: Props) {
     }),
   });
 
+  console.log({ messages });
+
   const { agentStatus, currentToolCall } = useChatStatus(messages, status);
 
   const { artifacts } = useArtifacts();
   const hasArtifacts = artifacts && artifacts.length > 0;
   const hasMessages = messages.length > 0;
-
-  console.log({ messages });
 
   const [suggestions] = useDataPart<{ prompts: string[] }>("suggestions");
   const hasSuggestions = suggestions?.prompts && suggestions.prompts.length > 0;

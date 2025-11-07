@@ -26,7 +26,7 @@ export const createAgent = (config: AgentConfig<ChatContext>) => {
         limit: 10,
       },
       workingMemory: {
-        enabled: true,
+        enabled: false, // Disabled to prevent multiple system messages in multi-agent handoffs
         template: PROFILE_PROMPT,
         scope: "user",
       },

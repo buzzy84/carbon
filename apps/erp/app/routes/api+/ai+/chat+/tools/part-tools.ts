@@ -27,7 +27,7 @@ export const getPartTool = tool({
       const [part, supplierPart] = await Promise.all([
         context.client
           .from("item")
-          .select("*")
+          .select("id, name, description, revision")
           .or(
             `readableId.eq.${readableId},readableIdWithRevision.eq.${readableId}`
           )
@@ -36,7 +36,7 @@ export const getPartTool = tool({
           .limit(1),
         context.client
           .from("supplierPart")
-          .select("*, item(*)")
+          .select("*, item(id, name, description, revision)")
           .eq("supplierPartId", readableId)
           .eq("companyId", context.companyId)
           .single(),
@@ -85,7 +85,7 @@ export const getPartTool = tool({
     if (description) {
       console.log("[getPartTool] Searching by description:", description);
 
-      const embedding = await generateEmbedding(client, description);
+      const embedding = await generateEmbedding(context.client, description);
       console.log("[getPartTool] Generated embedding for description");
 
       const search = await context.client.rpc("items_search", {

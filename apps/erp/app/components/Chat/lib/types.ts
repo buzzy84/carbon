@@ -26,20 +26,12 @@ export type UIChatMessage = UIMessage<
   UITools
 >;
 
-
-
 /**
  * Extended agent status type with application-specific agent names
  */
 export type AgentStatus = {
   status: "routing" | "executing" | "completing";
-  agent:
-    | "triage"
-    | "orchestrator"
-    | "purchasing"
-    | "parts"
-    | "suppliers"
-    | "general";
+  agent: "triage" | "purchasing" | "parts" | "suppliers" | "general";
 };
 /**
  * Extended data parts interface with application-specific data
