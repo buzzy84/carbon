@@ -17,28 +17,20 @@ export default defineConfig({
 
         defaultHandler(warning);
       },
-      external: ["katex"],
     },
   },
   define: {
     global: "globalThis",
   },
-  optimizeDeps: {
-    extensions: [".css", ".scss", ".sass"], // explicitly include CSS extensions if needed
-    exclude: ["katex"],
-  },
   ssr: {
     noExternal: [
+      "react-tweet",
       "react-dropzone",
       "react-icons",
-      "react-json-view-lite",
       "react-phone-number-input",
       "tailwind-merge",
-      "novel",
     ],
-    external: ["katex"],
   },
-
   server: {
     port: 3000,
     allowedHosts: ["8d53c60dbab3.ngrok-free.app"],
@@ -71,7 +63,6 @@ export default defineConfig({
         __dirname,
         "../../packages/form/src/index.tsx"
       ),
-      katex: path.resolve(__dirname, "../../packages/utils/src/empty.ts"),
     },
   },
 });

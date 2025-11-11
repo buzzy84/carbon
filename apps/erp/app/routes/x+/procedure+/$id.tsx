@@ -3,7 +3,7 @@ import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import type { JSONContent } from "@carbon/react";
 import { Input, toast, useDebounce } from "@carbon/react";
-import { Editor, generateHTML } from "@carbon/react/Editor";
+import { Editor, generateHTML } from "@carbon/react/Editor.client";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { Outlet, useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@vercel/remix";

@@ -42,7 +42,7 @@ import {
   useKeyboardShortcuts,
   VStack,
 } from "@carbon/react";
-import { Editor } from "@carbon/react/Editor";
+import { Editor } from "@carbon/react/Editor.client";
 import { prettifyKeyboardShortcut } from "@carbon/utils";
 import { useFetcher, useParams } from "@remix-run/react";
 import { Reorder } from "framer-motion";
@@ -59,7 +59,7 @@ import {
   LuPencil,
   LuTrash,
 } from "react-icons/lu";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import { Empty } from "~/components";
 import { UnitOfMeasure } from "~/components/Form";
 import { ProcedureStepTypeIcon } from "~/components/Icons";

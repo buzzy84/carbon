@@ -33,7 +33,7 @@ import {
   useDisclosure,
   VStack,
 } from "@carbon/react";
-import { Editor, generateHTML } from "@carbon/react/Editor";
+import { Editor, generateHTML } from "@carbon/react/Editor.client";
 import { formatRelativeTime } from "@carbon/utils";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { useFetcher, useFetchers, useParams } from "@remix-run/react";
@@ -58,7 +58,7 @@ import {
   LuTriangleAlert,
   LuX,
 } from "react-icons/lu";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import { DirectionAwareTabs, EmployeeAvatar, TimeTypeIcon } from "~/components";
 import {
   Hidden,

@@ -45,7 +45,7 @@ import {
   useMount,
   VStack,
 } from "@carbon/react";
-import { Editor, generateHTML } from "@carbon/react/Editor";
+import { Editor, generateHTML } from "@carbon/react/Editor.client";
 import {
   formatDateTime,
   formatDurationMilliseconds,
@@ -78,7 +78,7 @@ import {
   LuTriangleAlert,
   LuX,
 } from "react-icons/lu";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import {
   Assignee,
   DirectionAwareTabs,

@@ -98,7 +98,7 @@
     ".": "./src/index.tsx",
     "./Chart": "./src/Chart.tsx",
     "./Carousel": "./src/Carousel.tsx",
-    "./Editor": "./src/Editor/index.ts",
+    "./Editor.client": "./src/Editor/index.client.ts",
     "./FunnelChart": "./src/FunnelChart.tsx",
     "./HTML": "./src/HTML.tsx",
     "./RichText": "./src/RichText/index.ts"

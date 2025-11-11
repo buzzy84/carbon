@@ -10,10 +10,10 @@ import {
   toast,
   VStack,
 } from "@carbon/react";
-import { Editor, generateHTML } from "@carbon/react/Editor";
+import { Editor, generateHTML } from "@carbon/react/Editor.client";
 import { nanoid } from "nanoid";
 import { useState } from "react";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import { Hidden, Input, Submit } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
 import type { ListItem } from "~/types";

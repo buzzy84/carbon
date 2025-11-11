@@ -8,7 +8,7 @@ import {
   toast,
   useDebounce,
 } from "@carbon/react";
-import { Editor, generateHTML } from "@carbon/react/Editor";
+import { Editor, generateHTML } from "@carbon/react/Editor.client";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { nanoid } from "nanoid";
 import { useState } from "react";

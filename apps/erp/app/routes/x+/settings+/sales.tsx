@@ -37,7 +37,7 @@ import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
 import type { JSONContent } from "@carbon/react";
-import { Editor, generateHTML } from "@carbon/react/Editor";
+import { Editor, generateHTML } from "@carbon/react/Editor.client";
 import { getLocalTimeZone, today } from "@internationalized/date";
 import { LuCircleCheck } from "react-icons/lu";
 import { usePermissions, useUser } from "~/hooks";
