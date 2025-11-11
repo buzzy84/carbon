@@ -17,6 +17,7 @@ export default defineConfig({
 
         defaultHandler(warning);
       },
+      external: ["katex"],
     },
   },
   define: {
@@ -24,6 +25,7 @@ export default defineConfig({
   },
   optimizeDeps: {
     extensions: [".css", ".scss", ".sass"], // explicitly include CSS extensions if needed
+    exclude: ["katex"],
   },
   ssr: {
     noExternal: [
@@ -33,6 +35,7 @@ export default defineConfig({
       "react-phone-number-input",
       "tailwind-merge",
     ],
+    external: ["katex"],
   },
 
   server: {
