@@ -75,7 +75,10 @@ export const ChatInput = forwardRef<RecordButtonRef, ChatInputProps>(
 
     // Animated placeholder effect
     useEffect(() => {
-      if (isWebSearch || isRecording) return;
+      if (isWebSearch || isRecording || hasMessages) {
+        setCurrentPlaceholder("Ask anything");
+        return;
+      }
 
       const currentText = placeholderTexts[currentTextIndex];
 
@@ -108,6 +111,7 @@ export const ChatInput = forwardRef<RecordButtonRef, ChatInputProps>(
       isTyping,
       isWebSearch,
       isRecording,
+      hasMessages,
     ]);
 
     const handleSubmit = (message: ChatInputMessage) => {
