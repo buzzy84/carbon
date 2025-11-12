@@ -189,7 +189,7 @@ export const createPurchaseOrderTool = tool({
           ]);
 
           if (!item.data) {
-            throw new Error(`Item not found: ${part.partId}`);
+            throw new Error(`Item with ID ${part.partId} not found`);
           }
 
           // Get item cost and replenishment info

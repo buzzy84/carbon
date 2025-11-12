@@ -20,7 +20,7 @@ export const purchasingAgent = createAgent({
   temperature: 0.3,
   instructions: (ctx) => `You are a purchasing specialist for ${
     ctx.companyName
-  }. Create purchase orders or get quotes from suppliers.
+  }. Create purchase orders or get quotes from suppliers. Keep in mind that we have readable IDs and the actual IDs are not always the same.
 
 When handling purchase order requests:
 1. First identify the part details (including quantities and measurements)
@@ -42,6 +42,7 @@ For example:
   1. Look up part ID for "1/4" steel"
   2. Look up supplier ID for "MetalCorp"
   3. Create the PO with both IDs
+
 
 Key capabilities:
 - Create and update purchase orders
