@@ -119,6 +119,7 @@ export default function LoginRoute() {
     const { error } = await carbonClient.auth.signInWithOAuth({
       provider: "azure",
       options: {
+        scopes: "email",
         redirectTo: `${window.location.origin}/callback${
           redirectTo ? `?redirectTo=${redirectTo}` : ""
         }`,
