@@ -188,7 +188,12 @@ const JobOperationStepRecordsTable = memo(
               type: "static",
               options: procedureStepType.map((type) => ({
                 value: type,
-                label: <ProcedureStepTypeIcon type={type} />,
+                label: (
+                  <div className="flex items-center gap-2">
+                    <ProcedureStepTypeIcon type={type} />
+                    {type}
+                  </div>
+                ),
               })),
             },
           },

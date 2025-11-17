@@ -941,11 +941,23 @@ export async function getJobOperationsByMethodId(
 export async function getJobOperationStepRecords(
   client: SupabaseClient<Database>,
   jobId: string,
-  args: GenericQueryFilters
+  args: GenericQueryFilters & {
+    search: string | null;
+  }
 ) {
   let query = client.rpc("get_job_operation_step_records", {
     p_job_id: jobId,
   });
+
+  if (args.search) {
+    query = query.or(
+      `name.ilike.%${args.search}%,operationDescription.ilike.%${args.search}%`
+    );
+  }
+
+  query = setGenericQueryFilters(query, args, [
+    { column: "type", ascending: true },
+  ]);
 
   return query;
 }
