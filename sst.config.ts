@@ -23,8 +23,8 @@ export default $config({
           dns: false,
           cert: process.env.CERT_ARN_ERP,
         },
-        rules: [
-          { listen: "80/http", redirect: "443/https" },
+        ports: [
+          { listen: "80/http", forward: "3000/http" },
           { listen: "443/https", forward: "3000/http" },
         ],
         health: {
@@ -105,8 +105,8 @@ export default $config({
           dns: false,
           cert: process.env.CERT_ARN_MES,
         },
-        rules: [
-          { listen: "80/http", redirect: "443/https" },
+        ports: [
+          { listen: "80/http", forward: "3000/http" },
           { listen: "443/https", forward: "3000/http" },
         ],
         health: {
