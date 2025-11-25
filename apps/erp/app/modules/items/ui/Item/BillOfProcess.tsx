@@ -877,8 +877,14 @@ function OperationForm({
         const { [item.id]: _, ...rest } = prev;
         return rest;
       });
+      setSelectedItemId(null);
     }
-  }, [item.id, methodOperationFetcher.data, setTemporaryItems]);
+  }, [
+    item.id,
+    methodOperationFetcher.data,
+    setTemporaryItems,
+    setSelectedItemId,
+  ]);
 
   const machineDisclosure = useDisclosure();
   const laborDisclosure = useDisclosure();

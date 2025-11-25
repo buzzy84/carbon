@@ -52,7 +52,7 @@ import {
   LuSquareFunction,
   LuX,
 } from "react-icons/lu";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import { MethodIcon, MethodItemTypeIcon, TrackingTypeIcon } from "~/components";
 import type { Configuration } from "~/components/Configurator/types";
 import {
@@ -601,8 +601,14 @@ function MaterialForm({
         const { [item.id]: _, ...rest } = prev;
         return rest;
       });
+      setSelectedItemId(null);
     }
-  }, [item.id, methodMaterialFetcher.data, setTemporaryItems]);
+  }, [
+    item.id,
+    methodMaterialFetcher.data,
+    setTemporaryItems,
+    setSelectedItemId,
+  ]);
 
   const [itemType, setItemType] = useState<MethodItemType>(item.data.itemType);
   const [itemData, setItemData] = useState<{
