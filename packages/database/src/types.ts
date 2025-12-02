@@ -16438,6 +16438,7 @@ export type Database = {
         Row: {
           assignee: string | null
           companyId: string
+          completedDate: string | null
           createdAt: string
           createdBy: string
           id: string
@@ -16451,6 +16452,7 @@ export type Database = {
         Insert: {
           assignee?: string | null
           companyId: string
+          completedDate?: string | null
           createdAt?: string
           createdBy: string
           id?: string
@@ -16464,6 +16466,7 @@ export type Database = {
         Update: {
           assignee?: string | null
           companyId?: string
+          completedDate?: string | null
           createdAt?: string
           createdBy?: string
           id?: string
@@ -19639,6 +19642,7 @@ export type Database = {
           name: string
           processId: string | null
           status: Database["public"]["Enums"]["procedureStatus"]
+          tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
           version: number
@@ -19654,6 +19658,7 @@ export type Database = {
           name: string
           processId?: string | null
           status?: Database["public"]["Enums"]["procedureStatus"]
+          tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
           version?: number
@@ -19669,6 +19674,7 @@ export type Database = {
           name?: string
           processId?: string | null
           status?: Database["public"]["Enums"]["procedureStatus"]
+          tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
           version?: number
@@ -23125,7 +23131,6 @@ export type Database = {
           id: string
           name: string
           status: Database["public"]["Enums"]["qualityDocumentStatus"]
-          tags: string[] | null
           updatedAt: string | null
           updatedBy: string | null
           version: number
@@ -23140,7 +23145,6 @@ export type Database = {
           id?: string
           name: string
           status?: Database["public"]["Enums"]["qualityDocumentStatus"]
-          tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
           version?: number
@@ -23155,7 +23159,6 @@ export type Database = {
           id?: string
           name?: string
           status?: Database["public"]["Enums"]["qualityDocumentStatus"]
-          tags?: string[] | null
           updatedAt?: string | null
           updatedBy?: string | null
           version?: number
@@ -35689,6 +35692,7 @@ export type Database = {
           companyId: string | null
           createdAt: string
           createdBy: string
+          emoji: string | null
           id: string
           name: string
           protected: boolean | null
@@ -35701,6 +35705,7 @@ export type Database = {
           companyId?: string | null
           createdAt?: string
           createdBy: string
+          emoji?: string | null
           id?: string
           name: string
           protected?: boolean | null
@@ -35713,6 +35718,7 @@ export type Database = {
           companyId?: string | null
           createdAt?: string
           createdBy?: string
+          emoji?: string | null
           id?: string
           name?: string
           protected?: boolean | null
@@ -37748,6 +37754,7 @@ export type Database = {
           defaultMethodType: Database["public"]["Enums"]["methodType"] | null
           description: string | null
           id: string | null
+          itemPostingGroupId: string | null
           itemTrackingType:
             | Database["public"]["Enums"]["itemTrackingType"]
             | null
@@ -37933,6 +37940,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "itemCost_itemPostingGroupId_fkey"
+            columns: ["itemPostingGroupId"]
+            isOneToOne: false
+            referencedRelation: "itemPostingGroup"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -41881,6 +41895,7 @@ export type Database = {
           defaultMethodType: Database["public"]["Enums"]["methodType"] | null
           description: string | null
           id: string | null
+          itemPostingGroupId: string | null
           itemTrackingType:
             | Database["public"]["Enums"]["itemTrackingType"]
             | null
@@ -42045,6 +42060,13 @@ export type Database = {
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
           },
+          {
+            foreignKeyName: "itemCost_itemPostingGroupId_fkey"
+            columns: ["itemPostingGroupId"]
+            isOneToOne: false
+            referencedRelation: "itemPostingGroup"
+            referencedColumns: ["id"]
+          },
         ]
       }
       procedures: {
@@ -42055,6 +42077,7 @@ export type Database = {
           name: string | null
           processId: string | null
           status: Database["public"]["Enums"]["procedureStatus"] | null
+          tags: string[] | null
           version: number | null
           versions: Json | null
         }
@@ -43764,7 +43787,6 @@ export type Database = {
           id: string | null
           name: string | null
           status: Database["public"]["Enums"]["qualityDocumentStatus"] | null
-          tags: string[] | null
           version: number | null
           versions: Json | null
         }
@@ -45712,14 +45734,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -46255,14 +46277,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["paymentCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["paymentCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -48379,6 +48401,7 @@ export type Database = {
           defaultMethodType: Database["public"]["Enums"]["methodType"] | null
           description: string | null
           id: string | null
+          itemPostingGroupId: string | null
           itemTrackingType:
             | Database["public"]["Enums"]["itemTrackingType"]
             | null
@@ -48542,6 +48565,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "itemCost_itemPostingGroupId_fkey"
+            columns: ["itemPostingGroupId"]
+            isOneToOne: false
+            referencedRelation: "itemPostingGroup"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -48927,6 +48957,7 @@ export type Database = {
           defaultMethodType: Database["public"]["Enums"]["methodType"]
           description: string
           id: string
+          itemPostingGroupId: string
           itemTrackingType: Database["public"]["Enums"]["itemTrackingType"]
           modelName: string
           modelPath: string
@@ -49319,6 +49350,7 @@ export type Database = {
           grade: string
           gradeId: string
           id: string
+          itemPostingGroupId: string
           itemTrackingType: Database["public"]["Enums"]["itemTrackingType"]
           materialForm: string
           materialFormId: string
@@ -50372,7 +50404,9 @@ export type Database = {
         | "Reject"
         | "Request Approval"
       purchaseOrderType: "Purchase" | "Return" | "Outside Processing"
-      purchasePriceUpdateTiming: "Invoice Post" | "Purchase Order Finalize"
+      purchasePriceUpdateTiming:
+        | "Purchase Invoice Post"
+        | "Purchase Order Finalize"
       qualityDocumentStatus: "Draft" | "Active" | "Archived"
       quoteLineStatus: "Not Started" | "In Progress" | "Complete" | "No Quote"
       quoteStatus:
@@ -51476,7 +51510,10 @@ export const Constants = {
         "Request Approval",
       ],
       purchaseOrderType: ["Purchase", "Return", "Outside Processing"],
-      purchasePriceUpdateTiming: ["Invoice Post", "Purchase Order Finalize"],
+      purchasePriceUpdateTiming: [
+        "Purchase Invoice Post",
+        "Purchase Order Finalize",
+      ],
       qualityDocumentStatus: ["Draft", "Active", "Archived"],
       quoteLineStatus: ["Not Started", "In Progress", "Complete", "No Quote"],
       quoteStatus: [
