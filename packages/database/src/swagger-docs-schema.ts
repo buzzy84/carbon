@@ -29881,6 +29881,9 @@ export default {
             $ref: "#/parameters/rowFilter.supplierQuotes.supplierQuoteType",
           },
           {
+            $ref: "#/parameters/rowFilter.supplierQuotes.externalLinkId",
+          },
+          {
             $ref: "#/parameters/rowFilter.supplierQuotes.thumbnailPath",
           },
           {
@@ -33154,6 +33157,9 @@ export default {
             $ref: "#/parameters/rowFilter.supplierQuote.supplierQuoteType",
           },
           {
+            $ref: "#/parameters/rowFilter.supplierQuote.externalLinkId",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -33288,6 +33294,9 @@ export default {
             $ref: "#/parameters/rowFilter.supplierQuote.supplierQuoteType",
           },
           {
+            $ref: "#/parameters/rowFilter.supplierQuote.externalLinkId",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -33374,6 +33383,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.supplierQuote.supplierQuoteType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.supplierQuote.externalLinkId",
           },
           {
             $ref: "#/parameters/body.supplierQuote",
@@ -33751,6 +33763,9 @@ export default {
             $ref: "#/parameters/rowFilter.nonConformanceReviewer.updatedBy",
           },
           {
+            $ref: "#/parameters/rowFilter.nonConformanceReviewer.completedDate",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -33843,6 +33858,9 @@ export default {
             $ref: "#/parameters/rowFilter.nonConformanceReviewer.updatedBy",
           },
           {
+            $ref: "#/parameters/rowFilter.nonConformanceReviewer.completedDate",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -33887,6 +33905,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.nonConformanceReviewer.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.nonConformanceReviewer.completedDate",
           },
           {
             $ref: "#/parameters/body.nonConformanceReviewer",
@@ -44398,6 +44419,30 @@ export default {
             $ref: "#/parameters/rowFilter.externalLink.supplierId",
           },
           {
+            $ref: "#/parameters/rowFilter.externalLink.lastAccessedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedByEmail",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedByEmail",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declineNote",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -44481,6 +44526,30 @@ export default {
             $ref: "#/parameters/rowFilter.externalLink.supplierId",
           },
           {
+            $ref: "#/parameters/rowFilter.externalLink.lastAccessedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedByEmail",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedByEmail",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declineNote",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -44516,6 +44585,30 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.externalLink.supplierId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.lastAccessedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.submittedByEmail",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declinedByEmail",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalLink.declineNote",
           },
           {
             $ref: "#/parameters/body.externalLink",
@@ -55567,6 +55660,9 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.gaugeCalibrationExpiredNotificationGroup",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.purchasePriceUpdateTiming",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -55665,6 +55761,9 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.gaugeCalibrationExpiredNotificationGroup",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.purchasePriceUpdateTiming",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -55715,6 +55814,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.companySettings.gaugeCalibrationExpiredNotificationGroup",
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.purchasePriceUpdateTiming",
           },
           {
             $ref: "#/parameters/body.companySettings",
@@ -56956,6 +57058,41 @@ export default {
           },
         },
         tags: ["(rpc) get_companies_with_any_role"],
+      },
+    },
+    "/rpc/get_unscheduled_jobs": {
+      post: {
+        parameters: [
+          {
+            in: "body",
+            name: "args",
+            required: true,
+            schema: {
+              properties: {
+                location_id: {
+                  format: "text",
+                  type: "string",
+                },
+              },
+              required: ["location_id"],
+              type: "object",
+            },
+          },
+          {
+            $ref: "#/parameters/preferParams",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) get_unscheduled_jobs"],
       },
     },
     "/rpc/get_direct_ancestors_of_tracked_entity": {
@@ -65984,6 +66121,7 @@ export default {
             "Job Consumption",
             "Job Receipt",
             "Batch Split",
+            "Purchase Order",
           ],
           format: 'public."itemLedgerDocumentType"',
           type: "string",
@@ -74048,7 +74186,15 @@ export default {
           type: "string",
         },
         status: {
-          enum: ["Active", "Expired"],
+          enum: [
+            "Active",
+            "Expired",
+            "Sent",
+            "Ordered",
+            "Partial",
+            "Declined",
+            "Cancelled",
+          ],
           format: 'public."supplierQuoteStatus"',
           type: "string",
         },
@@ -74145,6 +74291,12 @@ export default {
         supplierQuoteType: {
           enum: ["Purchase", "Return", "Outside Processing"],
           format: 'public."purchaseOrderType"',
+          type: "string",
+        },
+        externalLinkId: {
+          description:
+            "Note:\nThis is a Foreign Key to `externalLink.id`.<fk table='externalLink' column='id'/>",
+          format: "uuid",
           type: "string",
         },
         thumbnailPath: {
@@ -75717,7 +75869,15 @@ export default {
         },
         status: {
           default: "Active",
-          enum: ["Active", "Expired"],
+          enum: [
+            "Active",
+            "Expired",
+            "Sent",
+            "Ordered",
+            "Partial",
+            "Declined",
+            "Cancelled",
+          ],
           format: 'public."supplierQuoteStatus"',
           type: "string",
         },
@@ -75816,6 +75976,12 @@ export default {
           default: "Purchase",
           enum: ["Purchase", "Return", "Outside Processing"],
           format: 'public."purchaseOrderType"',
+          type: "string",
+        },
+        externalLinkId: {
+          description:
+            "Note:\nThis is a Foreign Key to `externalLink.id`.<fk table='externalLink' column='id'/>",
+          format: "uuid",
           type: "string",
         },
       },
@@ -76009,6 +76175,10 @@ export default {
           description:
             "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
           format: "text",
+          type: "string",
+        },
+        completedDate: {
+          format: "timestamp with time zone",
           type: "string",
         },
       },
@@ -77859,6 +78029,7 @@ export default {
             "Job Consumption",
             "Job Receipt",
             "Batch Split",
+            "Purchase Order",
           ],
           format: 'public."itemLedgerDocumentType"',
           type: "string",
@@ -81215,6 +81386,38 @@ export default {
         supplierId: {
           description:
             "Note:\nThis is a Foreign Key to `supplier.id`.<fk table='supplier' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        lastAccessedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        submittedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        submittedBy: {
+          format: "text",
+          type: "string",
+        },
+        submittedByEmail: {
+          format: "text",
+          type: "string",
+        },
+        declinedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        declinedBy: {
+          format: "text",
+          type: "string",
+        },
+        declinedByEmail: {
+          format: "text",
+          type: "string",
+        },
+        declineNote: {
           format: "text",
           type: "string",
         },
@@ -86534,6 +86737,7 @@ export default {
         "useMetric",
         "kanbanOutput",
         "gaugeCalibrationExpiredNotificationGroup",
+        "purchasePriceUpdateTiming",
       ],
       properties: {
         id: {
@@ -86612,6 +86816,12 @@ export default {
             type: "string",
           },
           type: "array",
+        },
+        purchasePriceUpdateTiming: {
+          default: "Purchase Invoice Post",
+          enum: ["Purchase Invoice Post", "Purchase Order Finalize"],
+          format: 'public."purchasePriceUpdateTiming"',
+          type: "string",
         },
       },
       type: "object",
@@ -102723,6 +102933,12 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.supplierQuotes.externalLinkId": {
+      name: "externalLinkId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "rowFilter.supplierQuotes.thumbnailPath": {
       name: "thumbnailPath",
       required: false,
@@ -104649,6 +104865,12 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.supplierQuote.externalLinkId": {
+      name: "externalLinkId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.nonConformanceItem": {
       name: "nonConformanceItem",
       description: "nonConformanceItem",
@@ -104834,6 +105056,12 @@ export default {
     },
     "rowFilter.nonConformanceReviewer.updatedBy": {
       name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.nonConformanceReviewer.completedDate": {
+      name: "completedDate",
       required: false,
       in: "query",
       type: "string",
@@ -110814,6 +111042,54 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.externalLink.lastAccessedAt": {
+      name: "lastAccessedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.submittedAt": {
+      name: "submittedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.submittedBy": {
+      name: "submittedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.submittedByEmail": {
+      name: "submittedByEmail",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.declinedAt": {
+      name: "declinedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.declinedBy": {
+      name: "declinedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.declinedByEmail": {
+      name: "declinedByEmail",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalLink.declineNote": {
+      name: "declineNote",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.supplierLocation": {
       name: "supplierLocation",
       description: "supplierLocation",
@@ -116759,6 +117035,12 @@ export default {
     },
     "rowFilter.companySettings.gaugeCalibrationExpiredNotificationGroup": {
       name: "gaugeCalibrationExpiredNotificationGroup",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.companySettings.purchasePriceUpdateTiming": {
+      name: "purchasePriceUpdateTiming",
       required: false,
       in: "query",
       type: "string",

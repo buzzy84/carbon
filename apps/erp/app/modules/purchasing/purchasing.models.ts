@@ -1,5 +1,5 @@
 import { getLocalTimeZone, today } from "@internationalized/date";
-import { z } from 'zod/v3';
+import { z } from "zod/v3";
 import { zfd } from "zod-form-data";
 import { address, contact } from "~/types/validators";
 import { methodItemType } from "../shared";
@@ -94,6 +94,29 @@ export const purchaseOrderValidator = z.object({
   exchangeRate: zfd.numeric(z.number().optional()),
   exchangeRateUpdatedAt: zfd.text(z.string().optional()),
 });
+
+export const externalSupplierQuoteValidator = z.object({
+  digitalSupplierQuoteSubmittedBy: z
+    .string()
+    .min(1, { message: "Name is required" }),
+  digitalSupplierQuoteSubmittedByEmail: z
+    .string()
+    .email({ message: "Email is invalid" }),
+  note: zfd.text(z.string().optional()),
+});
+
+export const supplierQuoteFinalizeValidator = z
+  .object({
+    notification: z.enum(["Email", "None"]).optional(),
+    supplierContact: zfd.text(z.string().optional()),
+  })
+  .refine(
+    (data) => (data.notification === "Email" ? data.supplierContact : true),
+    {
+      message: "Supplier contact is required for email",
+      path: ["supplierContact"], // path of error
+    }
+  );
 
 export const purchaseOrderDeliveryValidator = z
   .object({
@@ -299,7 +322,15 @@ export const supplierStatusValidator = z.object({
   name: z.string().min(1, { message: "Name is required" }),
 });
 
-export const supplierQuoteStatusType = ["Active", "Expired"] as const;
+export const supplierQuoteStatusType = [
+  "Active",
+  "Sent",
+  "Partial",
+  "Ordered",
+  "Expired",
+  "Declined",
+  "Cancelled",
+] as const;
 
 export const supplierQuoteValidator = z
   .object({

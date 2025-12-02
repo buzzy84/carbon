@@ -11,15 +11,32 @@ import {
   Heading,
   IconButton,
   useDisclosure,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalTitle,
+  ModalDescription,
+  ModalBody,
+  ModalFooter,
+  InputGroup,
+  Input,
+  InputRightElement,
 } from "@carbon/react";
 
-import { Link, useParams } from "@remix-run/react";
+import { Link, useFetcher, useParams } from "@remix-run/react";
 import {
   LuEllipsisVertical,
   LuPanelLeft,
   LuPanelRight,
   LuShoppingCart,
   LuTrash,
+  LuShare,
+  LuEye,
+  LuChevronDown,
+  LuExternalLink,
+  LuCheckCheck,
+  LuCircleStop,
+  LuLoaderCircle,
 } from "react-icons/lu";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
@@ -36,6 +53,7 @@ import type {
 } from "../../types";
 import SupplierQuoteStatus from "./SupplierQuoteStatus";
 import SupplierQuoteToOrderDrawer from "./SupplierQuoteToOrderDrawer";
+import SupplierQuoteFinalizeModal from "./SupplierQuoteFinalizeModal";
 
 const SupplierQuoteHeader = () => {
   const { id } = useParams();
@@ -56,6 +74,13 @@ const SupplierQuoteHeader = () => {
 
   const convertToOrderModal = useDisclosure();
   const deleteModal = useDisclosure();
+  const shareModal = useDisclosure();
+  const finalizeModal = useDisclosure();
+
+  const finalizeFetcher = useFetcher<{}>();
+  const statusFetcher = useFetcher<{}>();
+
+  const hasLines = routeData?.lines && routeData.lines.length > 0;
 
   return (
     <>
@@ -105,9 +130,65 @@ const SupplierQuoteHeader = () => {
             )}
           </HStack>
           <HStack>
+            {routeData?.quote?.status === "Sent" &&
+            (routeData?.quote as any)?.externalLinkId ? (
+              <Button
+                onClick={shareModal.onOpen}
+                leftIcon={<LuShare />}
+                variant="secondary"
+              >
+                Share
+              </Button>
+            ) : (
+              (routeData?.quote as any)?.externalLinkId && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button
+                      leftIcon={<LuEye />}
+                      variant="secondary"
+                      rightIcon={<LuChevronDown />}
+                    >
+                      Preview
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuItem asChild>
+                      <a
+                        target="_blank"
+                        href={path.to.externalSupplierQuote(
+                          (routeData?.quote as any).externalLinkId
+                        )}
+                        rel="noreferrer"
+                      >
+                        <DropdownMenuIcon icon={<LuExternalLink />} />
+                        Digital Quote
+                      </a>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )
+            )}
+
             <Button
+              onClick={finalizeModal.onOpen}
+              isLoading={finalizeFetcher.state !== "idle"}
               isDisabled={
                 routeData?.quote?.status !== "Active" ||
+                finalizeFetcher.state !== "idle" ||
+                !permissions.can("update", "purchasing") ||
+                !hasLines
+              }
+              variant={
+                routeData?.quote?.status === "Active" ? "primary" : "secondary"
+              }
+              leftIcon={<LuCheckCheck />}
+            >
+              Finalize
+            </Button>
+
+            <Button
+              isDisabled={
+                routeData?.quote?.status !== "Sent" ||
                 !permissions.can("update", "purchasing")
               }
               leftIcon={<LuShoppingCart />}
@@ -115,6 +196,52 @@ const SupplierQuoteHeader = () => {
             >
               Order
             </Button>
+
+            {routeData?.quote?.status === "Active" ? (
+              <statusFetcher.Form
+                method="post"
+                action={path.to.supplierQuoteStatus(id)}
+              >
+                <input type="hidden" name="status" value="Cancelled" />
+                <Button
+                  isDisabled={
+                    statusFetcher.state !== "idle" ||
+                    !permissions.can("update", "purchasing")
+                  }
+                  isLoading={
+                    statusFetcher.state !== "idle" &&
+                    statusFetcher.formData?.get("status") === "Cancelled"
+                  }
+                  leftIcon={<LuCircleStop />}
+                  type="submit"
+                  variant="secondary"
+                >
+                  Cancel
+                </Button>
+              </statusFetcher.Form>
+            ) : (
+              <statusFetcher.Form
+                method="post"
+                action={path.to.supplierQuoteStatus(id)}
+              >
+                <input type="hidden" name="status" value="Active" />
+                <Button
+                  isDisabled={
+                    statusFetcher.state !== "idle" ||
+                    !permissions.can("update", "purchasing")
+                  }
+                  isLoading={
+                    statusFetcher.state !== "idle" &&
+                    statusFetcher.formData?.get("status") === "Active"
+                  }
+                  leftIcon={<LuLoaderCircle />}
+                  type="submit"
+                  variant="secondary"
+                >
+                  Reopen
+                </Button>
+              </statusFetcher.Form>
+            )}
 
             <IconButton
               aria-label="Toggle Properties"
@@ -147,8 +274,74 @@ const SupplierQuoteHeader = () => {
           }}
         />
       )}
+      {finalizeModal.isOpen && (
+        <SupplierQuoteFinalizeModal
+          quote={routeData?.quote}
+          lines={routeData?.lines ?? []}
+          pricing={routeData?.prices ?? []}
+          onClose={finalizeModal.onClose}
+          fetcher={finalizeFetcher}
+        />
+      )}
+      <ShareQuoteModal
+        id={id}
+        externalLinkId={(routeData?.quote as any)?.externalLinkId}
+        onClose={shareModal.onClose}
+        isOpen={shareModal.isOpen}
+      />
     </>
   );
 };
+
+function ShareQuoteModal({
+  id,
+  externalLinkId,
+  onClose,
+  isOpen,
+}: {
+  id?: string;
+  externalLinkId?: string;
+  onClose: () => void;
+  isOpen: boolean;
+}) {
+  if (!externalLinkId) return null;
+  if (typeof window === "undefined") return null;
+
+  const digitalQuoteUrl = `${
+    window.location.origin
+  }${path.to.externalSupplierQuote(externalLinkId)}`;
+  return (
+    <Modal
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+      }}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>Share Quote</ModalTitle>
+          <ModalDescription>
+            Copy this link to share the quote with a supplier
+          </ModalDescription>
+        </ModalHeader>
+        <ModalBody>
+          <InputGroup>
+            <Input value={digitalQuoteUrl} />
+            <InputRightElement>
+              <Copy text={digitalQuoteUrl} />
+            </InputRightElement>
+          </InputGroup>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="secondary" onClick={onClose}>
+            Close
+          </Button>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
 
 export default SupplierQuoteHeader;
