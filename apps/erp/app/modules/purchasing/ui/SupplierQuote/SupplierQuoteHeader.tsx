@@ -186,9 +186,33 @@ const SupplierQuoteHeader = () => {
               Finalize
             </Button>
 
+            <statusFetcher.Form
+              id="submit-form"
+              method="post"
+              action={path.to.supplierQuoteStatus(id)}
+            >
+              <input type="hidden" name="status" value="Submitted" />
+              <Button
+                isDisabled={
+                  routeData?.quote?.status !== "Sent" ||
+                  statusFetcher.state !== "idle" ||
+                  !permissions.can("update", "purchasing")
+                }
+                isLoading={
+                  statusFetcher.state !== "idle" &&
+                  statusFetcher.formData?.get("status") === "Submitted"
+                }
+                leftIcon={<LuCheckCheck />}
+                type="submit"
+              >
+                Submit
+              </Button>
+            </statusFetcher.Form>
+
             <Button
               isDisabled={
-                (routeData?.quote?.status !== "Sent" && routeData?.quote?.status !== "Submitted") ||
+                (routeData?.quote?.status !== "Sent" &&
+                  routeData?.quote?.status !== "Submitted") ||
                 !permissions.can("update", "purchasing")
               }
               leftIcon={<LuShoppingCart />}
@@ -197,7 +221,9 @@ const SupplierQuoteHeader = () => {
               Order
             </Button>
 
-            {routeData?.quote?.status === "Active" ? (
+            {routeData?.quote?.status === "Active" ||
+            routeData?.quote?.status === "Sent" ||
+            routeData?.quote?.status === "Submitted" ? (
               <statusFetcher.Form
                 method="post"
                 action={path.to.supplierQuoteStatus(id)}
@@ -219,7 +245,7 @@ const SupplierQuoteHeader = () => {
                   Cancel
                 </Button>
               </statusFetcher.Form>
-            ) : (
+            ) : routeData?.quote?.status !== "Ordered" ? (
               <statusFetcher.Form
                 method="post"
                 action={path.to.supplierQuoteStatus(id)}
@@ -230,7 +256,9 @@ const SupplierQuoteHeader = () => {
                     statusFetcher.state !== "idle" ||
                     !permissions.can("update", "purchasing") ||
                     routeData?.quote?.status === "Ordered" ||
-                    routeData?.quote?.status === "Partial"
+                    routeData?.quote?.status === "Partial" ||
+                    routeData?.quote?.status === "Sent" ||
+                    routeData?.quote?.status === "Submitted"
                   }
                   isLoading={
                     statusFetcher.state !== "idle" &&
@@ -243,7 +271,7 @@ const SupplierQuoteHeader = () => {
                   Reopen
                 </Button>
               </statusFetcher.Form>
-            )}
+            ) : null}
 
             <IconButton
               aria-label="Toggle Properties"

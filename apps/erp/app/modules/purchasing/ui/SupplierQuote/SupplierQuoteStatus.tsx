@@ -12,6 +12,7 @@ const SupplierQuoteStatus = ({ status }: SupplierQuoteStatusProps) => {
     case "Ordered":
       return <Status color="green">{status}</Status>;
     case "Sent":
+    case "Submitted":
       return <Status color="yellow">{status}</Status>;
     case "Declined":
       return <Status color="gray">{status}</Status>;
