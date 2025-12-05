@@ -27,7 +27,7 @@ import { useParams } from "@remix-run/react";
 import { useState } from "react";
 import { BsThreeDotsVertical } from "react-icons/bs";
 import { LuTrash } from "react-icons/lu";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import {
   ArrayNumeric,
   ConversionFactor,
@@ -71,7 +71,7 @@ const SupplierQuoteLineForm = ({
     quote: SupplierQuote;
   }>(path.to.supplierQuote(id));
 
-  const isEditable = ["Active"].includes(routeData?.quote?.status ?? "");
+  const isEditable = ["Draft"].includes(routeData?.quote?.status ?? "");
 
   const isEditing = initialValues.id !== undefined;
 

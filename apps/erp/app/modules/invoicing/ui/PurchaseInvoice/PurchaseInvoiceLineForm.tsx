@@ -20,7 +20,7 @@ import { ValidatedForm } from "@carbon/form";
 import { getItemReadableId } from "@carbon/utils";
 import { useParams } from "@remix-run/react";
 import { useEffect, useState } from "react";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import {
   ConversionFactor,
   CustomFormFields,
@@ -292,9 +292,11 @@ const PurchaseInvoiceLineForm = ({
                         )}{" "}
                         {initialValues?.purchaseUnitOfMeasureCode}
                       </Badge>
-                      {initialValues?.taxPercent > 0 ? (
+                      {(initialValues?.taxPercent ?? 0) > 0 ? (
                         <Badge variant="red">
-                          {percentFormatter.format(initialValues?.taxPercent)}{" "}
+                          {percentFormatter.format(
+                            initialValues?.taxPercent ?? 0
+                          )}{" "}
                           Tax
                         </Badge>
                       ) : null}

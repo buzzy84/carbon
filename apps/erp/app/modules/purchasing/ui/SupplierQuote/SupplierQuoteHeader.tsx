@@ -1,4 +1,7 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertTitle,
   Badge,
   Button,
   Copy,
@@ -21,9 +24,11 @@ import {
   InputGroup,
   Input,
   InputRightElement,
+  VStack,
 } from "@carbon/react";
 
 import { Link, useFetcher, useParams } from "@remix-run/react";
+import type { FetcherWithComponents } from "@remix-run/react";
 import {
   LuEllipsisVertical,
   LuPanelLeft,
@@ -37,6 +42,8 @@ import {
   LuCheckCheck,
   LuCircleStop,
   LuLoaderCircle,
+  LuSend,
+  LuTriangleAlert,
 } from "react-icons/lu";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
@@ -53,7 +60,7 @@ import type {
 } from "../../types";
 import SupplierQuoteStatus from "./SupplierQuoteStatus";
 import SupplierQuoteToOrderDrawer from "./SupplierQuoteToOrderDrawer";
-import SupplierQuoteFinalizeModal from "./SupplierQuoteFinalizeModal";
+import SupplierQuoteSendModal from "./SupplierQuoteSendModal";
 
 const SupplierQuoteHeader = () => {
   const { id } = useParams();
@@ -81,8 +88,44 @@ const SupplierQuoteHeader = () => {
   const finalizeFetcher = useFetcher<{}>();
   const sendFetcher = useFetcher<{}>();
   const statusFetcher = useFetcher<{}>();
+  const canShare =
+    routeData?.quote.externalLinkId &&
+    ["Draft", "Active"].includes(routeData?.quote?.status ?? "");
 
   const hasLines = routeData?.lines && routeData.lines.length > 0;
+
+  // Validation logic for missing prices and leadtimes
+  const lines = routeData?.lines ?? [];
+  const prices = routeData?.prices ?? [];
+
+  const linesMissingQuoteLinePrices = lines
+    .filter((line) => {
+      if (!line.quantity || !Array.isArray(line.quantity)) return false;
+      return line.quantity.some(
+        (qty) =>
+          !prices.some(
+            (price) =>
+              price.supplierQuoteLineId === line.id && price.quantity === qty
+          )
+      );
+    })
+    .map((line) => line.itemReadableId)
+    .filter((id): id is string => id !== undefined);
+
+  const linesWithZeroPriceOrLeadTime = prices
+    .filter((price) => price.supplierUnitPrice === 0 || price.leadTime === 0)
+    .map((price) => {
+      const line = lines.find((line) => line.id === price.supplierQuoteLineId);
+      return line?.itemReadableId;
+    })
+    .filter((id): id is string => id !== undefined);
+
+  const warningLineReadableIds = [
+    ...new Set([
+      ...linesMissingQuoteLinePrices,
+      ...linesWithZeroPriceOrLeadTime,
+    ]),
+  ];
 
   return (
     <>
@@ -132,7 +175,16 @@ const SupplierQuoteHeader = () => {
             )}
           </HStack>
           <HStack>
-            {(routeData?.quote as any)?.externalLinkId && (
+            {canShare && (
+              <Button
+                leftIcon={<LuShare />}
+                variant="secondary"
+                onClick={shareModal.onOpen}
+              >
+                Share
+              </Button>
+            )}
+            {canShare && (
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
@@ -170,7 +222,7 @@ const SupplierQuoteHeader = () => {
                   !hasLines
                 }
                 variant="primary"
-                leftIcon={<LuShare />}
+                leftIcon={<LuSend />}
               >
                 Send
               </Button>
@@ -203,7 +255,7 @@ const SupplierQuoteHeader = () => {
               </Button>
             )}
 
-            {routeData?.quote?.status === "Active" && (
+            {routeData?.quote?.status === "Draft" && (
               <statusFetcher.Form
                 method="post"
                 action={path.to.supplierQuoteStatus(id)}
@@ -227,30 +279,29 @@ const SupplierQuoteHeader = () => {
               </statusFetcher.Form>
             )}
 
-            {routeData?.quote?.status !== "Draft" &&
-              routeData?.quote?.status !== "Active" && (
-                <statusFetcher.Form
-                  method="post"
-                  action={path.to.supplierQuoteStatus(id)}
+            {routeData?.quote?.status !== "Draft" && (
+              <statusFetcher.Form
+                method="post"
+                action={path.to.supplierQuoteStatus(id)}
+              >
+                <input type="hidden" name="status" value="Draft" />
+                <Button
+                  isDisabled={
+                    statusFetcher.state !== "idle" ||
+                    !permissions.can("update", "purchasing")
+                  }
+                  isLoading={
+                    statusFetcher.state !== "idle" &&
+                    statusFetcher.formData?.get("status") === "Draft"
+                  }
+                  leftIcon={<LuLoaderCircle />}
+                  type="submit"
+                  variant="secondary"
                 >
-                  <input type="hidden" name="status" value="Draft" />
-                  <Button
-                    isDisabled={
-                      statusFetcher.state !== "idle" ||
-                      !permissions.can("update", "purchasing")
-                    }
-                    isLoading={
-                      statusFetcher.state !== "idle" &&
-                      statusFetcher.formData?.get("status") === "Draft"
-                    }
-                    leftIcon={<LuLoaderCircle />}
-                    type="submit"
-                    variant="secondary"
-                  >
-                    Reopen
-                  </Button>
-                </statusFetcher.Form>
-              )}
+                  Reopen
+                </Button>
+              </statusFetcher.Form>
+            )}
 
             <IconButton
               aria-label="Toggle Properties"
@@ -286,20 +337,24 @@ const SupplierQuoteHeader = () => {
       {finalizeModal.isOpen && (
         <SupplierQuoteFinalizeModal
           quote={routeData?.quote}
-          lines={routeData?.lines ?? []}
-          pricing={routeData?.prices ?? []}
           onClose={finalizeModal.onClose}
           fetcher={finalizeFetcher}
+          warningLineReadableIds={warningLineReadableIds}
         />
       )}
       {sendModal.isOpen && (
-        <SupplierQuoteFinalizeModal
+        <SupplierQuoteSendModal
           quote={routeData?.quote}
-          lines={routeData?.lines ?? []}
-          pricing={routeData?.prices ?? []}
           onClose={sendModal.onClose}
           fetcher={sendFetcher}
-          action={path.to.supplierQuoteSend(id)}
+        />
+      )}
+      {finalizeModal.isOpen && (
+        <SupplierQuoteFinalizeModal
+          quote={routeData?.quote}
+          onClose={finalizeModal.onClose}
+          fetcher={sendFetcher}
+          warningLineReadableIds={warningLineReadableIds}
         />
       )}
       <ShareQuoteModal
@@ -311,6 +366,79 @@ const SupplierQuoteHeader = () => {
     </>
   );
 };
+
+function SupplierQuoteFinalizeModal({
+  quote,
+  onClose,
+  fetcher,
+  warningLineReadableIds,
+}: {
+  quote?: SupplierQuote;
+  onClose: () => void;
+  fetcher: FetcherWithComponents<{}>;
+  warningLineReadableIds: string[];
+}) {
+  const { id } = useParams();
+  if (!id) throw new Error("id not found");
+
+  const hasErrors = warningLineReadableIds.length > 0;
+
+  return (
+    <Modal
+      open
+      onOpenChange={(open) => {
+        if (!open) {
+          onClose();
+        }
+      }}
+    >
+      <ModalContent>
+        <ModalHeader>
+          <ModalTitle>Finalize {quote?.supplierQuoteId}</ModalTitle>
+          <ModalDescription>
+            Are you sure you want to finalize the supplier quote?
+          </ModalDescription>
+        </ModalHeader>
+        <ModalBody>
+          <VStack spacing={4}>
+            {hasErrors && (
+              <Alert variant="destructive">
+                <LuTriangleAlert className="h-4 w-4" />
+                <AlertTitle>Lines need prices or lead times</AlertTitle>
+                <AlertDescription>
+                  The following line items are missing prices or lead times:
+                  <ul className="list-disc py-2 pl-4">
+                    {warningLineReadableIds.map((readableId) => (
+                      <li key={readableId}>{readableId}</li>
+                    ))}
+                  </ul>
+                </AlertDescription>
+              </Alert>
+            )}
+          </VStack>
+        </ModalBody>
+        <ModalFooter>
+          <Button variant="secondary" onClick={onClose}>
+            Cancel
+          </Button>
+          <fetcher.Form
+            method="post"
+            action={path.to.supplierQuoteFinalize(id)}
+            onSubmit={onClose}
+          >
+            <Button
+              type="submit"
+              isDisabled={hasErrors || fetcher.state !== "idle"}
+              isLoading={fetcher.state !== "idle"}
+            >
+              Finalize
+            </Button>
+          </fetcher.Form>
+        </ModalFooter>
+      </ModalContent>
+    </Modal>
+  );
+}
 
 function ShareQuoteModal({
   id,

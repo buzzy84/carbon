@@ -67,7 +67,7 @@ const SupplierQuoteLinePricing = ({
   }>(path.to.supplierQuote(id));
   const isEditable =
     permissions.can("update", "purchasing") &&
-    ["Active"].includes(routeData?.quote?.status ?? "");
+    ["Draft"].includes(routeData?.quote?.status ?? "");
 
   const { carbon } = useCarbon();
   const { id: userId, company } = useUser();

@@ -114,31 +114,16 @@ export async function action(args: ActionFunctionArgs) {
         )}`;
 
         const emailSubject = `Supplier Quote ${supplierQuote.data.supplierQuoteId} from ${company.data.name}`;
-        const emailBody = `
-          Hi ${supplierContact.data.contact.firstName ?? ""},
+        const emailBody = `This link is for supplier quote ${supplierQuote.data.supplierQuoteId}. Please go to the link below to fill out the supplier code.`;
 
-          Please review the supplier quote ${
-            supplierQuote.data.supplierQuoteId
-          }.
-
-          You can view and respond to this quote at: ${externalQuoteUrl}
-
-          ${
-            quote.data.expirationDate
-              ? `This quote expires on ${quote.data.expirationDate}.`
-              : ""
-          }
-
-          Best regards,
-          ${user.data.firstName} ${user.data.lastName}
-        `;
+        const emailBodyHtml = `This link is for supplier quote ${supplierQuote.data.supplierQuoteId}. Please go to the link below to fill out the supplier code.<br><br><a href="${externalQuoteUrl}">${externalQuoteUrl}</a>`;
 
         await tasks.trigger<typeof sendEmailResendTask>("send-email-resend", {
           to: [user.data.email, supplierContact.data.contact.email],
           from: user.data.email,
           subject: emailSubject,
-          html: emailBody.replace(/\n/g, "<br>"),
-          text: emailBody,
+          html: emailBodyHtml,
+          text: `${emailBody}\n\n${externalQuoteUrl}`,
           companyId,
         });
       } catch (err) {

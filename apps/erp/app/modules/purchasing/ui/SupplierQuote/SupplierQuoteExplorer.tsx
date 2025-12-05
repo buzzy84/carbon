@@ -57,7 +57,7 @@ export default function SupplierQuoteExplorer() {
   const [deleteLine, setDeleteLine] = useState<SupplierQuoteLine | null>(null);
   const isDisabled =
     !permissions.can("delete", "purchasing") ||
-    routeData?.quote?.status !== "Active";
+    routeData?.quote?.status !== "Draft";
 
   const onDeleteLine = (line: SupplierQuoteLine) => {
     setDeleteLine(line);

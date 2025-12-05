@@ -1,6 +1,5 @@
 import { getCarbonServiceRole } from "@carbon/auth";
 import { Input, TextArea, ValidatedForm } from "@carbon/form";
-import type { JSONContent } from "@carbon/react";
 import {
   Badge,
   Button,
@@ -9,7 +8,6 @@ import {
   CardHeader,
   CardTitle,
   Checkbox,
-  generateHTML,
   Heading,
   HStack,
   Modal,
@@ -39,7 +37,6 @@ import { useFetcher, useLoaderData, useParams } from "@remix-run/react";
 import type { LoaderFunctionArgs } from "@vercel/remix";
 import { json } from "@vercel/remix";
 import { motion } from "framer-motion";
-import MotionNumber from "motion-number";
 import { useEffect, useRef, useState } from "react";
 import { LuChevronRight, LuImage, LuPencil } from "react-icons/lu";
 import type { Company } from "~/modules/settings";
@@ -272,33 +269,6 @@ const LineItems = ({
                   <div className="flex items-center gap-x-4 justify-between flex-grow">
                     <Heading>{line.itemReadableId}</Heading>
                     <HStack spacing={4}>
-                      {(() => {
-                        const lineSelections = selectedLines[line.id!] || {};
-                        const selectedCount =
-                          Object.keys(lineSelections).length;
-                        // Only show sum if there's a single quantity selected
-                        if (selectedCount === 1) {
-                          const sel = Object.values(lineSelections)[0];
-                          if (sel && sel.quantity > 0) {
-                            const total =
-                              sel.supplierUnitPrice * sel.quantity +
-                              sel.supplierShippingCost +
-                              sel.supplierTaxAmount;
-                            return total > 0 ? (
-                              <MotionNumber
-                                className="font-bold text-xl"
-                                value={total}
-                                format={{
-                                  style: "currency",
-                                  currency: currencyCode,
-                                }}
-                                locales={locale}
-                              />
-                            ) : null;
-                          }
-                        }
-                        return null;
-                      })()}
                       <motion.div
                         animate={{
                           rotate: openItems.includes(line.id!) ? 90 : 0,
@@ -312,14 +282,6 @@ const LineItems = ({
                   <span className="text-muted-foreground text-base truncate">
                     {line.description}
                   </span>
-                  {Object.keys(line.externalNotes ?? {}).length > 0 && (
-                    <div
-                      className="prose dark:prose-invert mt-2 text-muted-foreground"
-                      dangerouslySetInnerHTML={{
-                        __html: generateHTML(line.externalNotes as JSONContent),
-                      }}
-                    />
-                  )}
                 </div>
               </VStack>
             </HStack>
@@ -775,21 +737,6 @@ const Quote = ({
             quoteStatus={quote.status}
             quoteLinePrices={quoteLinePrices}
           />
-
-          {/* <div className="mt-8 border-t pt-4">
-            <HStack className="justify-between text-xl font-bold w-full">
-              <span>Estimated Total:</span>
-              <MotionNumber
-                value={grandTotal}
-                format={{
-                  style: "currency",
-                  currency: quote.currencyCode ?? "USD",
-                }}
-                locales={locale}
-              />
-            </HStack>
-          </div> */}
-
           <div className="flex flex-col gap-2">
             {(quote?.status as string) === "Draft" && (
               <VStack className="w-full mt-8 gap-4">

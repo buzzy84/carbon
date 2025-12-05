@@ -16,7 +16,7 @@ import { useFetcher } from "@remix-run/react";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { flushSync } from "react-dom";
-import type { z } from 'zod/v3';
+import type { z } from "zod/v3";
 import {
   Currency,
   CustomFormFields,
@@ -55,7 +55,7 @@ const SupplierQuoteForm = ({ initialValues }: SupplierQuoteFormProps) => {
     currencyCode: initialValues.currencyCode,
   });
 
-  const isDisabled = initialValues?.status !== "Active";
+  const isDisabled = initialValues?.status !== "Draft";
   const isEditing = initialValues.id !== undefined;
 
   const exchangeRateFetcher = useFetcher<{ exchangeRate: number }>();
