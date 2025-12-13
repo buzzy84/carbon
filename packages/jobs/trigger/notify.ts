@@ -75,6 +75,8 @@ export const notifyTask = task({
           return NotificationWorkflow.JobCompleted;
         case NotificationEvent.DigitalQuoteResponse:
           return NotificationWorkflow.DigitalQuoteResponse;
+        case NotificationEvent.SuggestionResponse:
+          return NotificationWorkflow.SuggestionResponse;
         case NotificationEvent.JobOperationMessage:
           return NotificationWorkflow.Message;
         default:
@@ -271,6 +273,21 @@ export const notifyTask = task({
           }
 
           return `Training "${trainingAssignment?.data?.training?.name}" assigned to you`;
+
+        case NotificationEvent.SuggestionResponse:
+          const suggestion = await client
+            .from("suggestion")
+            .select("*, user(id, fullName)")
+            .eq("id", documentId)
+            .single();
+
+          if (suggestion.error) {
+            console.error("Failed to get suggestion", suggestion.error);
+            throw suggestion.error;
+          }
+
+          const submittedBy = suggestion.data.user?.fullName || "Anonymous";
+          return `New suggestion submitted by ${submittedBy}`;
 
         default:
           return null;

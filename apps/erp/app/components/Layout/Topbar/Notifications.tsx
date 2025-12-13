@@ -26,6 +26,7 @@ import {
   LuHammer,
   LuHardHat,
   LuInbox,
+  LuLightbulb,
   LuListChecks,
   LuMailCheck,
   LuMessageSquare,
@@ -293,6 +294,14 @@ function GenericNotification({
         <Notification
           icon={<LuListChecks />}
           to={path.to.salesOrderDetails(id)}
+          {...props}
+        />
+      );
+    case NotificationEvent.SuggestionResponse:
+      return (
+        <Notification
+          icon={<LuLightbulb />}
+          to={path.to.suggestion(id)}
           {...props}
         />
       );

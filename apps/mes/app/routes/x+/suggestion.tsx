@@ -1,6 +1,9 @@
 import { getCarbonServiceRole } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { validator } from "@carbon/form";
+import type { notifyTask } from "@carbon/jobs/trigger/notify";
+import { NotificationEvent } from "@carbon/notifications";
+import { tasks } from "@trigger.dev/sdk";
 import type { ActionFunctionArgs } from "react-router";
 import { suggestionValidator } from "~/services/models";
 
@@ -26,22 +29,49 @@ export async function action({ request }: ActionFunctionArgs) {
   } = validation.data;
   const serviceRole = await getCarbonServiceRole();
 
-  const insertSuggestion = await serviceRole.from("suggestion").insert([
-    {
-      suggestion,
-      emoji,
-      path,
-      attachmentPath: attachmentPath || null,
-      userId: formUserId || null,
-      companyId
-    }
-  ]);
+  const insertSuggestion = await serviceRole
+    .from("suggestion")
+    .insert([
+      {
+        suggestion,
+        emoji,
+        path,
+        attachmentPath: attachmentPath || null,
+        userId: formUserId || null,
+        companyId
+      }
+    ])
+    .select("id")
+    .single();
 
   if (insertSuggestion.error) {
     return {
       success: false,
       message: "Failed to submit suggestion"
     };
+  }
+
+  const company = await serviceRole
+    .from("company")
+    .select("suggestionNotificationGroup")
+    .eq("id", companyId)
+    .single();
+
+  if (!company.error && company.data?.suggestionNotificationGroup?.length) {
+    try {
+      await tasks.trigger<typeof notifyTask>("notify", {
+        companyId,
+        documentId: insertSuggestion.data.id,
+        event: NotificationEvent.SuggestionResponse,
+        recipient: {
+          type: "group",
+          groupIds: company.data.suggestionNotificationGroup
+        },
+        from: formUserId || userId
+      });
+    } catch (err) {
+      console.error("Failed to trigger suggestion notification", err);
+    }
   }
 
   return { success: true, message: "Suggestion submitted" };

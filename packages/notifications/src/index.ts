@@ -8,7 +8,8 @@ export enum NotificationWorkflow {
   Expiration = "expiration",
   GaugeCalibration = "gauge-calibration",
   JobCompleted = "job-completed",
-  Message = "message"
+  Message = "message",
+  SuggestionResponse = "suggestion-response"
 }
 
 export enum NotificationEvent {
@@ -28,6 +29,7 @@ export enum NotificationEvent {
   SalesRfqAssignment = "sales-rfq-assignment",
   SalesRfqReady = "sales-rfq-ready",
   StockTransferAssignment = "stock-transfer-assignment",
+  SuggestionResponse = "suggestion-response",
   SupplierQuoteAssignment = "supplier-quote-assignment",
   TrainingAssignment = "training-assignment"
 }
@@ -37,7 +39,8 @@ export enum NotificationType {
   DigitalQuoteResponseInApp = "digital-quote-response-in-app",
   JobCompletedInApp = "job-completed-in-app",
   ExpirationInApp = "expiration-in-app",
-  MessageInApp = "message-in-app"
+  MessageInApp = "message-in-app",
+  SuggestionResponseInApp = "suggestion-response-in-app"
 }
 
 export type TriggerUser = {

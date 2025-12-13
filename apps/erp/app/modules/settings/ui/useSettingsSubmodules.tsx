@@ -7,12 +7,12 @@ import {
   LuFactory,
   LuImage,
   LuLayoutDashboard,
-  LuLightbulb,
   LuSheet,
   LuShoppingCart,
   LuSquareStack,
   LuWebhook,
-  LuWorkflow
+  LuWorkflow,
+  LuWrench
 } from "react-icons/lu";
 import { usePermissions } from "~/hooks";
 import { useFlags } from "~/hooks/useFlags";
@@ -97,7 +97,7 @@ const settingsRoutes: AuthenticatedRouteGroup<{
         name: "Resources",
         to: path.to.resourcesSettings,
         role: "employee",
-        icon: <LuLightbulb />
+        icon: <LuWrench />
       }
     ]
   },
