@@ -1,5 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { validationError, validator } from "@carbon/form";
+import { useDisclosure } from "@carbon/react";
 import { type ActionFunctionArgs, data, useNavigate } from "react-router";
 import { riskRegisterValidator } from "~/modules/quality/quality.models";
 import { upsertRisk } from "~/modules/quality/quality.service";
@@ -31,7 +32,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     return data(
       {
         data: null,
-        error: result.error.message
+        success: false,
+        error: result.error
       },
       { status: 500 }
     );
@@ -39,16 +41,22 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   return data({
     data: result.data,
+    success: true,
     error: null
   });
 };
 
 export default function NewRiskRoute() {
-  const navigate = useNavigate();
-  const onClose = () => navigate(path.to.risks);
+  const formDisclosure = useDisclosure({
+    defaultIsOpen: true
+  });
+  const onClose = () => {
+    formDisclosure.onClose();
+  };
 
   return (
     <RiskRegisterForm
+      open={formDisclosure.isOpen}
       initialValues={{
         title: "",
         description: "",

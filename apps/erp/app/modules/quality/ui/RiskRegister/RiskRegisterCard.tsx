@@ -1,5 +1,7 @@
 import { useCarbon } from "@carbon/auth";
 import {
+  Badge,
+  Button,
   Card,
   CardAction,
   CardContent,
@@ -8,18 +10,18 @@ import {
   HStack,
   IconButton,
   Loading,
-  useDisclosure,
-  Badge,
   toast,
-  Button,
+  useDisclosure
 } from "@carbon/react";
-import { useEffect, useState, useCallback } from "react";
-import { LuSettings2 } from "react-icons/lu";
+import { useCallback, useEffect, useState } from "react";
+import { LuSettings2, LuTrash2 } from "react-icons/lu";
 import { EmployeeAvatar } from "~/components";
-import { useUser } from "~/hooks";
-import type { Risk } from "~/modules/quality/types";
-import RiskRegisterForm from "./RiskRegisterForm";
+import { Confirm } from "~/components/Modals";
+import { usePermissions, useUser } from "~/hooks";
 import type { riskSource } from "~/modules/quality/quality.models";
+import type { Risk } from "~/modules/quality/types";
+import { path } from "~/utils/path";
+import RiskRegisterForm from "./RiskRegisterForm";
 
 type RiskRegisterCardProps = {
   sourceId: string;
@@ -28,13 +30,15 @@ type RiskRegisterCardProps = {
 
 export default function RiskRegisterCard({
   sourceId,
-  source,
+  source
 }: RiskRegisterCardProps) {
   const { carbon } = useCarbon();
   const { company } = useUser();
+  const permissions = usePermissions();
   const [risks, setRisks] = useState<Risk[]>([]);
   const [loading, setLoading] = useState(false);
   const formDisclosure = useDisclosure();
+  const deleteDisclosure = useDisclosure();
   const [selectedRisk, setSelectedRisk] = useState<Risk | undefined>(undefined);
 
   const fetchRisks = useCallback(async () => {
@@ -71,6 +75,11 @@ export default function RiskRegisterCard({
   const handleEdit = (risk: Risk) => {
     setSelectedRisk(risk);
     formDisclosure.onOpen();
+  };
+
+  const handleDelete = (risk: Risk) => {
+    setSelectedRisk(risk);
+    deleteDisclosure.onOpen();
   };
 
   return (
@@ -110,8 +119,8 @@ export default function RiskRegisterCard({
                         risk.status === "Open"
                           ? "destructive"
                           : risk.status === "Closed"
-                          ? "default"
-                          : "secondary"
+                            ? "default"
+                            : "secondary"
                       }
                     >
                       {risk.status}
@@ -138,7 +147,7 @@ export default function RiskRegisterCard({
                     )}
                   </HStack>
                 </div>
-                <div className="flex items-center opacity-0 group-hover:opacity-100 transition-opacity">
+                <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <IconButton
                     aria-label="Edit"
                     icon={<LuSettings2 className="h-4 w-4" />}
@@ -146,6 +155,15 @@ export default function RiskRegisterCard({
                     size="sm"
                     onClick={() => handleEdit(risk)}
                   />
+                  {permissions.can("delete", "quality") && (
+                    <IconButton
+                      aria-label="Delete"
+                      icon={<LuTrash2 className="h-4 w-4" />}
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleDelete(risk)}
+                    />
+                  )}
                 </div>
               </div>
             ))}
@@ -168,15 +186,34 @@ export default function RiskRegisterCard({
                   assigneeUserId: selectedRisk.assigneeUserId ?? undefined,
                   sourceId: selectedRisk.sourceId ?? undefined,
                   severity: selectedRisk.severity ?? undefined,
-                  likelihood: selectedRisk.likelihood ?? undefined,
+                  likelihood: selectedRisk.likelihood ?? undefined
                 }
               : {
                   title: "",
                   status: "Open",
                   source: source,
-                  sourceId: sourceId,
+                  sourceId: sourceId
                 }
           }
+        />
+      )}
+
+      {selectedRisk && deleteDisclosure.isOpen && (
+        <Confirm
+          isOpen={deleteDisclosure.isOpen}
+          confirmText="Delete"
+          onCancel={() => {
+            deleteDisclosure.onClose();
+            setSelectedRisk(undefined);
+          }}
+          onSubmit={() => {
+            deleteDisclosure.onClose();
+            setSelectedRisk(undefined);
+            fetchRisks();
+          }}
+          title="Delete Risk"
+          text="Are you sure you want to delete this risk?"
+          action={path.to.deleteRisk(selectedRisk.id)}
         />
       )}
     </Card>
