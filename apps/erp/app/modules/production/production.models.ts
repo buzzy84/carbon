@@ -81,7 +81,7 @@ export const maintenanceFrequency = [
 
 export const maintenanceSeverity = [
   "Preventive",
-  "Operator Perfomed",
+  "Operator Performed",
   "Maintenance Required",
   "OEM Required"
 ] as const;
@@ -897,12 +897,10 @@ export const maintenanceDispatchValidator = z.object({
   source: z.enum(maintenanceSource).optional(),
   workCenterId: zfd.text(z.string().optional()),
   suspectedFailureModeId: zfd.text(z.string().optional()),
-  actualFailureModeId: zfd.text(z.string().optional()),
   plannedStartTime: zfd.text(z.string().optional()),
   plannedEndTime: zfd.text(z.string().optional()),
   assignee: zfd.text(z.string().optional()),
-  nonConformanceId: zfd.text(z.string().optional()),
-  isFailure: z.boolean().optional(),
+  isFailure: zfd.checkbox(),
   content: zfd.text(z.string().optional())
 });
 

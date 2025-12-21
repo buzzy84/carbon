@@ -78,6 +78,7 @@ export async function action({ request }: ActionFunctionArgs) {
     suspectedFailureModeId: validation.data.suspectedFailureModeId || undefined,
     plannedStartTime: validation.data.plannedStartTime || undefined,
     plannedEndTime: validation.data.plannedEndTime || undefined,
+    isFailure: validation.data.isFailure || false,
     content,
     companyId,
     createdBy: userId
@@ -110,14 +111,12 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function NewMaintenanceDispatchRoute() {
   const { failureModes } = useLoaderData<typeof loader>();
 
-  const { id: userId } = useUser();
-
   const initialValues = {
     status: "Open" as const,
     priority: "Medium" as const,
     source: "Reactive" as const,
     severity: "Maintenance Required" as const,
-    assignee: userId
+    isFailure: false
   };
 
   return (

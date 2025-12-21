@@ -113,6 +113,7 @@ import {
   WorkTypeToggle
 } from "./components/Controls";
 import { IssueModal } from "./components/IssueModal";
+import { MaintenanceDispatch } from "./components/MaintenanceDispatch";
 import { ParametersListItem } from "./components/Parameter";
 import { QuantityModal } from "./components/QuantityModal";
 import { SerialIssueModal } from "./components/SerialIssueModal";
@@ -152,7 +153,7 @@ type JobOperationProps = {
   job: Job;
   thumbnailPath: string | null;
   trackedEntities: TrackedEntity[];
-  workCenter: Promise<PostgrestSingleResponse<{ name: string }>>;
+  workCenter: Promise<PostgrestSingleResponse<{ name: string; id: string }>>;
 };
 
 export const JobOperation = ({
@@ -1851,9 +1852,14 @@ export const JobOperation = ({
                     <Await resolve={workCenter}>
                       {(resolvedWorkCenter) =>
                         resolvedWorkCenter.data && (
-                          <Heading size="h4" className="line-clamp-1">
-                            {resolvedWorkCenter.data?.name}
-                          </Heading>
+                          <HStack className="justify-between items-start w-full">
+                            <Heading size="h4" className="line-clamp-1">
+                              {resolvedWorkCenter.data?.name}
+                            </Heading>
+                            <MaintenanceDispatch
+                              workCenter={resolvedWorkCenter.data}
+                            />
+                          </HStack>
                         )
                       }
                     </Await>

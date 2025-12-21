@@ -1,5 +1,5 @@
 import { useCarbon } from "@carbon/auth";
-import { DateTimePicker, Select, ValidatedForm } from "@carbon/form";
+import { Boolean, DateTimePicker, Select, ValidatedForm } from "@carbon/form";
 import type { JSONContent } from "@carbon/react";
 import {
   Card,
@@ -73,6 +73,10 @@ const MaintenanceDispatchForm = ({
       : {}
   );
 
+  const [isFailure, setIsFailure] = useState<boolean>(
+    initialValues?.isFailure ?? false
+  );
+
   const onUploadImage = async (file: File) => {
     const fileType = file.name.split(".").pop();
     const fileName = `${companyId}/maintenance/${nanoid()}.${fileType}`;
@@ -116,6 +120,17 @@ const MaintenanceDispatchForm = ({
           <Hidden name="content" value={JSON.stringify(content)} />
           <VStack>
             <div className="grid w-full gap-x-8 gap-y-4 grid-cols-1 md:grid-cols-2">
+              <div className="md:col-span-2 flex flex-col gap-2 w-full">
+                <Label>Description</Label>
+                <Editor
+                  initialValue={content}
+                  onUpload={onUploadImage}
+                  onChange={(value) => {
+                    setContent(value);
+                  }}
+                  className="[&_.is-empty]:text-muted-foreground min-h-[120px] py-3 px-4 border rounded-md w-full"
+                />
+              </div>
               <Select
                 name="priority"
                 label="Priority"
@@ -146,32 +161,29 @@ const MaintenanceDispatchForm = ({
                 }))}
               />
               <WorkCenter name="workCenterId" label="Work Center" />
-              <Select
-                name="suspectedFailureModeId"
-                label="Suspected Failure Mode"
-                options={failureModes.map((mode) => ({
-                  value: mode.id,
-                  label: mode.name
-                }))}
-                isClearable
+              <Boolean
+                name="isFailure"
+                label="Failure"
+                onChange={(checked) => setIsFailure(checked)}
               />
-              <Employee name="assignee" label="Assignee" />
+              {isFailure ? (
+                <Select
+                  name="suspectedFailureModeId"
+                  label="Suspected Failure Mode"
+                  options={failureModes.map((mode) => ({
+                    value: mode.id,
+                    label: mode.name
+                  }))}
+                  isClearable
+                />
+              ) : (
+                <div />
+              )}
               <DateTimePicker
                 name="plannedStartTime"
                 label="Planned Start Time"
               />
               <DateTimePicker name="plannedEndTime" label="Planned End Time" />
-              <div className="md:col-span-2 flex flex-col gap-2 w-full">
-                <Label>Description</Label>
-                <Editor
-                  initialValue={content}
-                  onUpload={onUploadImage}
-                  onChange={(value) => {
-                    setContent(value);
-                  }}
-                  className="[&_.is-empty]:text-muted-foreground min-h-[120px] py-3 px-4 border rounded-md w-full"
-                />
-              </div>
             </div>
           </VStack>
         </CardContent>

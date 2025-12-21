@@ -156,7 +156,7 @@ const MaintenanceSchedulesTable = memo(
             <MenuItem
               onClick={() => {
                 navigate(
-                  `${path.to.maintenanceSchedule(row.id)}?${params.toString()}`
+                  `${path.to.maintenanceSchedule(row.id!)}?${params.toString()}`
                 );
               }}
             >
@@ -168,7 +168,7 @@ const MaintenanceSchedulesTable = memo(
               disabled={!permissions.can("delete", "production")}
               onClick={() => {
                 navigate(
-                  `${path.to.deleteMaintenanceSchedule(row.id)}?${params.toString()}`
+                  `${path.to.deleteMaintenanceSchedule(row.id!)}?${params.toString()}`
                 );
               }}
             >

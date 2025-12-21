@@ -13,12 +13,12 @@ export const path = {
     api: {
       batchNumbers: (itemId: string) =>
         generatePath(`${api}/batch-numbers?itemId=${itemId}`),
+      failureModes: `${api}/failure-modes`,
       serialNumbers: (itemId: string) =>
         generatePath(`${api}/serial-numbers?itemId=${itemId}`)
     },
     file: {
       jobTraveler: (id: string) => `${getAppUrl()}${file}/traveler/${id}.pdf`,
-
       operationLabelsPdf: (
         id: string,
         {
@@ -107,6 +107,7 @@ export const path = {
     inventoryAdjustment: `${x}/adjustment`,
     issue: `${x}/issue`,
     issueTrackedEntity: `${x}/issue-tracked-entity`,
+    maintenanceDispatch: `${x}/maintenance-dispatch`,
     location: `${x}/location`,
     login: "/login",
     logout: "/logout",

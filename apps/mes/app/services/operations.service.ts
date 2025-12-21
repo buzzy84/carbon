@@ -91,6 +91,17 @@ export async function getCustomers(
     .eq("companyId", companyId);
 }
 
+export async function getFailureModesList(
+  client: SupabaseClient<Database>,
+  companyId: string
+) {
+  return client
+    .from("maintenanceFailureMode")
+    .select("id, name")
+    .eq("companyId", companyId)
+    .order("name");
+}
+
 export function getFileType(fileName: string): (typeof documentTypes)[number] {
   const extension = fileName.split(".").pop()?.toLowerCase() ?? "";
   if (["zip", "rar", "7z", "tar", "gz"].includes(extension)) {
@@ -581,7 +592,11 @@ export async function getWorkCenter(
   client: SupabaseClient<Database>,
   workCenterId: string
 ) {
-  return client.from("workCenter").select("*").eq("id", workCenterId).single();
+  return client
+    .from("workCenter")
+    .select("id, name")
+    .eq("id", workCenterId)
+    .single();
 }
 
 export async function getWorkCentersByLocation(

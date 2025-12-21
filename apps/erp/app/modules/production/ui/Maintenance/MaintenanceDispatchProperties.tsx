@@ -8,10 +8,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { LuCopy, LuKeySquare, LuLink } from "react-icons/lu";
 import { useFetcher, useParams } from "react-router";
 import { z } from "zod/v3";
+import { zfd } from "zod-form-data";
 import {
   Assignee,
   EmployeeAvatar,
@@ -76,6 +77,10 @@ const MaintenanceDispatchProperties = () => {
   );
 
   const isCompleted = routeData?.dispatch?.status === "Completed";
+
+  const [isFailure, setIsFailure] = useState<boolean>(
+    routeData?.dispatch?.isFailure ?? false
+  );
 
   return (
     <VStack
@@ -337,10 +342,50 @@ const MaintenanceDispatchProperties = () => {
 
       <ValidatedForm
         defaultValues={{
+          actualStartTime: routeData?.dispatch?.actualStartTime ?? ""
+        }}
+        validator={z.object({
+          actualStartTime: z.string().optional()
+        })}
+        className="w-full"
+      >
+        <DateTimePicker
+          name="actualStartTime"
+          label="Actual Start"
+          inline
+          isDisabled={!permissions.can("update", "production") || isCompleted}
+          onChange={(date) => {
+            onUpdate("actualStartTime", date?.toString() ?? null);
+          }}
+        />
+      </ValidatedForm>
+
+      <ValidatedForm
+        defaultValues={{
+          actualEndTime: routeData?.dispatch?.actualEndTime ?? ""
+        }}
+        validator={z.object({
+          actualEndTime: z.string().optional()
+        })}
+        className="w-full"
+      >
+        <DateTimePicker
+          name="actualEndTime"
+          label="Actual End"
+          inline
+          isDisabled={!permissions.can("update", "production") || isCompleted}
+          onChange={(date) => {
+            onUpdate("actualEndTime", date?.toString() ?? null);
+          }}
+        />
+      </ValidatedForm>
+
+      <ValidatedForm
+        defaultValues={{
           isFailure: routeData?.dispatch?.isFailure ?? false
         }}
         validator={z.object({
-          isFailure: z.boolean().optional()
+          isFailure: zfd.checkbox()
         })}
         className="w-full"
       >
@@ -350,75 +395,81 @@ const MaintenanceDispatchProperties = () => {
           variant="small"
           isDisabled={!permissions.can("update", "production")}
           onChange={(checked) => {
+            setIsFailure(checked);
             onUpdate("isFailure", checked.toString());
           }}
         />
       </ValidatedForm>
 
-      <ValidatedForm
-        defaultValues={{
-          suspectedFailureModeId:
-            routeData?.dispatch?.suspectedFailureModeId ?? ""
-        }}
-        validator={z.object({
-          suspectedFailureModeId: z.string().optional()
-        })}
-        className="w-full"
-      >
-        <Select
-          options={(routeData?.failureModes ?? []).map((mode) => ({
-            value: mode.id,
-            label: mode.name
-          }))}
-          isReadOnly={!permissions.can("update", "production")}
-          label="Suspected Failure Mode"
-          name="suspectedFailureModeId"
-          inline={(value) => {
-            return (
-              <span>
-                {routeData?.failureModes.find((mode) => mode.id === value)
-                  ?.name ?? ""}
-              </span>
-            );
-          }}
-          isClearable
-          onChange={(value) => {
-            onUpdate("suspectedFailureModeId", value?.value ?? null);
-          }}
-        />
-      </ValidatedForm>
+      {isFailure && (
+        <>
+          <ValidatedForm
+            defaultValues={{
+              suspectedFailureModeId:
+                routeData?.dispatch?.suspectedFailureModeId ?? ""
+            }}
+            validator={z.object({
+              suspectedFailureModeId: z.string().optional()
+            })}
+            className="w-full"
+          >
+            <Select
+              options={(routeData?.failureModes ?? []).map((mode) => ({
+                value: mode.id,
+                label: mode.name
+              }))}
+              isReadOnly={!permissions.can("update", "production")}
+              label="Suspected Failure Mode"
+              name="suspectedFailureModeId"
+              inline={(value) => {
+                return (
+                  <span>
+                    {routeData?.failureModes.find((mode) => mode.id === value)
+                      ?.name ?? ""}
+                  </span>
+                );
+              }}
+              isClearable
+              onChange={(value) => {
+                onUpdate("suspectedFailureModeId", value?.value ?? null);
+              }}
+            />
+          </ValidatedForm>
 
-      <ValidatedForm
-        defaultValues={{
-          actualFailureModeId: routeData?.dispatch?.actualFailureModeId ?? ""
-        }}
-        validator={z.object({
-          actualFailureModeId: z.string().optional()
-        })}
-        className="w-full"
-      >
-        <Select
-          options={(routeData?.failureModes ?? []).map((mode) => ({
-            value: mode.id,
-            label: mode.name
-          }))}
-          isReadOnly={!permissions.can("update", "production")}
-          label="Actual Failure Mode"
-          name="actualFailureModeId"
-          inline={(value) => {
-            return (
-              <span>
-                {routeData?.failureModes.find((mode) => mode.id === value)
-                  ?.name ?? ""}
-              </span>
-            );
-          }}
-          isClearable
-          onChange={(value) => {
-            onUpdate("actualFailureModeId", value?.value ?? null);
-          }}
-        />
-      </ValidatedForm>
+          <ValidatedForm
+            defaultValues={{
+              actualFailureModeId:
+                routeData?.dispatch?.actualFailureModeId ?? ""
+            }}
+            validator={z.object({
+              actualFailureModeId: z.string().optional()
+            })}
+            className="w-full"
+          >
+            <Select
+              options={(routeData?.failureModes ?? []).map((mode) => ({
+                value: mode.id,
+                label: mode.name
+              }))}
+              isReadOnly={!permissions.can("update", "production")}
+              label="Actual Failure Mode"
+              name="actualFailureModeId"
+              inline={(value) => {
+                return (
+                  <span>
+                    {routeData?.failureModes.find((mode) => mode.id === value)
+                      ?.name ?? ""}
+                  </span>
+                );
+              }}
+              isClearable
+              onChange={(value) => {
+                onUpdate("actualFailureModeId", value?.value ?? null);
+              }}
+            />
+          </ValidatedForm>
+        </>
+      )}
 
       <VStack spacing={2}>
         <h3 className="text-xs text-muted-foreground">Created By</h3>

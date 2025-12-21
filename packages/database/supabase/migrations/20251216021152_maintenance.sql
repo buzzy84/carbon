@@ -27,7 +27,7 @@ END $$;
 DO $$ BEGIN
     CREATE TYPE "maintenanceSeverity" AS ENUM (
       'Preventive',
-      'Operator Perfomed',
+      'Operator Performed',
       'Maintenance Required',
       'OEM Required'
     );
@@ -80,10 +80,11 @@ FOR SELECT USING (
   "companyId" = ANY (
     (
       SELECT
-        get_companies_with_employee_permission ('production_view')
+        get_companies_with_employee_role()
     )::text[]
   )
 );
+
 CREATE POLICY "INSERT" ON "maintenanceFailureMode"
   FOR INSERT
   WITH CHECK (

@@ -41,6 +41,26 @@ export const jobOperationStatus = [
   "Canceled"
 ] as const;
 
+export const maintenanceDispatchPriority = [
+  "Low",
+  "Medium",
+  "High",
+  "Critical"
+] as const;
+
+export const maintenanceSeverity = [
+  "Preventive",
+  "Operator Performed",
+  "Maintenance Required",
+  "OEM Required"
+] as const;
+
+export const maintenanceSource = [
+  "Scheduled",
+  "Reactive",
+  "Non-Conformance"
+] as const;
+
 export const convertEntityValidator = z.object({
   trackedEntityId: z.string(),
   newRevision: z.string(),
@@ -134,4 +154,20 @@ export const nonScrapQuantityValidator = baseQuantityValidator;
 export const scrapQuantityValidator = baseQuantityValidator.extend({
   scrapReasonId: zfd.text(z.string()),
   notes: zfd.text(z.string().optional())
+});
+
+export const maintenanceDispatchValidator = z.object({
+  workCenterId: z.string().min(1, { message: "Work Center is required" }),
+  priority: z.enum(maintenanceDispatchPriority, {
+    errorMap: () => ({ message: "Priority is required" })
+  }),
+  severity: z.enum(maintenanceSeverity, {
+    errorMap: () => ({ message: "Severity is required" })
+  }),
+  isFailure: zfd.checkbox(),
+  suspectedFailureModeId: zfd.text(z.string().optional()),
+  actualFailureModeId: zfd.text(z.string().optional()),
+  content: zfd.text(z.string().optional()),
+  actualStartTime: zfd.text(z.string().optional()),
+  actualEndTime: zfd.text(z.string().optional())
 });

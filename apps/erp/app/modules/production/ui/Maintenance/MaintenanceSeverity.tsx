@@ -27,7 +27,7 @@ function MaintenanceSeverity({
           {severity}
         </Badge>
       );
-    case "Operator Perfomed":
+    case "Operator Performed":
       return (
         <Badge
           variant="blue"
