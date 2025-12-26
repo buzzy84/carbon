@@ -79,7 +79,7 @@ export default function DeleteMaintenanceDispatchRoute() {
   return (
     <ConfirmDelete
       action={path.to.deleteMaintenanceDispatch(dispatchId)}
-      name={dispatch.id}
+      name={dispatch.maintenanceDispatchId}
       text={`Are you sure you want to delete this maintenance dispatch? This cannot be undone.`}
       onCancel={onCancel}
     />

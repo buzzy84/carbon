@@ -56,6 +56,8 @@ export async function action({ request }: ActionFunctionArgs) {
       : "In Progress"
     : "Open";
 
+  const currentTime = now(getLocalTimeZone()).toAbsoluteString();
+
   const insertDispatch = await serviceRole
     .from("maintenanceDispatch")
     .insert([
@@ -71,6 +73,7 @@ export async function action({ request }: ActionFunctionArgs) {
         suspectedFailureModeId:
           validation.data.suspectedFailureModeId || undefined,
         actualFailureModeId: validation.data.actualFailureModeId || undefined,
+        plannedStartTime: currentTime, // Set plannedStartTime to today for reactive maintenance
         actualStartTime: validation.data.actualStartTime || undefined,
         actualEndTime: validation.data.actualEndTime || undefined,
         content,

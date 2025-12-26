@@ -209,19 +209,14 @@ export function MaintenanceNav({
 }) {
   const { pathname } = useLocation();
   const { isMobile, setOpenMobile } = useSidebar();
-  const isActive = pathname.includes("/maintenance");
+  const isActive = pathname.includes(path.to.maintenance);
 
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Maintenance</SidebarGroupLabel>
       <SidebarMenu>
         <SidebarMenuItem>
-          <SidebarMenuButton
-            tooltip="Maintenance"
-            className={cn(activeMaintenanceCount > 0 && "text-emerald-500")}
-            isActive={isActive}
-            asChild
-          >
+          <SidebarMenuButton tooltip="Maintenance" isActive={isActive} asChild>
             <Link
               to={path.to.maintenance}
               onClick={() => isMobile && setOpenMobile(false)}

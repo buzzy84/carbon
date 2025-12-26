@@ -1,6 +1,14 @@
-import { Boolean, Number, Select, ValidatedForm } from "@carbon/form";
+import {
+  Boolean,
+  Number,
+  Select,
+  useControlField,
+  ValidatedForm
+} from "@carbon/form";
 import {
   Button,
+  FormControl,
+  FormLabel,
   HStack,
   ModalDrawer,
   ModalDrawerBody,
@@ -43,6 +51,36 @@ function getPriorityIcon(
     case "Low":
       return <LowPriorityIcon />;
   }
+}
+
+// Component to show day selector and skip holidays when Daily frequency is selected
+function DailyScheduleOptions() {
+  const [frequency] = useControlField<string>("frequency");
+  const isDaily = frequency === "Daily";
+
+  if (!isDaily) return null;
+
+  return (
+    <>
+      <FormControl>
+        <FormLabel>Days</FormLabel>
+        <VStack>
+          <Boolean name="monday" description="Monday" />
+          <Boolean name="tuesday" description="Tuesday" />
+          <Boolean name="wednesday" description="Wednesday" />
+          <Boolean name="thursday" description="Thursday" />
+          <Boolean name="friday" description="Friday" />
+          <Boolean name="saturday" description="Saturday" />
+          <Boolean name="sunday" description="Sunday" />
+        </VStack>
+      </FormControl>
+      <Boolean
+        name="skipHolidays"
+        label="Skip Holidays"
+        description="Skip scheduled maintenance on company holidays"
+      />
+    </>
+  );
 }
 
 type MaintenanceScheduleFormProps = {
@@ -138,6 +176,7 @@ const MaintenanceScheduleForm = ({
                   minValue={0}
                 />
                 <Boolean name="active" label="Active" />
+                <DailyScheduleOptions />
               </VStack>
             </ModalDrawerBody>
             <ModalDrawerFooter>

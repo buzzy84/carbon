@@ -199,7 +199,17 @@ export const maintenanceScheduleValidator = z.object({
   frequency: z.enum(maintenanceFrequency),
   priority: z.enum(maintenanceDispatchPriority),
   estimatedDuration: zfd.numeric(z.number().optional()),
-  active: zfd.checkbox()
+  active: zfd.checkbox(),
+  // Day-of-week fields for daily frequency
+  monday: zfd.checkbox(),
+  tuesday: zfd.checkbox(),
+  wednesday: zfd.checkbox(),
+  thursday: zfd.checkbox(),
+  friday: zfd.checkbox(),
+  saturday: zfd.checkbox(),
+  sunday: zfd.checkbox(),
+  // Skip holidays option
+  skipHolidays: zfd.checkbox()
 });
 
 export const maintenanceSeverity = [

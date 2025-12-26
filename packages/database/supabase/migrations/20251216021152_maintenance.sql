@@ -75,6 +75,10 @@ CREATE TABLE "maintenanceFailureMode" (
   CONSTRAINT "maintenanceFailureMode_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id") ON DELETE CASCADE ON UPDATE CASCADE
 );
 
+CREATE INDEX IF NOT EXISTS "maintenanceFailureMode_companyId_idx" ON "maintenanceFailureMode" ("companyId");
+
+ALTER TABLE "maintenanceFailureMode" ENABLE ROW LEVEL SECURITY;
+
 CREATE POLICY "SELECT" ON "public"."maintenanceFailureMode"
 FOR SELECT USING (
   "companyId" = ANY (
@@ -91,7 +95,7 @@ CREATE POLICY "INSERT" ON "maintenanceFailureMode"
     "companyId" = ANY (
       (
         SELECT
-          get_companies_with_employee_permission('production_create')
+          get_companies_with_employee_permission('resources_create')
       )::text[]
     )
   );
@@ -101,7 +105,7 @@ CREATE POLICY "UPDATE" ON "maintenanceFailureMode"
     "companyId" = ANY (
       (
         SELECT
-          get_companies_with_employee_permission('production_update')
+          get_companies_with_employee_permission('resources_update')
       )::text[]
     )
   );
@@ -111,7 +115,7 @@ CREATE POLICY "DELETE" ON "maintenanceFailureMode"
     "companyId" = ANY (
       (
         SELECT
-          get_companies_with_employee_permission('production_delete')
+          get_companies_with_employee_permission('resources_delete')
       )::text[]
     )
   );
@@ -145,6 +149,49 @@ CREATE INDEX IF NOT EXISTS "maintenanceSchedule_workCenterId_idx" ON "maintenanc
 CREATE INDEX IF NOT EXISTS "maintenanceSchedule_companyId_idx" ON "maintenanceSchedule" ("companyId");
 CREATE INDEX IF NOT EXISTS "maintenanceSchedule_active_idx" ON "maintenanceSchedule" ("active");
 
+ALTER TABLE "maintenanceSchedule" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceSchedule"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_permission('resources_view')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceSchedule"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_create')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceSchedule"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_update')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceSchedule"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+
 -- Maintenance schedule items (parts required for scheduled maintenance)
 CREATE TABLE IF NOT EXISTS "maintenanceScheduleItem" (
   "id" TEXT NOT NULL DEFAULT id(),
@@ -170,8 +217,51 @@ CREATE INDEX IF NOT EXISTS "maintenanceScheduleItem_maintenanceScheduleId_idx" O
 CREATE INDEX IF NOT EXISTS "maintenanceScheduleItem_itemId_idx" ON "maintenanceScheduleItem" ("itemId");
 CREATE INDEX IF NOT EXISTS "maintenanceScheduleItem_companyId_idx" ON "maintenanceScheduleItem" ("companyId");
 
+ALTER TABLE "maintenanceScheduleItem" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceScheduleItem"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceScheduleItem"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceScheduleItem"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_update')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceScheduleItem"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+
 -- Main dispatch table
-CREATE TABLE "maintenanceDispatch" (
+CREATE TABLE IF NOT EXISTS "maintenanceDispatch" (
   "id" TEXT NOT NULL DEFAULT id('main'),
   "maintenanceDispatchId" TEXT NOT NULL,
   "content" JSON NOT NULL DEFAULT '{}',
@@ -217,6 +307,49 @@ CREATE TABLE "maintenanceDispatch" (
 CREATE INDEX "maintenanceDispatch_status_idx" ON "maintenanceDispatch" ("status");
 CREATE INDEX "maintenanceDispatch_companyId_idx" ON "maintenanceDispatch" ("companyId");
 
+ALTER TABLE "maintenanceDispatch" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceDispatch"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceDispatch"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceDispatch"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceDispatch"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+
 -- Time tracking events
 CREATE TABLE "maintenanceDispatchEvent" (
   "id" TEXT NOT NULL DEFAULT id(),
@@ -251,8 +384,51 @@ CREATE INDEX "maintenanceDispatchEvent_maintenanceDispatchId_idx" ON "maintenanc
 CREATE INDEX "maintenanceDispatchEvent_employeeId_idx" ON "maintenanceDispatchEvent" ("employeeId");
 CREATE INDEX "maintenanceDispatchEvent_companyId_idx" ON "maintenanceDispatchEvent" ("companyId");
 
+ALTER TABLE "maintenanceDispatchEvent" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceDispatchEvent"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceDispatchEvent"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceDispatchEvent"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceDispatchEvent"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+
 -- Comments on dispatches
-CREATE TABLE "maintenanceDispatchComment" (
+CREATE TABLE IF NOT EXISTS "maintenanceDispatchComment" (
   "id" TEXT NOT NULL DEFAULT id(),
   "maintenanceDispatchId" TEXT NOT NULL,
   "comment" TEXT NOT NULL,
@@ -270,6 +446,39 @@ CREATE TABLE "maintenanceDispatchComment" (
 );
 
 CREATE INDEX "maintenanceDispatchComment_maintenanceDispatchId_idx" ON "maintenanceDispatchComment" ("maintenanceDispatchId");
+
+ALTER TABLE "maintenanceDispatchComment" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceDispatchComment"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceDispatchComment"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceDispatchComment"
+  FOR UPDATE USING (
+    "createdBy" = auth.uid()::text
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceDispatchComment"
+  FOR DELETE USING (
+    "createdBy" = auth.uid()::text
+  );
 
 -- Work centers involved in dispatch
 CREATE TABLE "maintenanceDispatchWorkCenter" (
@@ -293,6 +502,50 @@ CREATE TABLE "maintenanceDispatchWorkCenter" (
 CREATE INDEX "maintenanceDispatchWorkCenter_maintenanceDispatchId_idx" ON "maintenanceDispatchWorkCenter" ("maintenanceDispatchId");
 CREATE INDEX "maintenanceDispatchWorkCenter_workCenterId_idx" ON "maintenanceDispatchWorkCenter" ("workCenterId");
 CREATE INDEX "maintenanceDispatchWorkCenter_companyId_idx" ON "maintenanceDispatchWorkCenter" ("companyId");
+
+ALTER TABLE "maintenanceDispatchWorkCenter" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceDispatchWorkCenter"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceDispatchWorkCenter"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceDispatchWorkCenter"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_update')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceDispatchWorkCenter"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+  
 
 -- Parts/materials consumed
 CREATE TABLE "maintenanceDispatchItem" (
@@ -321,6 +574,49 @@ CREATE INDEX "maintenanceDispatchItem_maintenanceDispatchId_idx" ON "maintenance
 CREATE INDEX "maintenanceDispatchItem_itemId_idx" ON "maintenanceDispatchItem" ("itemId");
 CREATE INDEX "maintenanceDispatchItem_companyId_idx" ON "maintenanceDispatchItem" ("companyId");
 
+ALTER TABLE "maintenanceDispatchItem" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."maintenanceDispatchItem"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "maintenanceDispatchItem"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_role()
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "maintenanceDispatchItem"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_update')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "maintenanceDispatchItem"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+
 -- Standard replacement parts for work centers
 CREATE TABLE "workCenterReplacementPart" (
   "id" TEXT NOT NULL DEFAULT id(),
@@ -346,12 +642,55 @@ CREATE INDEX "workCenterReplacementPart_workCenterId_idx" ON "workCenterReplacem
 CREATE INDEX "workCenterReplacementPart_itemId_idx" ON "workCenterReplacementPart" ("itemId");
 CREATE INDEX "workCenterReplacementPart_companyId_idx" ON "workCenterReplacementPart" ("companyId");
 
+ALTER TABLE "workCenterReplacementPart" ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "SELECT" ON "public"."workCenterReplacementPart"
+FOR SELECT USING (
+  "companyId" = ANY (
+    (
+      SELECT
+        get_companies_with_employee_permission('resources_view')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "INSERT" ON "workCenterReplacementPart"
+  FOR INSERT
+  WITH CHECK (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_create')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "UPDATE" ON "workCenterReplacementPart"
+  FOR UPDATE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_update')
+      )::text[]
+    )
+  );
+
+CREATE POLICY "DELETE" ON "workCenterReplacementPart"
+  FOR DELETE USING (
+    "companyId" = ANY (
+      (
+        SELECT
+          get_companies_with_employee_permission('resources_delete')
+      )::text[]
+    )
+  );
+  
 -- Company settings for maintenance scheduling
 ALTER TABLE "companySettings"
-  ADD COLUMN IF NOT EXISTS "maintenanceGenerateInAdvance" BOOLEAN NOT NULL DEFAULT false;
+  ADD COLUMN IF NOT EXISTS "maintenanceGenerateInAdvance" BOOLEAN NOT NULL DEFAULT true;
 
 ALTER TABLE "companySettings"
-  ADD COLUMN IF NOT EXISTS "maintenanceAdvanceDays" INTEGER NOT NULL DEFAULT 7;
+  ADD COLUMN IF NOT EXISTS "maintenanceAdvanceDays" INTEGER NOT NULL DEFAULT 3;
 
 -- salesRfq sequence for existing companies
 INSERT INTO "sequence" (

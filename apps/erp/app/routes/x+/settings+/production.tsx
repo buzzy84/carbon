@@ -1,13 +1,7 @@
 import { error } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
-import {
-  Boolean,
-  Number,
-  Submit,
-  ValidatedForm,
-  validator
-} from "@carbon/form";
+import { Submit, ValidatedForm, validator } from "@carbon/form";
 import {
   Card,
   CardContent,
@@ -21,17 +15,11 @@ import {
   toast,
   VStack
 } from "@carbon/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useFetcher, useLoaderData } from "react-router";
-import { z } from "zod/v3";
-import { zfd } from "zod-form-data";
 import { Users } from "~/components/Form";
-import {
-  getCompanySettings,
-  jobCompletedValidator,
-  maintenanceSettingsValidator
-} from "~/modules/settings";
+import { getCompanySettings, jobCompletedValidator } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 
@@ -64,63 +52,30 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const intent = formData.get("intent");
+  const validation = await validator(jobCompletedValidator).validate(formData);
 
-  if (intent === "maintenance") {
-    const validation = await validator(maintenanceSettingsValidator).validate(
-      formData
-    );
-
-    if (validation.error) {
-      return { success: false, message: "Invalid form data" };
-    }
-
-    const update = await client
-      .from("companySettings")
-      .update({
-        maintenanceGenerateInAdvance:
-          validation.data.maintenanceGenerateInAdvance,
-        maintenanceAdvanceDays: validation.data.maintenanceAdvanceDays
-      })
-      .eq("id", companyId);
-
-    if (update.error) return { success: false, message: update.error.message };
-
-    return { success: true, message: "Maintenance settings updated" };
+  if (validation.error) {
+    return { success: false, message: "Invalid form data" };
   }
 
-  if (intent === "jobCompleted") {
-    const validation = await validator(jobCompletedValidator).validate(
-      formData
-    );
+  const update = await client
+    .from("companySettings")
+    .update({
+      inventoryJobCompletedNotificationGroup:
+        validation.data.inventoryJobCompletedNotificationGroup ?? [],
+      salesJobCompletedNotificationGroup:
+        validation.data.salesJobCompletedNotificationGroup ?? []
+    })
+    .eq("id", companyId);
 
-    if (validation.error) {
-      return { success: false, message: "Invalid form data" };
-    }
+  if (update.error) return { success: false, message: update.error.message };
 
-    const update = await client
-      .from("companySettings")
-      .update({
-        inventoryJobCompletedNotificationGroup:
-          validation.data.inventoryJobCompletedNotificationGroup ?? [],
-        salesJobCompletedNotificationGroup:
-          validation.data.salesJobCompletedNotificationGroup ?? []
-      })
-      .eq("id", companyId);
-
-    if (update.error) return { success: false, message: update.error.message };
-
-    return { success: true, message: "Job notification settings updated" };
-  }
-
-  return null;
+  return { success: true, message: "Job notification settings updated" };
 }
 
 export default function ProductionSettingsRoute() {
   const { companySettings } = useLoaderData<typeof loader>();
   const fetcher = useFetcher<typeof action>();
-  const [maintenanceGenerateInAdvance, setMaintenanceGenerateInAdvance] =
-    useState(companySettings.maintenanceGenerateInAdvance ?? false);
 
   useEffect(() => {
     if (fetcher.data?.success === true && fetcher?.data?.message) {
@@ -152,7 +107,6 @@ export default function ProductionSettingsRoute() {
             }}
             fetcher={fetcher}
           >
-            <input type="hidden" name="intent" value="jobCompleted" />
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 Completed Job Notifications
@@ -182,68 +136,7 @@ export default function ProductionSettingsRoute() {
             <CardFooter>
               <Submit
                 isDisabled={fetcher.state !== "idle"}
-                isLoading={
-                  fetcher.state !== "idle" &&
-                  fetcher.formData?.get("intent") === "jobCompleted"
-                }
-              >
-                Save
-              </Submit>
-            </CardFooter>
-          </ValidatedForm>
-        </Card>
-
-        <Card>
-          <ValidatedForm
-            method="post"
-            validator={maintenanceSettingsValidator}
-            defaultValues={{
-              maintenanceGenerateInAdvance:
-                companySettings.maintenanceGenerateInAdvance ?? false,
-              maintenanceAdvanceDays:
-                companySettings.maintenanceAdvanceDays ?? 7
-            }}
-            fetcher={fetcher}
-          >
-            <input type="hidden" name="intent" value="maintenance" />
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                Maintenance Scheduling
-              </CardTitle>
-              <CardDescription>
-                Configure how preventative maintenance dispatches are
-                automatically generated from maintenance schedules.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="flex flex-col gap-6 max-w-[400px]">
-                <div className="flex flex-col gap-2">
-                  <Boolean
-                    name="maintenanceGenerateInAdvance"
-                    description="Create maintenance dispatches in advance."
-                    value={maintenanceGenerateInAdvance}
-                    onChange={setMaintenanceGenerateInAdvance}
-                  />
-                </div>
-                {maintenanceGenerateInAdvance && (
-                  <div className="flex flex-col gap-2">
-                    <Number
-                      name="maintenanceAdvanceDays"
-                      label="Days in advance to generate dispatches"
-                      minValue={1}
-                      maxValue={365}
-                    />
-                  </div>
-                )}
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Submit
-                isDisabled={fetcher.state !== "idle"}
-                isLoading={
-                  fetcher.state !== "idle" &&
-                  fetcher.formData?.get("intent") === "maintenance"
-                }
+                isLoading={fetcher.state !== "idle"}
               >
                 Save
               </Submit>

@@ -41803,6 +41803,30 @@ export default {
             $ref: "#/parameters/rowFilter.maintenanceSchedule.updatedAt",
           },
           {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.monday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.tuesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.wednesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.thursday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.friday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.saturday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.sunday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.skipHolidays",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -41907,6 +41931,30 @@ export default {
             $ref: "#/parameters/rowFilter.maintenanceSchedule.updatedAt",
           },
           {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.monday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.tuesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.wednesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.thursday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.friday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.saturday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.sunday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.skipHolidays",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -41963,6 +42011,30 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.maintenanceSchedule.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.monday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.tuesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.wednesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.thursday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.friday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.saturday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.sunday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedule.skipHolidays",
           },
           {
             $ref: "#/parameters/body.maintenanceSchedule",
@@ -54254,6 +54326,30 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.maintenanceSchedules.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.monday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.tuesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.wednesday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.thursday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.friday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.saturday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.sunday",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceSchedules.skipHolidays",
           },
           {
             $ref: "#/parameters/rowFilter.maintenanceSchedules.locationId",
@@ -67883,7 +67979,7 @@ export default {
       properties: {
         id: {
           description:
-            "Note:\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
+            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
           format: "text",
           type: "string",
         },
@@ -67932,7 +68028,7 @@ export default {
         },
         supplierLocationId: {
           description:
-            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
+            "Note:\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
           format: "text",
           type: "string",
         },
@@ -83769,6 +83865,14 @@ export default {
         "companyId",
         "createdBy",
         "createdAt",
+        "monday",
+        "tuesday",
+        "wednesday",
+        "thursday",
+        "friday",
+        "saturday",
+        "sunday",
+        "skipHolidays",
       ],
       properties: {
         id: {
@@ -83845,6 +83949,46 @@ export default {
         updatedAt: {
           format: "timestamp with time zone",
           type: "string",
+        },
+        monday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        tuesday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        wednesday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        thursday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        friday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        saturday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        sunday: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        skipHolidays: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
         },
       },
       type: "object",
@@ -90210,6 +90354,38 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
+        monday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        tuesday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        wednesday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        thursday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        friday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        saturday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        sunday: {
+          format: "boolean",
+          type: "boolean",
+        },
+        skipHolidays: {
+          format: "boolean",
+          type: "boolean",
+        },
         locationId: {
           description:
             "Note:\nThis is a Foreign Key to `location.id`.<fk table='location' column='id'/>",
@@ -92484,12 +92660,12 @@ export default {
           type: "array",
         },
         maintenanceGenerateInAdvance: {
-          default: false,
+          default: true,
           format: "boolean",
           type: "boolean",
         },
         maintenanceAdvanceDays: {
-          default: 7,
+          default: 3,
           format: "integer",
           type: "integer",
         },
@@ -115030,6 +115206,54 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.maintenanceSchedule.monday": {
+      name: "monday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.tuesday": {
+      name: "tuesday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.wednesday": {
+      name: "wednesday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.thursday": {
+      name: "thursday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.friday": {
+      name: "friday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.saturday": {
+      name: "saturday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.sunday": {
+      name: "sunday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedule.skipHolidays": {
+      name: "skipHolidays",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.quoteLines": {
       name: "quoteLines",
       description: "quoteLines",
@@ -122169,6 +122393,54 @@ export default {
     },
     "rowFilter.maintenanceSchedules.updatedAt": {
       name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.monday": {
+      name: "monday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.tuesday": {
+      name: "tuesday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.wednesday": {
+      name: "wednesday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.thursday": {
+      name: "thursday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.friday": {
+      name: "friday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.saturday": {
+      name: "saturday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.sunday": {
+      name: "sunday",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceSchedules.skipHolidays": {
+      name: "skipHolidays",
       required: false,
       in: "query",
       type: "string",

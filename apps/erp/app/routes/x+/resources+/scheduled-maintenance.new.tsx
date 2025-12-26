@@ -74,7 +74,16 @@ export default function NewMaintenanceScheduleRoute() {
     frequency: "Weekly" as const,
     priority: "Medium" as const,
     estimatedDuration: undefined,
-    active: true
+    active: true,
+    // Day-of-week defaults (all days enabled by default)
+    monday: true,
+    tuesday: true,
+    wednesday: true,
+    thursday: true,
+    friday: true,
+    saturday: true,
+    sunday: true,
+    skipHolidays: true
   };
 
   return (

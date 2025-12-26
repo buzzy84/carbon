@@ -89,7 +89,16 @@ export default function EditMaintenanceScheduleRoute() {
     frequency: schedule.frequency ?? ("Weekly" as const),
     priority: schedule.priority ?? ("Medium" as const),
     estimatedDuration: schedule.estimatedDuration ?? undefined,
-    active: schedule.active ?? true
+    active: schedule.active ?? true,
+    // Day-of-week settings
+    monday: schedule.monday ?? true,
+    tuesday: schedule.tuesday ?? true,
+    wednesday: schedule.wednesday ?? true,
+    thursday: schedule.thursday ?? true,
+    friday: schedule.friday ?? true,
+    saturday: schedule.saturday ?? true,
+    sunday: schedule.sunday ?? true,
+    skipHolidays: schedule.skipHolidays ?? true
   };
 
   return (

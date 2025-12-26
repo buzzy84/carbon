@@ -10,7 +10,6 @@ import {
   CardTitle,
   Heading,
   HStack,
-  Input,
   SidebarTrigger,
   Tabs,
   TabsContent,
@@ -20,19 +19,24 @@ import {
 } from "@carbon/react";
 import { useMemo, useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
-import { LuSearch, LuTriangleAlert } from "react-icons/lu";
+import { LuTriangleAlert } from "react-icons/lu";
 import type { LoaderFunctionArgs } from "react-router";
 import { Link, useLoaderData } from "react-router";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
 import EmployeeAvatar from "~/components/EmployeeAvatar";
+import type { ColumnFilter } from "~/components/Filter";
+import { ActiveFilters, Filter, useFilters } from "~/components/Filter";
+import SearchFilter from "~/components/SearchFilter";
+import { useUrlParams } from "~/hooks";
 import { getLocation } from "~/services/location.server";
 import {
   getActiveMaintenanceDispatchesByLocation,
   getMaintenanceDispatchesAssignedTo
 } from "~/services/maintenance.service";
-import type { maintenanceDispatchPriority } from "~/services/models";
+import { maintenanceDispatchPriority } from "~/services/models";
+import { getWorkCentersByLocation } from "~/services/operations.service";
 import { path } from "~/utils/path";
 
 export async function loader({ request }: LoaderFunctionArgs) {
@@ -43,15 +47,138 @@ export async function loader({ request }: LoaderFunctionArgs) {
     userId
   });
 
-  const [allDispatches, assignedDispatches] = await Promise.all([
-    getActiveMaintenanceDispatchesByLocation(client, location),
-    getMaintenanceDispatchesAssignedTo(client, userId)
-  ]);
+  const url = new URL(request.url);
+  const searchParams = new URLSearchParams(url.search);
+  const search = searchParams.get("search");
+  const filterParam = searchParams.getAll("filter").filter(Boolean);
+
+  let selectedWorkCenterIds: string[] = [];
+  let selectedPriorities: string[] = [];
+  let selectedStatuses: string[] = [];
+  let selectedOeeImpacts: string[] = [];
+
+  if (filterParam) {
+    for (const filter of filterParam) {
+      const [key, operator, value] = filter.split(":");
+      if (key === "workCenterId") {
+        if (operator === "in") {
+          selectedWorkCenterIds = value.split(",");
+        } else if (operator === "eq") {
+          selectedWorkCenterIds = [value];
+        }
+      } else if (key === "priority") {
+        if (operator === "in") {
+          selectedPriorities = value.split(",");
+        } else if (operator === "eq") {
+          selectedPriorities = [value];
+        }
+      } else if (key === "status") {
+        if (operator === "in") {
+          selectedStatuses = value.split(",");
+        } else if (operator === "eq") {
+          selectedStatuses = [value];
+        }
+      } else if (key === "oeeImpact") {
+        if (operator === "in") {
+          selectedOeeImpacts = value.split(",");
+        } else if (operator === "eq") {
+          selectedOeeImpacts = [value];
+        }
+      }
+    }
+  }
+
+  const [allDispatches, assignedDispatches, workCentersResult] =
+    await Promise.all([
+      getActiveMaintenanceDispatchesByLocation(client, location),
+      getMaintenanceDispatchesAssignedTo(client, userId),
+      getWorkCentersByLocation(client, location)
+    ]);
+
+  let filteredDispatches = allDispatches?.data ?? [];
+
+  // Apply filters
+  if (selectedWorkCenterIds.length) {
+    filteredDispatches = filteredDispatches.filter((d) =>
+      selectedWorkCenterIds.includes(d.workCenterId ?? "")
+    );
+  }
+
+  if (selectedPriorities.length) {
+    filteredDispatches = filteredDispatches.filter((d) =>
+      selectedPriorities.includes(d.priority ?? "")
+    );
+  }
+
+  if (selectedStatuses.length) {
+    filteredDispatches = filteredDispatches.filter((d) =>
+      selectedStatuses.includes(d.status ?? "")
+    );
+  }
+
+  if (selectedOeeImpacts.length) {
+    filteredDispatches = filteredDispatches.filter((d) =>
+      selectedOeeImpacts.includes(d.oeeImpact ?? "")
+    );
+  }
+
+  if (search) {
+    const lowercasedSearch = search.toLowerCase();
+    filteredDispatches = filteredDispatches.filter(
+      (d) =>
+        d.maintenanceDispatchId?.toLowerCase().includes(lowercasedSearch) ||
+        d.workCenterName?.toLowerCase().includes(lowercasedSearch) ||
+        d.severity?.toLowerCase().includes(lowercasedSearch) ||
+        d.assigneeName?.toLowerCase().includes(lowercasedSearch)
+    );
+  }
+
+  // Also filter assigned dispatches with the same criteria
+  let filteredAssignedDispatches = assignedDispatches?.data ?? [];
+
+  if (selectedWorkCenterIds.length) {
+    filteredAssignedDispatches = filteredAssignedDispatches.filter((d) =>
+      selectedWorkCenterIds.includes(d.workCenterId ?? "")
+    );
+  }
+
+  if (selectedPriorities.length) {
+    filteredAssignedDispatches = filteredAssignedDispatches.filter((d) =>
+      selectedPriorities.includes(d.priority ?? "")
+    );
+  }
+
+  if (selectedStatuses.length) {
+    filteredAssignedDispatches = filteredAssignedDispatches.filter((d) =>
+      selectedStatuses.includes(d.status ?? "")
+    );
+  }
+
+  if (selectedOeeImpacts.length) {
+    filteredAssignedDispatches = filteredAssignedDispatches.filter((d) =>
+      selectedOeeImpacts.includes(d.oeeImpact ?? "")
+    );
+  }
+
+  if (search) {
+    const lowercasedSearch = search.toLowerCase();
+    filteredAssignedDispatches = filteredAssignedDispatches.filter(
+      (d) =>
+        d.maintenanceDispatchId?.toLowerCase().includes(lowercasedSearch) ||
+        d.workCenterName?.toLowerCase().includes(lowercasedSearch) ||
+        d.severity?.toLowerCase().includes(lowercasedSearch) ||
+        d.assigneeName?.toLowerCase().includes(lowercasedSearch)
+    );
+  }
 
   return {
-    dispatches: allDispatches?.data ?? [],
-    assignedDispatches: assignedDispatches?.data ?? [],
-    locationId: location
+    dispatches: filteredDispatches,
+    assignedDispatches: filteredAssignedDispatches,
+    locationId: location,
+    workCenters: (workCentersResult?.data ?? []).map((wc) => ({
+      value: wc.id,
+      label: wc.name
+    }))
   };
 }
 
@@ -163,39 +290,102 @@ function EmptyState({
   );
 }
 
+function isToday(dateString: string | null): boolean {
+  if (!dateString) return false;
+  const date = new Date(dateString);
+  const today = new Date();
+  return (
+    date.getFullYear() === today.getFullYear() &&
+    date.getMonth() === today.getMonth() &&
+    date.getDate() === today.getDate()
+  );
+}
+
 export default function MaintenanceRoute() {
-  const { dispatches, assignedDispatches } = useLoaderData<typeof loader>();
-  const [searchTerm, setSearchTerm] = useState("");
+  const { dispatches, assignedDispatches, workCenters } =
+    useLoaderData<typeof loader>();
   const [activeTab, setActiveTab] = useState("all");
+  const [params] = useUrlParams();
+  const { hasFilters, clearFilters } = useFilters();
+  const currentFilters = params.getAll("filter").filter(Boolean);
 
   const blockingDispatches = useMemo(() => {
-    return dispatches.filter(
-      (d) => d.oeeImpact === "Down" || d.oeeImpact === "Planned"
-    );
+    return dispatches.filter((d) => {
+      // Down is always blocking
+      if (d.oeeImpact === "Down") return true;
+      // Planned is only blocking if status is In Progress (active)
+      if (d.oeeImpact === "Planned" && d.status === "In Progress") return true;
+      return false;
+    });
   }, [dispatches]);
 
-  const filterDispatches = (dispatchList: typeof dispatches) => {
-    if (!searchTerm) return dispatchList;
-    const lowercasedTerm = searchTerm.toLowerCase();
-    return dispatchList.filter(
-      (dispatch) =>
-        dispatch.maintenanceDispatchId
-          ?.toLowerCase()
-          .includes(lowercasedTerm) ||
-        dispatch.workCenterName?.toLowerCase().includes(lowercasedTerm) ||
-        dispatch.severity?.toLowerCase().includes(lowercasedTerm) ||
-        dispatch.assigneeName?.toLowerCase().includes(lowercasedTerm)
-    );
-  };
+  const todayDispatches = useMemo(() => {
+    return dispatches.filter((d) => isToday(d.plannedStartTime));
+  }, [dispatches]);
+
+  const filters = useMemo<ColumnFilter[]>(() => {
+    return [
+      {
+        accessorKey: "workCenterId",
+        header: "Work Center",
+        filter: {
+          type: "static",
+          options: workCenters.map((wc) => ({
+            label: wc.label,
+            value: wc.value
+          }))
+        }
+      },
+      {
+        accessorKey: "priority",
+        header: "Priority",
+        filter: {
+          type: "static",
+          options: maintenanceDispatchPriority.map((p) => ({
+            label: p,
+            value: p
+          }))
+        }
+      },
+      {
+        accessorKey: "status",
+        header: "Status",
+        pluralHeader: "Statuses",
+        filter: {
+          type: "static",
+          options: [
+            { label: "Open", value: "Open" },
+            { label: "Assigned", value: "Assigned" },
+            { label: "In Progress", value: "In Progress" }
+          ]
+        }
+      },
+      {
+        accessorKey: "oeeImpact",
+        header: "OEE Impact",
+        filter: {
+          type: "static",
+          options: [
+            { label: "Down", value: "Down" },
+            { label: "Planned", value: "Planned" },
+            { label: "Impact", value: "Impact" },
+            { label: "No Impact", value: "No Impact" }
+          ]
+        }
+      }
+    ];
+  }, [workCenters]);
 
   const getActiveDispatches = () => {
     switch (activeTab) {
       case "assigned":
-        return filterDispatches(assignedDispatches);
+        return assignedDispatches;
       case "blocking":
-        return filterDispatches(blockingDispatches);
+        return blockingDispatches;
+      case "today":
+        return todayDispatches;
       default:
-        return filterDispatches(dispatches);
+        return dispatches;
     }
   };
 
@@ -225,6 +415,14 @@ export default function MaintenanceRoute() {
                         </Badge>
                       )}
                     </TabsTrigger>
+                    <TabsTrigger value="today">
+                      Today
+                      {todayDispatches.length > 0 && (
+                        <Badge variant="secondary" className="ml-2">
+                          {todayDispatches.length}
+                        </Badge>
+                      )}
+                    </TabsTrigger>
                     <TabsTrigger value="assigned">
                       Assigned to Me
                       {assignedDispatches.length > 0 && (
@@ -242,16 +440,20 @@ export default function MaintenanceRoute() {
                       )}
                     </TabsTrigger>
                   </TabsList>
-                  <div className="relative w-64">
-                    <LuSearch className="absolute left-2 top-2.5 h-4 w-4 text-muted-foreground" />
-                    <Input
-                      value={searchTerm}
-                      onChange={(e) => setSearchTerm(e.target.value)}
+                  <HStack spacing={2}>
+                    <SearchFilter
+                      param="search"
+                      size="sm"
                       placeholder="Search"
-                      className="pl-8"
                     />
-                  </div>
+                    <Filter filters={filters} />
+                  </HStack>
                 </HStack>
+                {currentFilters.length > 0 && (
+                  <HStack className="py-1.5 justify-between w-full">
+                    <ActiveFilters filters={filters} />
+                  </HStack>
+                )}
                 <TabsContent value="all" className="mt-4">
                   {activeDispatches.length > 0 ? (
                     <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,330px),1fr))] gap-4">
@@ -262,13 +464,32 @@ export default function MaintenanceRoute() {
                         />
                       ))}
                     </div>
-                  ) : searchTerm ? (
+                  ) : hasFilters ? (
                     <EmptyState
                       message="No results found"
-                      onClear={() => setSearchTerm("")}
+                      onClear={clearFilters}
                     />
                   ) : (
                     <EmptyState message="No active maintenance dispatches" />
+                  )}
+                </TabsContent>
+                <TabsContent value="today" className="mt-4">
+                  {activeDispatches.length > 0 ? (
+                    <div className="grid grid-cols-[repeat(auto-fill,minmax(min(100%,330px),1fr))] gap-4">
+                      {activeDispatches.map((dispatch) => (
+                        <MaintenanceCard
+                          key={dispatch.id}
+                          dispatch={dispatch}
+                        />
+                      ))}
+                    </div>
+                  ) : hasFilters ? (
+                    <EmptyState
+                      message="No results found"
+                      onClear={clearFilters}
+                    />
+                  ) : (
+                    <EmptyState message="No maintenance scheduled for today" />
                   )}
                 </TabsContent>
                 <TabsContent value="assigned" className="mt-4">
@@ -281,10 +502,10 @@ export default function MaintenanceRoute() {
                         />
                       ))}
                     </div>
-                  ) : searchTerm ? (
+                  ) : hasFilters ? (
                     <EmptyState
                       message="No results found"
-                      onClear={() => setSearchTerm("")}
+                      onClear={clearFilters}
                     />
                   ) : (
                     <EmptyState message="No dispatches assigned to you" />
@@ -300,10 +521,10 @@ export default function MaintenanceRoute() {
                         />
                       ))}
                     </div>
-                  ) : searchTerm ? (
+                  ) : hasFilters ? (
                     <EmptyState
                       message="No results found"
-                      onClear={() => setSearchTerm("")}
+                      onClear={clearFilters}
                     />
                   ) : (
                     <EmptyState message="No work centers are blocked" />

@@ -13586,13 +13586,21 @@ export type Database = {
           description: string | null
           estimatedDuration: number | null
           frequency: Database["public"]["Enums"]["maintenanceFrequency"]
+          friday: boolean
           id: string
           lastGeneratedAt: string | null
+          monday: boolean
           name: string
           nextDueAt: string | null
           priority: Database["public"]["Enums"]["maintenanceDispatchPriority"]
+          saturday: boolean
+          skipHolidays: boolean
+          sunday: boolean
+          thursday: boolean
+          tuesday: boolean
           updatedAt: string | null
           updatedBy: string | null
+          wednesday: boolean
           workCenterId: string
         }
         Insert: {
@@ -13603,13 +13611,21 @@ export type Database = {
           description?: string | null
           estimatedDuration?: number | null
           frequency: Database["public"]["Enums"]["maintenanceFrequency"]
+          friday?: boolean
           id?: string
           lastGeneratedAt?: string | null
+          monday?: boolean
           name: string
           nextDueAt?: string | null
           priority?: Database["public"]["Enums"]["maintenanceDispatchPriority"]
+          saturday?: boolean
+          skipHolidays?: boolean
+          sunday?: boolean
+          thursday?: boolean
+          tuesday?: boolean
           updatedAt?: string | null
           updatedBy?: string | null
+          wednesday?: boolean
           workCenterId: string
         }
         Update: {
@@ -13620,13 +13636,21 @@ export type Database = {
           description?: string | null
           estimatedDuration?: number | null
           frequency?: Database["public"]["Enums"]["maintenanceFrequency"]
+          friday?: boolean
           id?: string
           lastGeneratedAt?: string | null
+          monday?: boolean
           name?: string
           nextDueAt?: string | null
           priority?: Database["public"]["Enums"]["maintenanceDispatchPriority"]
+          saturday?: boolean
+          skipHolidays?: boolean
+          sunday?: boolean
+          thursday?: boolean
+          tuesday?: boolean
           updatedAt?: string | null
           updatedBy?: string | null
+          wednesday?: boolean
           workCenterId?: string
         }
         Relationships: [
@@ -43928,17 +43952,25 @@ export type Database = {
           description: string | null
           estimatedDuration: number | null
           frequency: Database["public"]["Enums"]["maintenanceFrequency"] | null
+          friday: boolean | null
           id: string | null
           lastGeneratedAt: string | null
           locationId: string | null
           locationName: string | null
+          monday: boolean | null
           name: string | null
           nextDueAt: string | null
           priority:
             | Database["public"]["Enums"]["maintenanceDispatchPriority"]
             | null
+          saturday: boolean | null
+          skipHolidays: boolean | null
+          sunday: boolean | null
+          thursday: boolean | null
+          tuesday: boolean | null
           updatedAt: string | null
           updatedBy: string | null
+          wednesday: boolean | null
           workCenterId: string | null
           workCenterName: string | null
         }
@@ -49513,14 +49545,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["paymentCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["paymentCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]

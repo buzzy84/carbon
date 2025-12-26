@@ -170,6 +170,35 @@ const MaintenanceDispatchesTable = memo(
           }
         },
         {
+          accessorKey: "plannedStartTime",
+          header: "Planned Start",
+          cell: ({ row }) => {
+            const date = row.original.plannedStartTime;
+            return date ? formatDate(date) : "-";
+          },
+          meta: {
+            icon: <LuCalendar />
+          }
+        },
+        {
+          accessorKey: "assignee",
+          header: "Assignee",
+          cell: ({ row }) => {
+            const assignee = row.original.assignee;
+            if (!assignee) {
+              return <span className="text-muted-foreground">Unassigned</span>;
+            }
+            return (
+              <HStack>
+                <EmployeeAvatar employeeId={assignee} size="xs" />
+              </HStack>
+            );
+          },
+          meta: {
+            icon: <LuUser />
+          }
+        },
+        {
           accessorKey: "actualFailureModeId",
           header: "Actual Failure Mode",
           cell: ({ row }) => {
@@ -215,36 +244,6 @@ const MaintenanceDispatchesTable = memo(
                 label: <Enumerable value={mode.name} />
               }))
             }
-          }
-        },
-        {
-          accessorKey: "assignee",
-          header: "Assignee",
-          cell: ({ row }) => {
-            const assignee = row.original.assignee;
-            if (!assignee) {
-              return <span className="text-muted-foreground">Unassigned</span>;
-            }
-            return (
-              <HStack>
-                <EmployeeAvatar employeeId={assignee} size="xs" />
-              </HStack>
-            );
-          },
-          meta: {
-            icon: <LuUser />
-          }
-        },
-
-        {
-          accessorKey: "plannedStartTime",
-          header: "Planned Start",
-          cell: ({ row }) => {
-            const date = row.original.plannedStartTime;
-            return date ? formatDate(date) : "-";
-          },
-          meta: {
-            icon: <LuCalendar />
           }
         },
         {
@@ -343,7 +342,6 @@ const MaintenanceDispatchesTable = memo(
         data={data}
         columns={columns}
         defaultColumnVisibility={{
-          plannedStartTime: false,
           suspectedFailureModeId: false,
           createdBy: false,
           createdAt: false,
