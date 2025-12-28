@@ -1,0 +1,65 @@
+diff --git a/node_modules/react-router/dist/development/chunk-JMJ3UQ3L.mjs b/node_modules/react-router/dist/development/chunk-JMJ3UQ3L.mjs
+index 1234567..abcdefg 100644
+--- a/node_modules/react-router/dist/development/chunk-JMJ3UQ3L.mjs
++++ b/node_modules/react-router/dist/development/chunk-JMJ3UQ3L.mjs
+@@ -373,7 +373,7 @@ var _map;
+ var RouterContextProvider = class {
+   constructor(init) {
+     __privateAdd(this, _map, /* @__PURE__ */ new Map());
+-    if (init) {
++    if (init && Symbol.iterator in Object(init)) {
+       for (let [context, value] of init) {
+         __privateGet(this, _map).set(context, value);
+       }
+diff --git a/node_modules/react-router/dist/development/chunk-SZQUWNVJ.js b/node_modules/react-router/dist/development/chunk-SZQUWNVJ.js
+index 1234567..abcdefg 100644
+--- a/node_modules/react-router/dist/development/chunk-SZQUWNVJ.js
++++ b/node_modules/react-router/dist/development/chunk-SZQUWNVJ.js
+@@ -373,7 +373,7 @@ var _map;
+ var RouterContextProvider = class {
+   constructor(init) {
+     __privateAdd(this, _map, /* @__PURE__ */ new Map());
+-    if (init) {
++    if (init && Symbol.iterator in Object(init)) {
+       for (let [context, value] of init) {
+         __privateGet(this, _map).set(context, value);
+       }
+diff --git a/node_modules/react-router/dist/development/index-react-server.js b/node_modules/react-router/dist/development/index-react-server.js
+index 1234567..abcdefg 100644
+--- a/node_modules/react-router/dist/development/index-react-server.js
++++ b/node_modules/react-router/dist/development/index-react-server.js
+@@ -298,7 +298,7 @@ var _map;
+ var RouterContextProvider = class {
+   constructor(init) {
+     __privateAdd(this, _map, /* @__PURE__ */ new Map());
+-    if (init) {
++    if (init && Symbol.iterator in Object(init)) {
+       for (let [context, value] of init) {
+         __privateGet(this, _map).set(context, value);
+       }
+diff --git a/node_modules/react-router/dist/development/index-react-server.mjs b/node_modules/react-router/dist/development/index-react-server.mjs
+index 1234567..abcdefg 100644
+--- a/node_modules/react-router/dist/development/index-react-server.mjs
++++ b/node_modules/react-router/dist/development/index-react-server.mjs
+@@ -277,7 +277,7 @@ var _map;
+ var RouterContextProvider = class {
+   constructor(init) {
+     __privateAdd(this, _map, /* @__PURE__ */ new Map());
+-    if (init) {
++    if (init && Symbol.iterator in Object(init)) {
+       for (let [context, value] of init) {
+         __privateGet(this, _map).set(context, value);
+       }
+diff --git a/node_modules/react-router/dist/production/chunk-2HFJAX7U.js b/node_modules/react-router/dist/production/chunk-2HFJAX7U.js
+index 1234567..abcdefg 100644
+--- a/node_modules/react-router/dist/production/chunk-2HFJAX7U.js
++++ b/node_modules/react-router/dist/production/chunk-2HFJAX7U.js
+@@ -373,7 +373,7 @@ var _map;
+ var RouterContextProvider = class {
+   constructor(init) {
+     __privateAdd(this, _map, /* @__PURE__  */ new Map());
+-    if (init) {
++    if (init && Symbol.iterator in Object(init)) {
+       for (let [context, value] of init) {
+         __privateGet(this, _map).set(context, value);
+       }
