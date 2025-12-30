@@ -1,13 +1,13 @@
 import { MenuIcon, MenuItem } from "@carbon/react";
 import type { ColumnDef } from "@tanstack/react-table";
 import { memo, useCallback, useMemo } from "react";
-import { LuPencil, LuTrash } from "react-icons/lu";
+import { LuCircleAlert, LuPencil, LuShapes, LuTrash } from "react-icons/lu";
 import { useNavigate } from "react-router";
 import { Hyperlink, New, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
-import { useCustomColumns } from "~/hooks/useCustomColumns";
 import { path } from "~/utils/path";
+import { maintenanceFailureModeType } from "../../resources.models";
 import type { FailureMode } from "../../types";
 
 type FailureModesTableProps = {
@@ -29,7 +29,25 @@ const FailureModesTable = memo(({ data, count }: FailureModesTableProps) => {
           <Hyperlink to={row.original.id}>
             <Enumerable value={row.original.name} />
           </Hyperlink>
-        )
+        ),
+        meta: {
+          icon: <LuCircleAlert />
+        }
+      },
+      {
+        accessorKey: "type",
+        header: "Type",
+        cell: ({ row }) => <Enumerable value={row.original.type} />,
+        meta: {
+          icon: <LuShapes />,
+          filter: {
+            type: "static",
+            options: maintenanceFailureModeType.map((type) => ({
+              label: <Enumerable value={type} />,
+              value: type
+            }))
+          }
+        }
       }
     ];
     return [...defaultColumns];

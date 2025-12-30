@@ -37,7 +37,7 @@ function MaintenanceSeverity({
           {severity}
         </Badge>
       );
-    case "Maintenance Required":
+    case "Support Required":
       return (
         <Badge
           variant="yellow"

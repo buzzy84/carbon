@@ -7,7 +7,10 @@ import {
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
+import type { notifyTask } from "@carbon/jobs/trigger/notify";
+import { NotificationEvent } from "@carbon/notifications";
 import { getLocalTimeZone, now } from "@internationalized/date";
+import { tasks } from "@trigger.dev/sdk";
 import { type ActionFunctionArgs, data, redirect } from "react-router";
 import { maintenanceDispatchValidator } from "~/services/models";
 import { endProductionEventsByWorkCenter } from "~/services/operations.service";
@@ -101,6 +104,79 @@ export async function action({ request }: ActionFunctionArgs) {
       companyId,
       endTime: now(getLocalTimeZone()).toAbsoluteString()
     });
+  }
+
+  // Send notification based on failure mode type
+  if (insertDispatch.data?.id) {
+    try {
+      // Get company settings
+      const companySettings = await serviceRole
+        .from("companySettings")
+        .select(
+          "maintenanceDispatchNotificationGroup, qualityDispatchNotificationGroup, operationsDispatchNotificationGroup, otherDispatchNotificationGroup"
+        )
+        .eq("id", companyId)
+        .single();
+
+      if (!companySettings.error && companySettings.data) {
+        let notificationGroup: string[] = [];
+
+        // If there's a suspected failure mode, look up its type
+        if (validation.data.suspectedFailureModeId) {
+          const failureMode = await serviceRole
+            .from("maintenanceFailureMode")
+            .select("type")
+            .eq("id", validation.data.suspectedFailureModeId)
+            .single();
+
+          if (!failureMode.error && failureMode.data?.type) {
+            // Route to the appropriate notification group based on type
+            switch (failureMode.data.type) {
+              case "Maintenance":
+                notificationGroup =
+                  companySettings.data.maintenanceDispatchNotificationGroup ??
+                  [];
+                break;
+              case "Quality":
+                notificationGroup =
+                  companySettings.data.qualityDispatchNotificationGroup ?? [];
+                break;
+              case "Operations":
+                notificationGroup =
+                  companySettings.data.operationsDispatchNotificationGroup ??
+                  [];
+                break;
+              case "Other":
+                notificationGroup =
+                  companySettings.data.otherDispatchNotificationGroup ?? [];
+                break;
+            }
+          }
+        }
+
+        // Default to maintenance group if no failure mode or no notification group found
+        if (notificationGroup.length === 0) {
+          notificationGroup =
+            companySettings.data.maintenanceDispatchNotificationGroup ?? [];
+        }
+
+        // Send notification if there's a notification group configured
+        if (notificationGroup.length > 0) {
+          await tasks.trigger<typeof notifyTask>("notify", {
+            companyId,
+            documentId: insertDispatch.data.id,
+            event: NotificationEvent.MaintenanceDispatchCreated,
+            recipient: {
+              type: "group",
+              groupIds: notificationGroup
+            },
+            from: userId
+          });
+        }
+      }
+    } catch (err) {
+      console.error("Failed to trigger maintenance dispatch notification", err);
+    }
   }
 
   if (insertDispatch.data?.id && isOperatorPerformed) {

@@ -16,10 +16,20 @@ import type { PostgrestResponse } from "@supabase/supabase-js";
 import { useEffect } from "react";
 import { useFetcher } from "react-router";
 import type { z } from "zod/v3";
-import { CustomFormFields, Hidden, Input, Submit } from "~/components/Form";
+import { Enumerable } from "~/components/Enumerable";
+import {
+  CustomFormFields,
+  Hidden,
+  Input,
+  Select,
+  Submit
+} from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import { path } from "~/utils/path";
-import { failureModeValidator } from "../../resources.models";
+import {
+  failureModeValidator,
+  maintenanceFailureModeType
+} from "../../resources.models";
 
 type FailureModeFormProps = {
   initialValues: z.infer<typeof failureModeValidator>;
@@ -83,9 +93,17 @@ const FailureModeForm = ({
             </ModalDrawerHeader>
             <ModalDrawerBody>
               <Hidden name="id" />
-              <Hidden name="type" value={type} />
+              <Hidden name="formType" value={type} />
               <VStack spacing={4}>
                 <Input name="name" label="Failure Mode" />
+                <Select
+                  name="type"
+                  label="Type"
+                  options={maintenanceFailureModeType.map((t) => ({
+                    value: t,
+                    label: <Enumerable value={t} />
+                  }))}
+                />
                 <CustomFormFields table="maintenanceFailureMode" />
               </VStack>
             </ModalDrawerBody>

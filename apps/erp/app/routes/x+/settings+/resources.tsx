@@ -28,8 +28,10 @@ import { Users } from "~/components/Form";
 import {
   getCompany,
   getCompanySettings,
+  maintenanceDispatchNotificationValidator,
   maintenanceSettingsValidator,
   suggestionNotificationValidator,
+  updateMaintenanceDispatchNotificationSettings,
   updateSuggestionNotificationSetting
 } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
@@ -122,6 +124,38 @@ export async function action({ request }: ActionFunctionArgs) {
     };
   }
 
+  if (intent === "maintenanceDispatchNotifications") {
+    const validation = await validator(
+      maintenanceDispatchNotificationValidator
+    ).validate(formData);
+
+    if (validation.error) {
+      return { success: false, message: "Invalid form data" };
+    }
+
+    const update = await updateMaintenanceDispatchNotificationSettings(
+      client,
+      companyId,
+      {
+        maintenanceDispatchNotificationGroup:
+          validation.data.maintenanceDispatchNotificationGroup ?? [],
+        qualityDispatchNotificationGroup:
+          validation.data.qualityDispatchNotificationGroup ?? [],
+        operationsDispatchNotificationGroup:
+          validation.data.operationsDispatchNotificationGroup ?? [],
+        otherDispatchNotificationGroup:
+          validation.data.otherDispatchNotificationGroup ?? []
+      }
+    );
+
+    if (update.error) return { success: false, message: update.error.message };
+
+    return {
+      success: true,
+      message: "Maintenance dispatch notification settings updated"
+    };
+  }
+
   return null;
 }
 
@@ -152,29 +186,64 @@ export default function ResourcesSettingsRoute() {
         <Card>
           <ValidatedForm
             method="post"
-            validator={suggestionNotificationValidator}
+            validator={maintenanceDispatchNotificationValidator}
             defaultValues={{
-              suggestionNotificationGroup:
-                company.suggestionNotificationGroup ?? []
+              maintenanceDispatchNotificationGroup:
+                (companySettings as any).maintenanceDispatchNotificationGroup ??
+                [],
+              qualityDispatchNotificationGroup:
+                (companySettings as any).qualityDispatchNotificationGroup ?? [],
+              operationsDispatchNotificationGroup:
+                (companySettings as any).operationsDispatchNotificationGroup ??
+                [],
+              otherDispatchNotificationGroup:
+                (companySettings as any).otherDispatchNotificationGroup ?? []
             }}
             fetcher={fetcher}
           >
-            <input type="hidden" name="intent" value="suggestions" />
+            <input
+              type="hidden"
+              name="intent"
+              value="maintenanceDispatchNotifications"
+            />
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                Suggestion Notifications
+                Maintenance Dispatch Notifications
               </CardTitle>
               <CardDescription>
-                Configure notifications for when new suggestions are submitted.
+                Configure notifications for when maintenance dispatches are
+                created from the shop floor. Notifications are routed based on
+                the failure mode type.
               </CardDescription>
             </CardHeader>
             <CardContent>
               <div className="flex flex-col gap-8 max-w-[400px]">
                 <div className="flex flex-col gap-2">
-                  <Label>Suggestion Notifications</Label>
+                  <Label>Maintenance Type</Label>
                   <Users
-                    name="suggestionNotificationGroup"
-                    label="Who should receive notifications when a new suggestion is submitted?"
+                    name="maintenanceDispatchNotificationGroup"
+                    label="Who should receive notifications for maintenance-related dispatches?"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Quality Type</Label>
+                  <Users
+                    name="qualityDispatchNotificationGroup"
+                    label="Who should receive notifications for quality-related dispatches?"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Operations Type</Label>
+                  <Users
+                    name="operationsDispatchNotificationGroup"
+                    label="Who should receive notifications for operations-related dispatches?"
+                  />
+                </div>
+                <div className="flex flex-col gap-2">
+                  <Label>Other Type</Label>
+                  <Users
+                    name="otherDispatchNotificationGroup"
+                    label="Who should receive notifications for other dispatches?"
                   />
                 </div>
               </div>
@@ -184,7 +253,8 @@ export default function ResourcesSettingsRoute() {
                 isDisabled={fetcher.state !== "idle"}
                 isLoading={
                   fetcher.state !== "idle" &&
-                  fetcher.formData?.get("intent") === "suggestions"
+                  fetcher.formData?.get("intent") ===
+                    "maintenanceDispatchNotifications"
                 }
               >
                 Save
@@ -243,6 +313,49 @@ export default function ResourcesSettingsRoute() {
                 isLoading={
                   fetcher.state !== "idle" &&
                   fetcher.formData?.get("intent") === "maintenance"
+                }
+              >
+                Save
+              </Submit>
+            </CardFooter>
+          </ValidatedForm>
+        </Card>
+        <Card>
+          <ValidatedForm
+            method="post"
+            validator={suggestionNotificationValidator}
+            defaultValues={{
+              suggestionNotificationGroup:
+                company.suggestionNotificationGroup ?? []
+            }}
+            fetcher={fetcher}
+          >
+            <input type="hidden" name="intent" value="suggestions" />
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                Suggestion Notifications
+              </CardTitle>
+              <CardDescription>
+                Configure notifications for when new suggestions are submitted.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-col gap-8 max-w-[400px]">
+                <div className="flex flex-col gap-2">
+                  <Label>Suggestion Notifications</Label>
+                  <Users
+                    name="suggestionNotificationGroup"
+                    label="Who should receive notifications when a new suggestion is submitted?"
+                  />
+                </div>
+              </div>
+            </CardContent>
+            <CardFooter>
+              <Submit
+                isDisabled={fetcher.state !== "idle"}
+                isLoading={
+                  fetcher.state !== "idle" &&
+                  fetcher.formData?.get("intent") === "suggestions"
                 }
               >
                 Save

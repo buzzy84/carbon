@@ -23,7 +23,7 @@ export async function action({ request }: ActionFunctionArgs) {
   });
 
   const formData = await request.formData();
-  const modal = formData.get("type") === "modal";
+  const modal = formData.get("formType") === "modal";
 
   const validation = await validator(failureModeValidator).validate(formData);
 
@@ -63,7 +63,8 @@ export async function action({ request }: ActionFunctionArgs) {
 export default function NewFailureModeRoute() {
   const navigate = useNavigate();
   const initialValues = {
-    name: ""
+    name: "",
+    type: "Maintenance" as const
   };
 
   return (

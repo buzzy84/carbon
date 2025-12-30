@@ -10,7 +10,6 @@ import {
   upsertFailureMode
 } from "~/modules/resources";
 import FailureModeForm from "~/modules/resources/ui/FailureModes/FailureModeForm";
-import { getCustomFields, setCustomFields } from "~/utils/form";
 import { path } from "~/utils/path";
 
 export async function loader({ request, params }: LoaderFunctionArgs) {
@@ -83,7 +82,8 @@ export default function EditFailureModeRoute() {
 
   const initialValues = {
     id: failureMode.id ?? undefined,
-    name: failureMode.name ?? ""
+    name: failureMode.name ?? "",
+    type: failureMode.type ?? "Maintenance"
   };
 
   return (

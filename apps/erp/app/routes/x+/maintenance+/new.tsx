@@ -4,7 +4,6 @@ import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "react-router";
 import { redirect, useLoaderData } from "react-router";
-import { useUser } from "~/hooks";
 import {
   getFailureModesList,
   maintenanceDispatchValidator,
@@ -71,7 +70,7 @@ export async function action({ request }: ActionFunctionArgs) {
     maintenanceDispatchId: nextSequence.data,
     status: validation.data.status,
     priority: validation.data.priority,
-    severity: validation.data.severity || "Maintenance Required",
+    severity: validation.data.severity || "Support Required",
     source: validation.data.source || "Reactive",
     oeeImpact: validation.data.oeeImpact || "No Impact",
     workCenterId: validation.data.workCenterId || undefined,
@@ -115,7 +114,7 @@ export default function NewMaintenanceDispatchRoute() {
     status: "Open" as const,
     priority: "Medium" as const,
     source: "Reactive" as const,
-    severity: "Maintenance Required" as const,
+    severity: "Support Required" as const,
     oeeImpact: "No Impact" as const
   };
 

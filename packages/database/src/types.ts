@@ -2258,10 +2258,14 @@ export type Database = {
           inventoryJobCompletedNotificationGroup: string[]
           kanbanOutput: Database["public"]["Enums"]["kanbanOutput"]
           maintenanceAdvanceDays: number
+          maintenanceDispatchNotificationGroup: string[] | null
           maintenanceGenerateInAdvance: boolean
           materialGeneratedIds: boolean
+          operationsDispatchNotificationGroup: string[] | null
+          otherDispatchNotificationGroup: string[] | null
           productLabelSize: string | null
           purchasePriceUpdateTiming: Database["public"]["Enums"]["purchasePriceUpdateTiming"]
+          qualityDispatchNotificationGroup: string[] | null
           rfqReadyNotificationGroup: string[]
           salesJobCompletedNotificationGroup: string[]
           shelfLabelSize: string | null
@@ -2277,10 +2281,14 @@ export type Database = {
           inventoryJobCompletedNotificationGroup?: string[]
           kanbanOutput?: Database["public"]["Enums"]["kanbanOutput"]
           maintenanceAdvanceDays?: number
+          maintenanceDispatchNotificationGroup?: string[] | null
           maintenanceGenerateInAdvance?: boolean
           materialGeneratedIds?: boolean
+          operationsDispatchNotificationGroup?: string[] | null
+          otherDispatchNotificationGroup?: string[] | null
           productLabelSize?: string | null
           purchasePriceUpdateTiming?: Database["public"]["Enums"]["purchasePriceUpdateTiming"]
+          qualityDispatchNotificationGroup?: string[] | null
           rfqReadyNotificationGroup?: string[]
           salesJobCompletedNotificationGroup?: string[]
           shelfLabelSize?: string | null
@@ -2296,10 +2304,14 @@ export type Database = {
           inventoryJobCompletedNotificationGroup?: string[]
           kanbanOutput?: Database["public"]["Enums"]["kanbanOutput"]
           maintenanceAdvanceDays?: number
+          maintenanceDispatchNotificationGroup?: string[] | null
           maintenanceGenerateInAdvance?: boolean
           materialGeneratedIds?: boolean
+          operationsDispatchNotificationGroup?: string[] | null
+          otherDispatchNotificationGroup?: string[] | null
           productLabelSize?: string | null
           purchasePriceUpdateTiming?: Database["public"]["Enums"]["purchasePriceUpdateTiming"]
+          qualityDispatchNotificationGroup?: string[] | null
           rfqReadyNotificationGroup?: string[]
           salesJobCompletedNotificationGroup?: string[]
           shelfLabelSize?: string | null
@@ -12470,7 +12482,7 @@ export type Database = {
           plannedEndTime: string | null
           plannedStartTime: string | null
           priority: Database["public"]["Enums"]["maintenanceDispatchPriority"]
-          severity: Database["public"]["Enums"]["maintenanceSeverity"] | null
+          severity: Database["public"]["Enums"]["maintenanceSeverity"]
           source: Database["public"]["Enums"]["maintenanceSource"]
           status: Database["public"]["Enums"]["maintenanceDispatchStatus"]
           suspectedFailureModeId: string | null
@@ -12497,7 +12509,7 @@ export type Database = {
           plannedEndTime?: string | null
           plannedStartTime?: string | null
           priority?: Database["public"]["Enums"]["maintenanceDispatchPriority"]
-          severity?: Database["public"]["Enums"]["maintenanceSeverity"] | null
+          severity: Database["public"]["Enums"]["maintenanceSeverity"]
           source?: Database["public"]["Enums"]["maintenanceSource"]
           status?: Database["public"]["Enums"]["maintenanceDispatchStatus"]
           suspectedFailureModeId?: string | null
@@ -12524,7 +12536,7 @@ export type Database = {
           plannedEndTime?: string | null
           plannedStartTime?: string | null
           priority?: Database["public"]["Enums"]["maintenanceDispatchPriority"]
-          severity?: Database["public"]["Enums"]["maintenanceSeverity"] | null
+          severity?: Database["public"]["Enums"]["maintenanceSeverity"]
           source?: Database["public"]["Enums"]["maintenanceSource"]
           status?: Database["public"]["Enums"]["maintenanceDispatchStatus"]
           suspectedFailureModeId?: string | null
@@ -13461,6 +13473,7 @@ export type Database = {
           createdBy: string
           id: string
           name: string
+          type: Database["public"]["Enums"]["maintenanceFailureModeType"]
           updatedAt: string | null
           updatedBy: string | null
         }
@@ -13470,6 +13483,7 @@ export type Database = {
           createdBy: string
           id?: string
           name: string
+          type?: Database["public"]["Enums"]["maintenanceFailureModeType"]
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -13479,6 +13493,7 @@ export type Database = {
           createdBy?: string
           id?: string
           name?: string
+          type?: Database["public"]["Enums"]["maintenanceFailureModeType"]
           updatedAt?: string | null
           updatedBy?: string | null
         }
@@ -45101,14 +45116,14 @@ export type Database = {
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["supplierLocationId"]
+            columns: ["id"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["id"]
+            columns: ["supplierLocationId"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
@@ -46481,14 +46496,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["supplierCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["supplierCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -49008,14 +49023,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -49551,14 +49566,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["paymentCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["paymentCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -54030,6 +54045,12 @@ export type Database = {
         | "In Progress"
         | "Completed"
         | "Cancelled"
+      maintenanceFailureModeType:
+        | "Maintenance"
+        | "Quality"
+        | "Safety"
+        | "Operations"
+        | "Other"
       maintenanceFrequency:
         | "Daily"
         | "Weekly"
@@ -54039,7 +54060,7 @@ export type Database = {
       maintenanceSeverity:
         | "Preventive"
         | "Operator Performed"
-        | "Maintenance Required"
+        | "Support Required"
         | "OEM Required"
       maintenanceSource: "Scheduled" | "Reactive" | "Non-Conformance"
       makeMethodStatus: "Draft" | "Active" | "Archived"
@@ -55172,6 +55193,13 @@ export const Constants = {
         "Completed",
         "Cancelled",
       ],
+      maintenanceFailureModeType: [
+        "Maintenance",
+        "Quality",
+        "Safety",
+        "Operations",
+        "Other",
+      ],
       maintenanceFrequency: [
         "Daily",
         "Weekly",
@@ -55182,7 +55210,7 @@ export const Constants = {
       maintenanceSeverity: [
         "Preventive",
         "Operator Performed",
-        "Maintenance Required",
+        "Support Required",
         "OEM Required",
       ],
       maintenanceSource: ["Scheduled", "Reactive", "Non-Conformance"],

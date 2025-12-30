@@ -130,6 +130,21 @@ export const suggestionNotificationValidator = z.object({
     .optional()
 });
 
+export const maintenanceDispatchNotificationValidator = z.object({
+  maintenanceDispatchNotificationGroup: z
+    .array(z.string().min(1, { message: "Invalid selection" }))
+    .optional(),
+  qualityDispatchNotificationGroup: z
+    .array(z.string().min(1, { message: "Invalid selection" }))
+    .optional(),
+  operationsDispatchNotificationGroup: z
+    .array(z.string().min(1, { message: "Invalid selection" }))
+    .optional(),
+  otherDispatchNotificationGroup: z
+    .array(z.string().min(1, { message: "Invalid selection" }))
+    .optional()
+});
+
 export const supplierQuoteNotificationValidator = z.object({
   supplierQuoteNotificationGroup: z
     .array(z.string().min(1, { message: "Invalid selection" }))

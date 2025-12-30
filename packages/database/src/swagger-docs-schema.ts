@@ -75171,7 +75171,7 @@ export default {
           enum: [
             "Preventive",
             "Operator Performed",
-            "Maintenance Required",
+            "Support Required",
             "OEM Required",
           ],
           format: 'public."maintenanceSeverity"',
@@ -81034,7 +81034,7 @@ export default {
           enum: [
             "Preventive",
             "Operator Performed",
-            "Maintenance Required",
+            "Support Required",
             "OEM Required",
           ],
           format: 'public."maintenanceSeverity"',

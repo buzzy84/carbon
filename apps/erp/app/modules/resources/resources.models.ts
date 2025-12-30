@@ -54,9 +54,17 @@ export const employeeAbilityValidator = z.object({
   trainingDays: zfd.numeric(z.number().optional())
 });
 
+export const maintenanceFailureModeType = [
+  "Maintenance",
+  "Quality",
+  "Operations",
+  "Other"
+] as const;
+
 export const failureModeValidator = z.object({
   id: zfd.text(z.string().optional()),
-  name: z.string().min(1, { message: "Name is required" })
+  name: z.string().min(1, { message: "Name is required" }),
+  type: z.enum(maintenanceFailureModeType)
 });
 
 export const locationValidator = z
@@ -157,7 +165,7 @@ export const maintenanceDispatchValidator = z.object({
     .enum([
       "Preventive",
       "Operator Performed",
-      "Maintenance Required",
+      "Support Required",
       "OEM Required"
     ] as const)
     .optional(),
@@ -223,7 +231,7 @@ export const maintenanceScheduleValidator = z.object({
 export const maintenanceSeverity = [
   "Preventive",
   "Operator Performed",
-  "Maintenance Required",
+  "Support Required",
   "OEM Required"
 ] as const;
 

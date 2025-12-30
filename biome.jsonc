@@ -93,9 +93,6 @@
         "noUnsafeNegation": "warn",
         "useGetterReturn": "warn",
         "useIterableCallbackReturn": "warn"
-      },
-      "nursery": {
-        "noShadow": "warn"
       }
     }
   },

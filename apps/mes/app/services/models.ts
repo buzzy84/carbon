@@ -51,7 +51,7 @@ export const maintenanceDispatchPriority = [
 export const maintenanceSeverity = [
   "Preventive",
   "Operator Performed",
-  "Maintenance Required",
+  "Support Required",
   "OEM Required"
 ] as const;
 

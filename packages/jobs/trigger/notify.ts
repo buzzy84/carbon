@@ -136,6 +136,33 @@ export const notifyTask = task({
 
           return `Sales Order ${salesOrder?.data?.salesOrderId} assigned to you`;
 
+        case NotificationEvent.MaintenanceDispatchCreated:
+          const maintenanceDispatchCreated = await client
+            .from("maintenanceDispatch")
+            .select("*")
+            .eq("id", documentId)
+            .single();
+            
+          if (maintenanceDispatchCreated.error) {
+            console.error("Failed to get maintenanceDispatchCreated", maintenanceDispatchCreated.error);
+            throw maintenanceDispatchCreated.error;
+          }
+
+          return `New maintenance dispatch ${maintenanceDispatchCreated?.data?.maintenanceDispatchId} created`;
+        case NotificationEvent.MaintenanceDispatchAssignment:
+          const maintenanceDispatchAssignment = await client
+            .from("maintenanceDispatch")
+            .select("*")
+            .eq("id", documentId)
+            .single();
+            
+          if (maintenanceDispatchAssignment.error) {
+            console.error("Failed to get maintenanceDispatchAssignment", maintenanceDispatchAssignment.error);
+            throw maintenanceDispatchAssignment.error;
+          }
+
+          return `Maintenance dispatch ${maintenanceDispatchAssignment?.data?.maintenanceDispatchId} assigned to you`;
+
         case NotificationEvent.NonConformanceAssignment:
           const nonConformance = await client
             .from("nonConformance")

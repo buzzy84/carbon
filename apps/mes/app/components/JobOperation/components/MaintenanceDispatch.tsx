@@ -15,7 +15,6 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalDescription,
   ModalFooter,
   ModalHeader,
   ModalTitle,
@@ -66,8 +65,8 @@ function getSeverityLabel(severity: (typeof maintenanceSeverity)[number]) {
       return "Preventive";
     case "Operator Performed":
       return "Operator Performed";
-    case "Maintenance Required":
-      return "Maintenance Required";
+    case "Support Required":
+      return "Support Required";
     case "OEM Required":
       return "OEM Required";
   }
@@ -97,10 +96,6 @@ export function MaintenanceDispatch({
     useState<(typeof maintenanceSeverity)[number]>("Operator Performed");
   const [oeeImpactValue, setOeeImpactValue] =
     useState<(typeof oeeImpact)[number]>("No Impact");
-  const [actualStartTime, setActualStartTime] = useState<string>(
-    new Date().toISOString()
-  );
-  const [actualEndTime, setActualEndTime] = useState<string>("");
 
   const failureModes = failureModeFetcher.data?.data ?? [];
 
@@ -113,8 +108,6 @@ export function MaintenanceDispatch({
     setContent({});
     setSeverity("Operator Performed");
     setOeeImpactValue("No Impact");
-    setActualStartTime(new Date().toISOString());
-    setActualEndTime("");
     disclosure.onClose();
   };
 
@@ -177,7 +170,9 @@ export function MaintenanceDispatch({
                 priority: "Medium",
                 severity: "Operator Performed",
                 oeeImpact: "No Impact",
-                suspectedFailureModeId: undefined
+                suspectedFailureModeId: undefined,
+                actualStartTime: new Date().toISOString(),
+                actualEndTime: undefined
               }}
               fetcher={fetcher}
             >
@@ -233,17 +228,8 @@ export function MaintenanceDispatch({
                         <DateTimePicker
                           name="actualStartTime"
                           label="Start Time"
-                          onChange={(value) => {
-                            if (value) setActualStartTime(value.toString());
-                          }}
                         />
-                        <DateTimePicker
-                          name="actualEndTime"
-                          label="End Time"
-                          onChange={(value) => {
-                            if (value) setActualEndTime(value.toString());
-                          }}
-                        />
+                        <DateTimePicker name="actualEndTime" label="End Time" />
                       </>
                     )}
                     <Select
