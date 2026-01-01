@@ -12475,6 +12475,7 @@ export type Database = {
           createdBy: string
           duration: number | null
           id: string
+          locationId: string | null
           maintenanceDispatchId: string
           maintenanceScheduleId: string | null
           nonConformanceId: string | null
@@ -12502,6 +12503,7 @@ export type Database = {
           createdBy: string
           duration?: number | null
           id?: string
+          locationId?: string | null
           maintenanceDispatchId: string
           maintenanceScheduleId?: string | null
           nonConformanceId?: string | null
@@ -12529,6 +12531,7 @@ export type Database = {
           createdBy?: string
           duration?: number | null
           id?: string
+          locationId?: string | null
           maintenanceDispatchId?: string
           maintenanceScheduleId?: string | null
           nonConformanceId?: string | null
@@ -12649,6 +12652,13 @@ export type Database = {
             isOneToOne: false
             referencedRelation: "userDefaults"
             referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatch_locationId_fkey"
+            columns: ["locationId"]
+            isOneToOne: false
+            referencedRelation: "location"
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "maintenanceDispatch_maintenanceScheduleId_fkey"
@@ -13292,6 +13302,155 @@ export type Database = {
           },
           {
             foreignKeyName: "maintenanceDispatchItem_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      maintenanceDispatchItemTrackedEntity: {
+        Row: {
+          companyId: string
+          createdAt: string
+          createdBy: string
+          id: string
+          maintenanceDispatchItemId: string
+          quantity: number
+          trackedEntityId: string
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          id?: string
+          maintenanceDispatchItemId: string
+          quantity?: number
+          trackedEntityId: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          id?: string
+          maintenanceDispatchItemId?: string
+          quantity?: number
+          trackedEntityId?: string
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_maintenanceDispatchItemId_"
+            columns: ["maintenanceDispatchItemId"]
+            isOneToOne: false
+            referencedRelation: "maintenanceDispatchItem"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_trackedEntityId_fkey"
+            columns: ["trackedEntityId"]
+            isOneToOne: false
+            referencedRelation: "trackedEntity"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "maintenanceDispatchItemTrackedEntity_updatedBy_fkey"
             columns: ["updatedBy"]
             isOneToOne: false
             referencedRelation: "userDefaults"
@@ -52619,6 +52778,7 @@ export type Database = {
           attributes: Json
           id: string
           quantity: number
+          readableId: string
           sourceDocument: string
           sourceDocumentId: string
           sourceDocumentReadableId: string
@@ -52633,6 +52793,7 @@ export type Database = {
           attributes: Json
           id: string
           quantity: number
+          readableId: string
           sourceDocument: string
           sourceDocumentId: string
           sourceDocumentReadableId: string
@@ -52647,6 +52808,7 @@ export type Database = {
           attributes: Json
           id: string
           quantity: number
+          readableId: string
           sourceDocument: string
           sourceDocumentId: string
           sourceDocumentReadableId: string
@@ -52661,6 +52823,7 @@ export type Database = {
           attributes: Json
           id: string
           quantity: number
+          readableId: string
           sourceDocument: string
           sourceDocumentId: string
           sourceDocumentReadableId: string
@@ -53990,6 +54153,7 @@ export type Database = {
         | "Job Receipt"
         | "Batch Split"
         | "Purchase Order"
+        | "Maintenance Consumption"
       itemLedgerType:
         | "Purchase"
         | "Sale"
@@ -55128,6 +55292,7 @@ export const Constants = {
         "Job Receipt",
         "Batch Split",
         "Purchase Order",
+        "Maintenance Consumption",
       ],
       itemLedgerType: [
         "Purchase",

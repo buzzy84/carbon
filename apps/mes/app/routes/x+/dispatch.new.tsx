@@ -61,6 +61,19 @@ export async function action({ request }: ActionFunctionArgs) {
 
   const currentTime = now(getLocalTimeZone()).toAbsoluteString();
 
+  // Get locationId from work center
+  let locationId: string | undefined;
+  if (validation.data.workCenterId) {
+    const workCenter = await serviceRole
+      .from("workCenter")
+      .select("locationId")
+      .eq("id", validation.data.workCenterId)
+      .single();
+    if (!workCenter.error && workCenter.data?.locationId) {
+      locationId = workCenter.data.locationId;
+    }
+  }
+
   const insertDispatch = await serviceRole
     .from("maintenanceDispatch")
     .insert([
@@ -72,6 +85,7 @@ export async function action({ request }: ActionFunctionArgs) {
         oeeImpact: validation.data.oeeImpact,
         source: "Reactive", // Coming from MES is always reactive
         workCenterId: validation.data.workCenterId,
+        locationId,
         assignee: isOperatorPerformed ? userId : undefined,
         suspectedFailureModeId:
           validation.data.suspectedFailureModeId || undefined,

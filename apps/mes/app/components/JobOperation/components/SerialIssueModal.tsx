@@ -22,7 +22,6 @@ import {
   TabsTrigger,
   toast
 } from "@carbon/react";
-import type { TrackedEntityAttributes } from "@carbon/utils";
 import { getItemReadableId } from "@carbon/utils";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import {
@@ -62,24 +61,22 @@ export function SerialIssueModal({
 
   const options = useMemo(() => {
     return (
-      serialNumbers?.data
-        ?.filter((serialNumber) => serialNumber.status === "Available")
-        .map((serialNumber) => {
-          const attributes = serialNumber.attributes as TrackedEntityAttributes;
-          return {
-            label: serialNumber.id ?? "",
-            value: serialNumber.id,
-            helper: serialNumber.readableId
-              ? `Serial ${serialNumber.readableId}`
-              : undefined
-          };
-        }) ?? []
+      serialNumbers?.data?.map((serialNumber) => ({
+        label: serialNumber.id ?? "",
+        value: serialNumber.id,
+        helper: serialNumber.readableId
+          ? `Serial ${serialNumber.readableId}`
+          : undefined
+      })) ?? []
     );
   }, [serialNumbers]);
 
-  const initialQuantity = parentIdIsSerialized
-    ? (material?.quantity ?? 1)
-    : (material?.estimatedQuantity ?? 1);
+  const initialQuantity = Math.max(
+    1,
+    parentIdIsSerialized
+      ? (material?.quantity ?? material?.estimatedQuantity ?? 1)
+      : (material?.estimatedQuantity ?? material?.quantity ?? 1)
+  );
 
   const [selectedSerialNumbers, setSelectedSerialNumbers] = useState<
     Array<{

@@ -20,7 +20,7 @@ import type { z } from "zod/v3";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
-import { Employee, Hidden, Submit, WorkCenter } from "~/components/Form";
+import { Hidden, Location, Submit, WorkCenter } from "~/components/Form";
 import { usePermissions, useUser } from "~/hooks";
 import { getPrivateUrl, path } from "~/utils/path";
 import {
@@ -166,6 +166,7 @@ const MaintenanceDispatchForm = ({
                 }))}
               />
               <WorkCenter name="workCenterId" label="Work Center" />
+              <Location name="locationId" label="Location" />
               <Select
                 name="oeeImpact"
                 label="OEE Impact"

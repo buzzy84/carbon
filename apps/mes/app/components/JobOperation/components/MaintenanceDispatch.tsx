@@ -31,7 +31,7 @@ import { nanoid } from "nanoid";
 import { useEffect, useState } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
 import { LuWrench } from "react-icons/lu";
-import { useFetcher } from "react-router";
+import { Link, useFetcher } from "react-router";
 import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
@@ -75,8 +75,15 @@ function getSeverityLabel(severity: (typeof maintenanceSeverity)[number]) {
 export function MaintenanceDispatch({
   workCenter
 }: {
-  workCenter: { id: string; name: string };
+  workCenter: {
+    id: string;
+    name: string;
+    isBlocked: boolean | null;
+    blockingDispatchId: string | null;
+  };
 }) {
+  const hasActiveDispatch =
+    workCenter.isBlocked && workCenter.blockingDispatchId;
   const disclosure = useDisclosure();
   const fetcher = useFetcher<{ id?: string }>();
   const failureModeFetcher =
@@ -139,16 +146,32 @@ export function MaintenanceDispatch({
   return (
     <>
       <Tooltip>
-        <TooltipTrigger>
-          <IconButton
-            aria-label="Maintenance"
-            variant="secondary"
-            icon={<LuWrench />}
-            onClick={onOpen}
-          />
+        <TooltipTrigger asChild>
+          {hasActiveDispatch ? (
+            <Link
+              to={path.to.maintenanceDetail(workCenter.blockingDispatchId!)}
+            >
+              <IconButton
+                aria-label="View Active Maintenance"
+                variant="destructive"
+                icon={<LuWrench />}
+              />
+            </Link>
+          ) : (
+            <IconButton
+              aria-label="Maintenance"
+              variant="secondary"
+              icon={<LuWrench />}
+              onClick={onOpen}
+            />
+          )}
         </TooltipTrigger>
         <TooltipContent align="end">
-          <span>Maintenance Dispatch</span>
+          <span>
+            {hasActiveDispatch
+              ? "View Active Maintenance"
+              : "Maintenance Dispatch"}
+          </span>
         </TooltipContent>
       </Tooltip>
       {disclosure.isOpen && (

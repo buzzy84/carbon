@@ -74,10 +74,9 @@ import {
   LuQrCode,
   LuSquareUser,
   LuTimer,
-  LuTriangleAlert,
-  LuWrench
+  LuTriangleAlert
 } from "react-icons/lu";
-import { Await, Link, useFetcher, useNavigate, useParams } from "react-router";
+import { Await, useFetcher, useNavigate, useParams } from "react-router";
 import {
   DeadlineIcon,
   FileIcon,
@@ -1058,8 +1057,9 @@ export const JobOperation = ({
                                           {parentIsSerial &&
                                           (material.requiresBatchTracking ||
                                             material.requiresSerialTracking)
-                                            ? `${material.quantity}/${material.estimatedQuantity}`
-                                            : material.estimatedQuantity}
+                                            ? `${material.quantity ?? material.estimatedQuantity}/${material.estimatedQuantity ?? material.quantity}`
+                                            : (material.estimatedQuantity ??
+                                              material.quantity)}
                                         </Td>
                                         <Td>
                                           {material.methodType === "Make" &&
@@ -1074,7 +1074,7 @@ export const JobOperation = ({
                                           ) : parentIsSerial &&
                                             (material.requiresBatchTracking ||
                                               material.requiresSerialTracking) ? (
-                                            `${material.quantityIssued}/${material.quantity}`
+                                            `${material.quantityIssued}/${material.quantity ?? material.estimatedQuantity}`
                                           ) : (
                                             material.quantityIssued
                                           )}
@@ -1196,8 +1196,9 @@ export const JobOperation = ({
                                                 {parentIsSerial &&
                                                 (kittedChild.requiresBatchTracking ||
                                                   kittedChild.requiresSerialTracking)
-                                                  ? `${kittedChild.quantity}/${kittedChild.estimatedQuantity}`
-                                                  : kittedChild.estimatedQuantity}
+                                                  ? `${kittedChild.quantity ?? kittedChild.estimatedQuantity}/${kittedChild.estimatedQuantity ?? kittedChild.quantity}`
+                                                  : (kittedChild.estimatedQuantity ??
+                                                    kittedChild.quantity)}
                                               </Td>
                                               <Td>
                                                 {kittedChild.methodType ===
@@ -1215,7 +1216,7 @@ export const JobOperation = ({
                                                 ) : parentIsSerial &&
                                                   (kittedChild.requiresBatchTracking ||
                                                     kittedChild.requiresSerialTracking) ? (
-                                                  `${kittedChild.quantityIssued}/${kittedChild.quantity}`
+                                                  `${kittedChild.quantityIssued}/${kittedChild.quantity ?? kittedChild.estimatedQuantity}`
                                                 ) : (
                                                   kittedChild.quantityIssued
                                                 )}
@@ -1870,36 +1871,6 @@ export const JobOperation = ({
                                 workCenter={resolvedWorkCenter.data}
                               />
                             </HStack>
-                            {resolvedWorkCenter.data?.isBlocked &&
-                              resolvedWorkCenter.data?.blockingDispatchId && (
-                                <Tooltip>
-                                  <TooltipTrigger asChild>
-                                    <Link
-                                      to={path.to.maintenanceDetail(
-                                        resolvedWorkCenter.data
-                                          .blockingDispatchId
-                                      )}
-                                    >
-                                      <Badge
-                                        variant="red"
-                                        className="inline-flex items-center gap-1"
-                                      >
-                                        <LuWrench className="h-3 w-3" />
-                                        <span>Blocked by maintenance</span>
-                                      </Badge>
-                                    </Link>
-                                  </TooltipTrigger>
-                                  <TooltipContent>
-                                    <p>
-                                      Blocked by{" "}
-                                      {
-                                        resolvedWorkCenter.data
-                                          ?.blockingDispatchReadableId
-                                      }
-                                    </p>
-                                  </TooltipContent>
-                                </Tooltip>
-                              )}
                           </VStack>
                         )
                       }

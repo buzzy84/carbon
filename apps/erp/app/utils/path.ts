@@ -882,6 +882,8 @@ export const path = {
       generatePath(`${x}/maintenance/${dispatchId}/event/${eventId}`),
     deleteMaintenanceDispatchEvent: (dispatchId: string, eventId: string) =>
       generatePath(`${x}/maintenance/${dispatchId}/event/${eventId}/delete`),
+    addAndIssueMaintenanceDispatchItem: (dispatchId: string) =>
+      generatePath(`${x}/maintenance/${dispatchId}/add-and-issue`),
     maintenanceDispatches: `${x}/resources/maintenance`,
     maintenanceSchedule: (id: string) =>
       generatePath(`${x}/resources/scheduled-maintenance/${id}`),

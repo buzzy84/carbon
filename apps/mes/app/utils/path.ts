@@ -114,6 +114,8 @@ export const path = {
     maintenanceDetail: (id: string) => generatePath(`${x}/dispatch/${id}`),
     maintenanceDispatchItem: (id: string) =>
       generatePath(`${x}/dispatch/${id}/item`),
+    addAndIssueMaintenanceDispatchItem: (dispatchId: string) =>
+      generatePath(`${x}/dispatch/${dispatchId}/add-and-issue`),
     maintenanceEvent: `${x}/maintenance-event`,
     messagingNotify: `${x}/proxy/api/messaging/notify`,
     newMaintenanceDispatch: `${x}/dispatch/new`,

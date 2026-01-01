@@ -30,7 +30,7 @@ import {
   maintenanceFrequency
 } from "../../resources.models";
 import type { MaintenanceSchedule } from "../../types";
-import { MaintenancePriority } from "../Maintenance";
+import MaintenancePriority from "../Maintenance/MaintenancePriority";
 
 type MaintenanceSchedulesTableProps = {
   data: MaintenanceSchedule[];

@@ -22047,6 +22047,177 @@ export default {
         tags: ["shifts"],
       },
     },
+    "/maintenanceDispatchItemTrackedEntity": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.maintenanceDispatchItemId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.trackedEntityId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.quantity",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.updatedAt",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/maintenanceDispatchItemTrackedEntity",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["maintenanceDispatchItemTrackedEntity"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.maintenanceDispatchItemTrackedEntity",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["maintenanceDispatchItemTrackedEntity"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.maintenanceDispatchItemId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.trackedEntityId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.quantity",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.updatedAt",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["maintenanceDispatchItemTrackedEntity"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.maintenanceDispatchItemId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.trackedEntityId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.quantity",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatchItemTrackedEntity.updatedAt",
+          },
+          {
+            $ref: "#/parameters/body.maintenanceDispatchItemTrackedEntity",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["maintenanceDispatchItemTrackedEntity"],
+      },
+    },
     "/period": {
       get: {
         parameters: [
@@ -23506,6 +23677,9 @@ export default {
             $ref: "#/parameters/rowFilter.maintenanceDispatch.severity",
           },
           {
+            $ref: "#/parameters/rowFilter.maintenanceDispatch.locationId",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -23640,6 +23814,9 @@ export default {
             $ref: "#/parameters/rowFilter.maintenanceDispatch.severity",
           },
           {
+            $ref: "#/parameters/rowFilter.maintenanceDispatch.locationId",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -23726,6 +23903,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.maintenanceDispatch.severity",
+          },
+          {
+            $ref: "#/parameters/rowFilter.maintenanceDispatch.locationId",
           },
           {
             $ref: "#/parameters/body.maintenanceDispatch",
@@ -70388,6 +70568,7 @@ export default {
             "Job Receipt",
             "Batch Split",
             "Purchase Order",
+            "Maintenance Consumption",
           ],
           format: 'public."itemLedgerDocumentType"',
           type: "string",
@@ -74790,6 +74971,70 @@ export default {
       },
       type: "object",
     },
+    maintenanceDispatchItemTrackedEntity: {
+      required: [
+        "id",
+        "maintenanceDispatchItemId",
+        "trackedEntityId",
+        "quantity",
+        "companyId",
+        "createdBy",
+        "createdAt",
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        maintenanceDispatchItemId: {
+          description:
+            "Note:\nThis is a Foreign Key to `maintenanceDispatchItem.id`.<fk table='maintenanceDispatchItem' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        trackedEntityId: {
+          description:
+            "Note:\nThis is a Foreign Key to `trackedEntity.id`.<fk table='trackedEntity' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        quantity: {
+          default: 1,
+          format: "numeric",
+          type: "number",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
     period: {
       required: ["id", "startDate", "endDate", "periodType", "createdAt"],
       properties: {
@@ -75398,6 +75643,12 @@ export default {
             "OEM Required",
           ],
           format: 'public."maintenanceSeverity"',
+          type: "string",
+        },
+        locationId: {
+          description:
+            "Note:\nThis is a Foreign Key to `location.id`.<fk table='location' column='id'/>",
+          format: "text",
           type: "string",
         },
       },
@@ -83199,6 +83450,7 @@ export default {
             "Job Receipt",
             "Batch Split",
             "Purchase Order",
+            "Maintenance Consumption",
           ],
           format: 'public."itemLedgerDocumentType"',
           type: "string",
@@ -104869,6 +105121,70 @@ export default {
       in: "query",
       type: "string",
     },
+    "body.maintenanceDispatchItemTrackedEntity": {
+      name: "maintenanceDispatchItemTrackedEntity",
+      description: "maintenanceDispatchItemTrackedEntity",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/maintenanceDispatchItemTrackedEntity",
+      },
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.maintenanceDispatchItemId":
+      {
+        name: "maintenanceDispatchItemId",
+        required: false,
+        in: "query",
+        type: "string",
+      },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.trackedEntityId": {
+      name: "trackedEntityId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.quantity": {
+      name: "quantity",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatchItemTrackedEntity.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.period": {
       name: "period",
       description: "period",
@@ -105537,6 +105853,12 @@ export default {
     },
     "rowFilter.maintenanceDispatch.severity": {
       name: "severity",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.maintenanceDispatch.locationId": {
+      name: "locationId",
       required: false,
       in: "query",
       type: "string",

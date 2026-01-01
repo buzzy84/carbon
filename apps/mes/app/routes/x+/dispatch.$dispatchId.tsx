@@ -1,7 +1,6 @@
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { Database } from "@carbon/database";
-// biome-ignore lint/suspicious/noShadowRestrictedNames: suppressed due to migration
-import { Combobox, Hidden, Number, Submit, ValidatedForm } from "@carbon/form";
+import { Hidden, ValidatedForm } from "@carbon/form";
 import {
   Button,
   Heading,
@@ -12,7 +11,7 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 import { BsExclamationSquareFill } from "react-icons/bs";
 import { FaCheck, FaPause, FaPlay } from "react-icons/fa6";
 import { LuArrowLeft, LuCheck, LuCirclePlus, LuX } from "react-icons/lu";
@@ -23,6 +22,7 @@ import { HighPriorityIcon } from "~/assets/icons/HighPriorityIcon";
 import { LowPriorityIcon } from "~/assets/icons/LowPriorityIcon";
 import { MediumPriorityIcon } from "~/assets/icons/MediumPriorityIcon";
 import EmployeeAvatar from "~/components/EmployeeAvatar";
+import { MaintenanceAddPartModal } from "~/components/MaintenanceDispatch";
 import MaintenanceOeeImpact from "~/components/MaintenanceOeeImpact";
 import MaintenanceSeverity from "~/components/MaintenanceSeverity";
 import {
@@ -30,6 +30,7 @@ import {
   getMaintenanceDispatch,
   getMaintenanceDispatchEvents,
   getMaintenanceDispatchItems,
+  getMaintenanceDispatchItemTrackedEntities,
   getWorkCenterReplacementParts
 } from "~/services/maintenance.service";
 import type {
@@ -66,12 +67,30 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
     replacementParts = parts.data ?? [];
   }
 
+  // Fetch tracked entities for each item
+  const itemTrackedEntities: Record<
+    string,
+    Awaited<
+      ReturnType<typeof getMaintenanceDispatchItemTrackedEntities>
+    >["data"]
+  > = {};
+  if (items.data) {
+    for (const item of items.data) {
+      const trackedEntities = await getMaintenanceDispatchItemTrackedEntities(
+        client,
+        item.id
+      );
+      itemTrackedEntities[item.id] = trackedEntities.data ?? [];
+    }
+  }
+
   return {
     dispatch: dispatch.data,
     events: events.data ?? [],
     items: items.data ?? [],
     activeEvent: activeEvent.data,
     replacementParts,
+    itemTrackedEntities,
     userId
   };
 }
@@ -149,20 +168,27 @@ const eventValidator = z.object({
   eventId: z.string().optional()
 });
 
-const sparePartValidator = z.object({
-  action: z.enum(["add", "delete"]),
-  itemId: z.string().min(1, "Item is required"),
-  quantity: z.coerce.number().min(1, "Quantity must be at least 1"),
-  unitOfMeasureCode: z.string().optional()
+const deletePartValidator = z.object({
+  action: z.literal("delete"),
+  itemId: z.string().min(1, "Item is required")
 });
 
 export default function MaintenanceDetailRoute() {
-  const { dispatch, events, items, activeEvent, replacementParts } =
+  const { dispatch, events, items, activeEvent } =
     useLoaderData<typeof loader>();
   const fetcher = useFetcher();
-  const itemFetcher = useFetcher();
-  const addPartForm = useDisclosure();
+  const deleteFetcher = useFetcher();
+  const addPartModal = useDisclosure();
   const [allItems] = useItems();
+
+  // Create item options for the combobox
+  const itemOptions = useMemo(() => {
+    return allItems.map((item) => ({
+      value: item.id,
+      label: item.name,
+      helper: item.readableIdWithRevision
+    }));
+  }, [allItems]);
 
   // Check if user has an active event on THIS dispatch
   const myActiveEvent = useMemo(() => {
@@ -182,27 +208,6 @@ export default function MaintenanceDetailRoute() {
       return total + (event.duration ?? 0);
     }, 0);
   }, [events]);
-
-  // Get item IDs already added to the dispatch
-  const addedItemIds = useMemo(() => {
-    return new Set(items.map((item) => item.itemId));
-  }, [items]);
-
-  // Create item options with suggestions from replacement parts
-  const itemOptions = useMemo(() => {
-    return allItems.map((item) => ({
-      value: item.id,
-      label: item.name,
-      helper: item.readableIdWithRevision
-    }));
-  }, [replacementParts, allItems, addedItemIds]);
-
-  // Close add part form after successful submission
-  useEffect(() => {
-    if (itemFetcher.state === "idle" && itemFetcher.data?.id) {
-      addPartForm.onClose();
-    }
-  }, [itemFetcher.state, itemFetcher.data, addPartForm]);
 
   if (!dispatch) {
     return (
@@ -366,99 +371,55 @@ export default function MaintenanceDetailRoute() {
               <VStack spacing={2} className="items-start w-full">
                 <HStack className="justify-between w-full">
                   <span className="text-sm font-medium">Spare Parts</span>
-                  {!addPartForm.isOpen && (
-                    <Button
-                      variant="secondary"
-                      leftIcon={<LuCirclePlus />}
-                      onClick={addPartForm.onOpen}
-                    >
-                      Add
-                    </Button>
-                  )}
-                </HStack>
-
-                {/* Add Part Form */}
-                {addPartForm.isOpen && (
-                  <ValidatedForm
-                    method="post"
-                    action={path.to.maintenanceDispatchItem(dispatch.id)}
-                    validator={sparePartValidator}
-                    fetcher={itemFetcher}
-                    defaultValues={{
-                      action: "add",
-                      itemId: "",
-                      quantity: 1,
-                      unitOfMeasureCode: "EA"
-                    }}
-                    className="w-full"
+                  <Button
+                    variant="secondary"
+                    leftIcon={<LuCirclePlus />}
+                    onClick={addPartModal.onOpen}
                   >
-                    <VStack spacing={3} className="w-full">
-                      <Hidden name="action" value="add" />
-                      <Hidden name="unitOfMeasureCode" value="EA" />
-                      <Combobox
-                        name="itemId"
-                        label="Item"
-                        options={itemOptions}
-                        itemHeight={44}
-                      />
-                      <Number name="quantity" label="Quantity" minValue={1} />
-                      <HStack className="justify-end w-full">
-                        <Button
-                          type="button"
-                          variant="secondary"
-                          onClick={addPartForm.onClose}
-                        >
-                          Cancel
-                        </Button>
-                        <Submit
-                          isLoading={itemFetcher.state !== "idle"}
-                          isDisabled={itemFetcher.state !== "idle"}
-                        >
-                          Add Part
-                        </Submit>
-                      </HStack>
-                    </VStack>
-                  </ValidatedForm>
-                )}
+                    Add
+                  </Button>
+                </HStack>
 
                 {/* Existing Parts */}
                 {items.length > 0 && (
                   <div className="w-full divide-y">
-                    {items.map((item) => (
-                      <div
-                        key={item.id}
-                        className="py-2 flex justify-between items-center"
-                      >
-                        <VStack spacing={0} className="items-start">
-                          <span className="text-sm">{item.item?.name}</span>
-                          <span className="text-xs text-muted-foreground">
-                            {item.quantity} {item.unitOfMeasureCode}
-                          </span>
-                        </VStack>
-                        <ValidatedForm
-                          method="post"
-                          action={path.to.maintenanceDispatchItem(dispatch.id)}
-                          validator={sparePartValidator}
-                          fetcher={itemFetcher}
-                        >
-                          <Hidden name="action" value="delete" />
-                          <Hidden name="itemId" value={item.id} />
-                          <Hidden name="quantity" value="1" />
-                          <IconButton
-                            type="submit"
-                            aria-label="Remove part"
-                            size="sm"
-                            variant="ghost"
-                            icon={<LuX className="h-4 w-4" />}
-                            isDisabled={itemFetcher.state !== "idle"}
-                          />
-                        </ValidatedForm>
-                      </div>
-                    ))}
+                    {items.map((item) => {
+                      return (
+                        <div key={item.id} className="py-2">
+                          <div className="flex justify-between items-center">
+                            <VStack spacing={0} className="items-start">
+                              <span className="text-sm">{item.item?.name}</span>
+                              <span className="text-xs text-muted-foreground">
+                                {item.quantity} {item.unitOfMeasureCode}
+                              </span>
+                            </VStack>
+                            <ValidatedForm
+                              method="post"
+                              action={path.to.maintenanceDispatchItem(
+                                dispatch.id
+                              )}
+                              validator={deletePartValidator}
+                              fetcher={deleteFetcher}
+                            >
+                              <Hidden name="action" value="delete" />
+                              <Hidden name="itemId" value={item.id} />
+                              <IconButton
+                                type="submit"
+                                aria-label="Remove part"
+                                size="sm"
+                                variant="ghost"
+                                icon={<LuX className="h-4 w-4" />}
+                                isDisabled={deleteFetcher.state !== "idle"}
+                              />
+                            </ValidatedForm>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
 
-                {items.length === 0 && !addPartForm.isOpen && (
+                {items.length === 0 && (
                   <span className="text-xs text-muted-foreground">
                     No spare parts added yet
                   </span>
@@ -505,6 +466,15 @@ export default function MaintenanceDetailRoute() {
           )}
         </VStack>
       </main>
+
+      {/* Add Part Modal */}
+      {addPartModal.isOpen && (
+        <MaintenanceAddPartModal
+          dispatchId={dispatch.id}
+          itemOptions={itemOptions}
+          onClose={addPartModal.onClose}
+        />
+      )}
     </div>
   );
 }

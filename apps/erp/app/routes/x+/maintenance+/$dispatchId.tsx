@@ -12,13 +12,13 @@ import {
   getMaintenanceDispatchEvents,
   getMaintenanceDispatchItems
 } from "~/modules/resources";
+import { MaintenanceDispatchExplorer } from "~/modules/resources/ui/Maintenance/MaintenanceDispatchExplorer";
+import MaintenanceDispatchHeader from "~/modules/resources/ui/Maintenance/MaintenanceDispatchHeader";
 import {
-  MaintenanceDispatchExplorer,
   MaintenanceDispatchFiles,
-  MaintenanceDispatchHeader,
-  MaintenanceDispatchNotes,
-  MaintenanceDispatchProperties
-} from "~/modules/resources/ui/Maintenance";
+  MaintenanceDispatchNotes
+} from "~/modules/resources/ui/Maintenance/MaintenanceDispatchNotes";
+import MaintenanceDispatchProperties from "~/modules/resources/ui/Maintenance/MaintenanceDispatchProperties";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
 

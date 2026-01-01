@@ -175,3 +175,21 @@ export const maintenanceDispatchValidator = z.object({
   actualStartTime: zfd.text(z.string().optional()),
   actualEndTime: zfd.text(z.string().optional())
 });
+
+export const maintenanceDispatchIssueValidator = z.object({
+  maintenanceDispatchItemId: z.string().min(1, {
+    message: "Maintenance Dispatch Item is required"
+  }),
+  quantity: zfd.numeric(z.number()),
+  adjustmentType: z.enum(["Positive Adjmt.", "Negative Adjmt."])
+});
+
+export const maintenanceDispatchIssueTrackedEntityValidator = z.object({
+  maintenanceDispatchItemId: z.string(),
+  children: z.array(
+    z.object({
+      trackedEntityId: z.string(),
+      quantity: z.number()
+    })
+  )
+});

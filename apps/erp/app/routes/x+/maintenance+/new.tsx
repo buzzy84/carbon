@@ -9,7 +9,7 @@ import {
   maintenanceDispatchValidator,
   upsertMaintenanceDispatch
 } from "~/modules/resources";
-import { MaintenanceDispatchForm } from "~/modules/resources/ui/Maintenance";
+import MaintenanceDispatchForm from "~/modules/resources/ui/Maintenance/MaintenanceDispatchForm";
 import { getNextSequence } from "~/modules/settings";
 import type { Handle } from "~/utils/handle";
 import { path } from "~/utils/path";
@@ -66,6 +66,19 @@ export async function action({ request }: ActionFunctionArgs) {
     ? JSON.parse(validation.data.content)
     : {};
 
+  // Determine locationId - use provided value or get from work center
+  let locationId = validation.data.locationId || undefined;
+  if (!locationId && validation.data.workCenterId) {
+    const workCenter = await client
+      .from("workCenter")
+      .select("locationId")
+      .eq("id", validation.data.workCenterId)
+      .single();
+    if (!workCenter.error && workCenter.data?.locationId) {
+      locationId = workCenter.data.locationId;
+    }
+  }
+
   const insertDispatch = await upsertMaintenanceDispatch(client, {
     maintenanceDispatchId: nextSequence.data,
     status: validation.data.status,
@@ -74,6 +87,7 @@ export async function action({ request }: ActionFunctionArgs) {
     source: validation.data.source || "Reactive",
     oeeImpact: validation.data.oeeImpact || "No Impact",
     workCenterId: validation.data.workCenterId || undefined,
+    locationId,
     assignee: validation.data.assignee || undefined,
     suspectedFailureModeId: validation.data.suspectedFailureModeId || undefined,
     plannedStartTime: validation.data.plannedStartTime || undefined,

@@ -176,6 +176,7 @@ export const maintenanceDispatchValidator = z.object({
     .enum(["Down", "Planned", "Impact", "No Impact"] as const)
     .optional(),
   workCenterId: zfd.text(z.string().optional()),
+  locationId: zfd.text(z.string().optional()),
   suspectedFailureModeId: zfd.text(z.string().optional()),
   plannedStartTime: zfd.text(z.string().optional()),
   plannedEndTime: zfd.text(z.string().optional()),
@@ -187,6 +188,24 @@ export const maintenanceDispatchWorkCenterValidator = z.object({
   id: zfd.text(z.string().optional()),
   maintenanceDispatchId: z.string().min(1, { message: "Dispatch is required" }),
   workCenterId: z.string().min(1, { message: "Work center is required" })
+});
+
+export const maintenanceDispatchIssueValidator = z.object({
+  maintenanceDispatchItemId: z
+    .string()
+    .min(1, { message: "Maintenance Dispatch Item is required" }),
+  quantity: zfd.numeric(z.number()),
+  adjustmentType: z.enum(["Positive Adjmt.", "Negative Adjmt."])
+});
+
+export const maintenanceDispatchIssueTrackedEntityValidator = z.object({
+  maintenanceDispatchItemId: z.string(),
+  children: z.array(
+    z.object({
+      trackedEntityId: z.string(),
+      quantity: z.number()
+    })
+  )
 });
 
 export const maintenanceFrequency = [

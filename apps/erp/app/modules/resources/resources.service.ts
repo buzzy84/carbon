@@ -424,9 +424,24 @@ export async function getMaintenanceDispatchItems(
     .from("maintenanceDispatchItem")
     .select(
       `id, itemId, quantity, unitOfMeasureCode, unitCost, totalCost,
-       item:item!maintenanceDispatchItem_itemId_fkey(id, name)`
+       item:item!maintenanceDispatchItem_itemId_fkey(id, name, itemTrackingType)`
     )
     .eq("maintenanceDispatchId", dispatchId);
+}
+
+export async function getMaintenanceDispatchItemTrackedEntities(
+  client: SupabaseClient<Database>,
+  maintenanceDispatchItemId: string
+) {
+  return client
+    .from("maintenanceDispatchItemTrackedEntity")
+    .select(
+      `
+      *,
+      trackedEntity:trackedEntityId (id, quantity, status, readableId:sourceDocumentReadableId)
+    `
+    )
+    .eq("maintenanceDispatchItemId", maintenanceDispatchItemId);
 }
 
 export async function getMaintenanceDispatches(

@@ -64,10 +64,8 @@ import {
   MaintenanceKPIs,
   maintenanceSource
 } from "~/modules/resources/resources.models";
-import {
-  MaintenanceSource,
-  MaintenanceStatus
-} from "~/modules/resources/ui/Maintenance";
+import MaintenanceSource from "~/modules/resources/ui/Maintenance/MaintenanceSource";
+import MaintenanceStatus from "~/modules/resources/ui/Maintenance/MaintenanceStatus";
 import { chartIntervals } from "~/modules/shared/shared.models";
 import type { loader as kpiLoader } from "~/routes/api+/resources.kpi.$key";
 

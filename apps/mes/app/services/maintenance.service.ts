@@ -215,7 +215,7 @@ export async function getMaintenanceDispatchItems(
     .select(
       `
       *,
-      item:itemId (id, name, description)
+      item:itemId (id, name, description, itemTrackingType)
     `
     )
     .eq("maintenanceDispatchId", dispatchId);
@@ -268,4 +268,19 @@ export async function deleteMaintenanceDispatchItem(
   itemId: string
 ) {
   return client.from("maintenanceDispatchItem").delete().eq("id", itemId);
+}
+
+export async function getMaintenanceDispatchItemTrackedEntities(
+  client: SupabaseClient<Database>,
+  maintenanceDispatchItemId: string
+) {
+  return client
+    .from("maintenanceDispatchItemTrackedEntity")
+    .select(
+      `
+      *,
+      trackedEntity:trackedEntityId (id, quantity, status, readableId:sourceDocumentReadableId)
+    `
+    )
+    .eq("maintenanceDispatchItemId", maintenanceDispatchItemId);
 }

@@ -1,11 +1,4 @@
-import { useCarbon } from "@carbon/auth";
-import {
-  DateTimePicker,
-  Hidden,
-  Number,
-  Submit,
-  ValidatedForm
-} from "@carbon/form";
+import { DateTimePicker, Hidden, Submit, ValidatedForm } from "@carbon/form";
 import {
   Button,
   Count,
@@ -28,7 +21,6 @@ import {
   ModalTitle,
   ScrollArea,
   Skeleton,
-  toast,
   useDisclosure,
   VStack
 } from "@carbon/react";
@@ -46,26 +38,17 @@ import {
   LuTrash
 } from "react-icons/lu";
 import { Link, useFetcher, useParams } from "react-router";
-import {
-  Employee,
-  Item,
-  TextArea,
-  UnitOfMeasure,
-  WorkCenter
-} from "~/components/Form";
+import { Employee, TextArea, WorkCenter } from "~/components/Form";
 import { ConfirmDelete } from "~/components/Modals";
 import { LevelLine } from "~/components/TreeView";
 import { usePermissions } from "~/hooks";
-import { MethodItemType } from "~/modules/shared/types";
 import { path } from "~/utils/path";
-import {
-  maintenanceDispatchEventValidator,
-  maintenanceDispatchItemValidator
-} from "../../resources.models";
+import { maintenanceDispatchEventValidator } from "../../resources.models";
 import type {
   MaintenanceDispatchEvent,
   MaintenanceDispatchItem
 } from "../../types";
+import { MaintenanceAddPartModal } from "./MaintenanceAddPartModal";
 
 export type MaintenanceExplorerNode = {
   key: "items" | "events";
@@ -301,10 +284,9 @@ function MaintenanceExplorerItem({
       )}
 
       {newModal.isOpen && node.key === "items" && (
-        <NewItemModal
-          open={newModal.isOpen}
-          onClose={newModal.onClose}
+        <MaintenanceAddPartModal
           dispatchId={dispatchId}
+          onClose={newModal.onClose}
         />
       )}
       {newModal.isOpen && node.key === "events" && (
@@ -393,111 +375,6 @@ function MaintenanceExplorerChildItem({
         </DropdownMenu>
       )}
     </div>
-  );
-}
-
-function NewItemModal({
-  open,
-  onClose,
-  dispatchId
-}: {
-  open: boolean;
-  onClose: () => void;
-  dispatchId: string;
-}) {
-  const fetcher = useFetcher();
-  const { carbon } = useCarbon();
-
-  useEffect(() => {
-    if (fetcher.state === "idle" && fetcher.data?.success === true) {
-      onClose();
-    }
-  }, [fetcher.state, fetcher.data, onClose]);
-
-  const [itemType, setItemType] = useState<MethodItemType | "Item">("Item");
-  const [itemData, setItemData] = useState<{
-    unitOfMeasureCode: string;
-    unitCost: number;
-  }>({
-    unitOfMeasureCode: "EA",
-    unitCost: 0
-  });
-
-  const onTypeChange = (t: MethodItemType | "Item") => {
-    setItemType(t as MethodItemType);
-    setItemData({
-      unitOfMeasureCode: "EA",
-      unitCost: 0
-    });
-  };
-
-  const onItemChange = async (itemId: string) => {
-    if (!carbon) return;
-
-    const [item, itemCost] = await Promise.all([
-      carbon.from("item").select("unitOfMeasureCode").eq("id", itemId).single(),
-      carbon.from("itemCost").select("unitCost").eq("itemId", itemId).single()
-    ]);
-
-    if (item.error) {
-      toast.error("Failed to load item details");
-      return;
-    }
-
-    setItemData({
-      unitOfMeasureCode: item.data?.unitOfMeasureCode ?? "EA",
-      unitCost: itemCost.data?.unitCost ?? 0
-    });
-  };
-
-  return (
-    <Modal
-      open={open}
-      onOpenChange={(open) => {
-        if (!open) onClose();
-      }}
-    >
-      <ModalContent>
-        <ValidatedForm
-          method="post"
-          action={path.to.newMaintenanceDispatchItem(dispatchId)}
-          validator={maintenanceDispatchItemValidator}
-          fetcher={fetcher}
-        >
-          <ModalHeader>
-            <ModalTitle>Add Item</ModalTitle>
-          </ModalHeader>
-          <ModalBody>
-            <Hidden name="maintenanceDispatchId" value={dispatchId} />
-            <Hidden name="unitCost" value={itemData.unitCost} />
-            <VStack spacing={4}>
-              <Item
-                name="itemId"
-                label={itemType}
-                type={itemType}
-                onChange={(value) => {
-                  onItemChange(value?.value as string);
-                }}
-                onTypeChange={onTypeChange}
-              />
-              <Number name="quantity" label="Quantity" minValue={1} />
-              <UnitOfMeasure
-                name="unitOfMeasureCode"
-                label="Unit of Measure"
-                value={itemData.unitOfMeasureCode}
-                isReadOnly
-              />
-            </VStack>
-          </ModalBody>
-          <ModalFooter>
-            <Button variant="secondary" onClick={onClose}>
-              Cancel
-            </Button>
-            <Submit>Add</Submit>
-          </ModalFooter>
-        </ValidatedForm>
-      </ModalContent>
-    </Modal>
   );
 }
 

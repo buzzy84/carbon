@@ -24,7 +24,7 @@ import {
   EmployeeAvatar,
   useOptimisticAssignment
 } from "~/components";
-import { WorkCenter } from "~/components/Form";
+import { Location, WorkCenter } from "~/components/Form";
 import { usePermissions, useRouteData } from "~/hooks";
 import { path } from "~/utils/path";
 import { copyToClipboard } from "~/utils/string";
@@ -203,6 +203,27 @@ const MaintenanceDispatchProperties = () => {
           isReadOnly={!permissions.can("update", "resources")}
         />
       </VStack>
+
+      <ValidatedForm
+        defaultValues={{
+          locationId: routeData?.dispatch?.locationId ?? ""
+        }}
+        validator={z.object({
+          locationId: z.string().optional()
+        })}
+        className="w-full"
+      >
+        <Location
+          isReadOnly={!permissions.can("update", "resources")}
+          label="Location"
+          name="locationId"
+          inline
+          isClearable
+          onChange={(value) => {
+            onUpdate("locationId", value?.value ?? null);
+          }}
+        />
+      </ValidatedForm>
 
       <ValidatedForm
         defaultValues={{

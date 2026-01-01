@@ -6,11 +6,9 @@ import {
 } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
+import { FunctionRegion } from "@supabase/supabase-js";
 import { type ActionFunctionArgs, data } from "react-router";
-import {
-  addMaintenanceDispatchItem,
-  deleteMaintenanceDispatchItem
-} from "~/services/maintenance.service";
+import { addMaintenanceDispatchItem } from "~/services/maintenance.service";
 
 export async function action({ request, params }: ActionFunctionArgs) {
   assertIsPost(request);
@@ -71,7 +69,15 @@ export async function action({ request, params }: ActionFunctionArgs) {
       return data({}, await flash(request, error("Item ID is required")));
     }
 
-    const result = await deleteMaintenanceDispatchItem(serviceRole, itemId);
+    const result = await serviceRole.functions.invoke("issue", {
+      body: {
+        type: "maintenanceDispatchUnissue",
+        maintenanceDispatchItemId: itemId,
+        companyId,
+        userId
+      },
+      region: FunctionRegion.UsEast1
+    });
 
     if (result.error) {
       return data(
@@ -80,7 +86,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
       );
     }
 
-    return data({}, await flash(request, success("Spare part removed")));
+    return data(
+      {},
+      await flash(
+        request,
+        success("Spare part removed and returned to inventory")
+      )
+    );
   }
 
   return data({});
