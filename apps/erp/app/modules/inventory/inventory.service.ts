@@ -804,6 +804,17 @@ export async function getTrackedEntitiesByMakeMethodId(
     .order("createdAt", { ascending: true });
 }
 
+export async function getTrackedEntity(
+  client: SupabaseClient<Database>,
+  trackedEntityId: string
+) {
+  return client
+    .from("trackedEntity")
+    .select("*")
+    .eq("id", trackedEntityId)
+    .single();
+}
+
 export async function getTrackedEntitiesByOperationId(
   client: SupabaseClient<Database>,
   operationId: string
@@ -902,7 +913,7 @@ export async function insertManualInventoryAdjustment(
     createdBy: string;
   }
 ) {
-  const { adjustmentType, ...rest } = inventoryAdjustment;
+  const { adjustmentType, readableId, ...rest } = inventoryAdjustment;
   const data = {
     ...rest,
     entryType:
@@ -960,7 +971,8 @@ export async function insertManualInventoryAdjustment(
       const trackedEntityUpdate = await client
         .from("trackedEntity")
         .update({
-          quantity: data.quantity + currentQuantityOnHand
+          quantity: data.quantity + currentQuantityOnHand,
+          readableId: readableId
         })
         .eq("id", inventoryAdjustment.trackedEntityId);
 
@@ -983,6 +995,7 @@ export async function insertManualInventoryAdjustment(
             sourceDocument: "Item",
             sourceDocumentId: data.itemId,
             sourceDocumentReadableId: item.data?.readableIdWithRevision,
+            readableId: readableId,
             quantity: data.quantity,
             status: "Available",
             companyId: data.companyId,

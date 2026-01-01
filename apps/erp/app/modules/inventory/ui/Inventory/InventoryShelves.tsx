@@ -10,7 +10,12 @@ import {
   Copy,
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuIcon,
   DropdownMenuItem,
+  DropdownMenuPortal,
+  DropdownMenuSub,
+  DropdownMenuSubContent,
+  DropdownMenuSubTrigger,
   DropdownMenuTrigger,
   HStack,
   IconButton,
@@ -29,9 +34,15 @@ import {
   useDisclosure,
   VStack
 } from "@carbon/react";
+import { labelSizes } from "@carbon/utils";
 import { nanoid } from "nanoid";
 import { useMemo, useState } from "react";
-import { LuEllipsisVertical, LuQrCode } from "react-icons/lu";
+import {
+  LuEllipsisVertical,
+  LuPencil,
+  LuPrinter,
+  LuQrCode
+} from "react-icons/lu";
 import { Outlet } from "react-router";
 import type { z } from "zod/v3";
 import { Enumerable } from "~/components/Enumerable";
@@ -76,10 +87,35 @@ const InventoryShelves = ({
 
   const [quantity, setQuantity] = useState(1);
   const [selectedShelfId, setSelectedShelfId] = useState<string | null>(null);
+  const [selectedTrackedEntityId, setSelectedTrackedEntityId] = useState<
+    string | null
+  >(null);
 
-  const openAdjustmentModal = (shelfId?: string) => {
+  const openAdjustmentModal = (shelfId?: string, trackedEntityId?: string) => {
     setSelectedShelfId(shelfId || null);
+    setSelectedTrackedEntityId(trackedEntityId || null);
     adjustmentModal.onOpen();
+  };
+
+  const navigateToLabel = (
+    trackedEntityId: string,
+    zpl?: boolean,
+    labelSize?: string
+  ) => {
+    if (!window) return;
+    if (zpl) {
+      window.open(
+        window.location.origin +
+          path.to.file.trackedEntityLabelZpl(trackedEntityId, { labelSize }),
+        "_blank"
+      );
+    } else {
+      window.open(
+        window.location.origin +
+          path.to.file.trackedEntityLabelPdf(trackedEntityId, { labelSize }),
+        "_blank"
+      );
+    }
   };
 
   return (
@@ -130,11 +166,14 @@ const InventoryShelves = ({
                     </Td>
                     <Td>
                       {item.trackedEntityId && (
-                        <Copy
-                          icon={<LuQrCode />}
-                          text={item.trackedEntityId}
-                          withTextInTooltip
-                        />
+                        <HStack>
+                          {item.readableId && <span>{item.readableId}</span>}
+                          <Copy
+                            icon={<LuQrCode />}
+                            text={item.trackedEntityId}
+                            withTextInTooltip
+                          />
+                        </HStack>
                       )}
                     </Td>
                     <Td className="flex flex-shrink-0 justify-end items-center">
@@ -148,10 +187,42 @@ const InventoryShelves = ({
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                           <DropdownMenuItem
-                            onClick={() => openAdjustmentModal(item.shelfId)}
+                            onClick={() =>
+                              openAdjustmentModal(
+                                item.shelfId,
+                                item.trackedEntityId
+                              )
+                            }
                           >
+                            <DropdownMenuIcon icon={<LuPencil />} />
                             Update Quantity
                           </DropdownMenuItem>
+                          {item.trackedEntityId && (
+                            <DropdownMenuSub>
+                              <DropdownMenuSubTrigger>
+                                <LuPrinter className="mr-2 h-4 w-4" />
+                                Print Label
+                              </DropdownMenuSubTrigger>
+                              <DropdownMenuPortal>
+                                <DropdownMenuSubContent>
+                                  {labelSizes.map((size) => (
+                                    <DropdownMenuItem
+                                      key={size.id}
+                                      onClick={() =>
+                                        navigateToLabel(
+                                          item.trackedEntityId!,
+                                          !!size.zpl,
+                                          size.id
+                                        )
+                                      }
+                                    >
+                                      {size.name}
+                                    </DropdownMenuItem>
+                                  ))}
+                                </DropdownMenuSubContent>
+                              </DropdownMenuPortal>
+                            </DropdownMenuSub>
+                          )}
                         </DropdownMenuContent>
                       </DropdownMenu>
                     </Td>
@@ -180,8 +251,8 @@ const InventoryShelves = ({
                 quantity: quantity,
                 locationId: pickMethod.locationId,
                 shelfId: selectedShelfId || undefined,
-                adjustmentType: "Set Quantity",
-                trackedEntityId: nanoid()
+                adjustmentType: isSerial ? "Positive Adjmt." : "Set Quantity",
+                trackedEntityId: selectedTrackedEntityId || nanoid()
               }}
               onSubmit={adjustmentModal.onClose}
             >
@@ -216,11 +287,14 @@ const InventoryShelves = ({
                     ]}
                   />
                   {(isBatch || isSerial) && (
-                    <Input
-                      name="trackedEntityId"
-                      label="Tracking ID"
-                      helperText="Globally unique identifier for the item"
-                    />
+                    <>
+                      <Hidden name="trackedEntityId" />
+                      <Input
+                        name="readableId"
+                        label={isSerial ? "Serial Number" : "Batch Number"}
+                        helperText="A globally unique identifier is generated behind the scenes"
+                      />
+                    </>
                   )}
                   <NumberControlled
                     name="quantity"

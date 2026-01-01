@@ -311,6 +311,34 @@ export const path = {
 
         return generatePath(url);
       },
+      trackedEntityLabelPdf: (
+        id: string,
+        { labelSize }: { labelSize?: string } = {}
+      ) => {
+        let url = `${file}/entity/${id}/labels.pdf`;
+        const params = new URLSearchParams();
+
+        if (labelSize) params.append("labelSize", labelSize);
+
+        const queryString = params.toString();
+        if (queryString) url += `?${queryString}`;
+
+        return generatePath(url);
+      },
+      trackedEntityLabelZpl: (
+        id: string,
+        { labelSize }: { labelSize?: string } = {}
+      ) => {
+        let url = `${file}/entity/${id}/labels.zpl`;
+        const params = new URLSearchParams();
+
+        if (labelSize) params.append("labelSize", labelSize);
+
+        const queryString = params.toString();
+        if (queryString) url += `?${queryString}`;
+
+        return generatePath(url);
+      },
       stockTransfer: (id: string) =>
         generatePath(`${file}/stock-transfer/${id}.pdf`),
       quote: (id: string) => generatePath(`${file}/quote/${id}.pdf`)
