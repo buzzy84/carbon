@@ -36,7 +36,7 @@
     "@trigger.dev/sdk": "4.0.6",
     "@supabase/supabase-js": "2.80.0",
     "ai": "^5.0.88",
-    "zod": "~4.3.4"
+    "zod": "^3.25.76"
   },
   "devDependencies": {
     "@carbon/tsconfig": "*",

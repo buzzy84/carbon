@@ -34,8 +34,8 @@
     "@vercel/analytics": "^1.2.2",
     "@vercel/react-router": "^1.2.4",
     "react": "^18.3.1",
-    "zod": "~4.3.4",
-    "zod-form-data": "3.0.1"
+    "zod": "^3.25.76",
+    "zod-form-data": "2.0.8"
   },
   "private": true,
   "scripts": {
