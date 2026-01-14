@@ -1,4 +1,4 @@
-FROM node:20 AS deps
+FROM node:20.20 AS deps
 WORKDIR /repo
 # Install specific npm version
 RUN npm install -g npm@10.8.2
