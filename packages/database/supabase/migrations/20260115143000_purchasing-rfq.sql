@@ -15,7 +15,7 @@ INSERT INTO "customFieldTable" ("table", "name", "module")
 VALUES ('purchasingRfqLine', 'Purchasing RFQ Line', 'Purchasing')
 ON CONFLICT DO NOTHING;
 
--- Sequence for Purchasing RFQ
+-- Sequence for existing companies (new companies get this from seed-company)
 INSERT INTO "sequence" ("table", "name", "prefix", "suffix", "next", "size", "step", "companyId")
 SELECT
   'purchasingRfq',

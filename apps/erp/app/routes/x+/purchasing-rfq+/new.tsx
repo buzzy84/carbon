@@ -102,7 +102,7 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
-  throw redirect(path.to.purchasingRfq(rfq.id));
+  throw redirect(path.to.purchasingRfqDetails(rfq.id));
 }
 
 export default function PurchasingRFQNewRoute() {

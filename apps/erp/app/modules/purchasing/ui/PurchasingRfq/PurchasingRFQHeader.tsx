@@ -218,9 +218,7 @@ const PurchasingRFQHeader = () => {
             <input type="hidden" name="status" value="Draft" />
             <Button
               isDisabled={
-                !["Ready for request", "Requested", "Closed"].includes(
-                  status
-                ) ||
+                !["Closed"].includes(status) ||
                 statusFetcher.state !== "idle" ||
                 !permissions.can("update", "purchasing")
               }
@@ -430,23 +428,19 @@ function ConvertToSupplierQuotesModal({
         <ModalHeader>
           <ModalTitle>Create Supplier Quotes</ModalTitle>
           <ModalDescription>
-            This will create supplier quotes for all suppliers in this RFQ.
+            Send quote requests to suppliers who can provide the parts in this
+            RFQ.
           </ModalDescription>
         </ModalHeader>
 
         <ModalBody>
-          <Alert variant="default">
+          <Alert variant="warning">
+            <LuTriangleAlert className="h-4 w-4" />
             <AlertTitle>
-              Creating {suppliers.length} Supplier Quote(s)
+              These suppliers can provide the parts in this RFQ
             </AlertTitle>
             <AlertDescription>
-              Supplier quotes will be created for the following suppliers:
-              <ul className="list-disc py-2 pl-4">
-                {suppliers.map((s) => (
-                  <li key={s.id}>{s.supplier?.name}</li>
-                ))}
-              </ul>
-              Each quote will include {lines.length} line item(s) from this RFQ.
+              {suppliers.map((s) => s.supplier?.name).join(", ")}
             </AlertDescription>
           </Alert>
         </ModalBody>

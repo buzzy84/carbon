@@ -136,12 +136,12 @@ export async function action({ request, params }: ActionFunctionArgs) {
   // Update RFQ status to Received
   await updatePurchasingRFQStatus(client, {
     id: rfqId,
-    status: "Received",
+    status: "Requested",
     updatedBy: userId
   });
 
   throw redirect(
-    path.to.purchasingRfq(rfqId),
+    path.to.purchasingRfqDetails(rfqId),
     await flash(
       request,
       success(`Created ${createdQuotes.length} supplier quote(s)`)

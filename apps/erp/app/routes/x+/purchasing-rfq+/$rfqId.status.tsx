@@ -25,7 +25,7 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (!status || !purchasingRfqStatusType.includes(status)) {
     throw redirect(
-      path.to.purchasingRfq(id),
+      path.to.purchasingRfqDetails(id),
       await flash(request, error(null, "Invalid status"))
     );
   }
@@ -39,13 +39,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
 
   if (update.error) {
     throw redirect(
-      path.to.purchasingRfq(id),
+      path.to.purchasingRfqDetails(id),
       await flash(request, error(update.error, "Failed to update RFQ status"))
     );
   }
 
   throw redirect(
-    path.to.purchasingRfq(id),
+    path.to.purchasingRfqDetails(id),
     await flash(request, success("Updated RFQ status"))
   );
 }
