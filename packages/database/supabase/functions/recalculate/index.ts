@@ -166,11 +166,12 @@ serve(async (req: Request) => {
         }
 
         await db.transaction().execute(async (trx) => {
-          // Use productionQuantity (quantity + scrapQuantity) to include job-level scrap
+          // Use job.quantity as the root's target quantity (not productionQuantity)
+          // The item's scrap percentage will be applied within updateJobQuantities
           await updateJobQuantities(
             trx,
             jobMethodTree,
-            job.data?.productionQuantity ?? job.data?.quantity
+            job.data?.quantity ?? 1
           );
         });
 
@@ -202,29 +203,60 @@ serve(async (req: Request) => {
 const updateJobQuantities = async (
   trx: Transaction<DB>,
   tree: JobMethodTreeItem,
-  parentQuantity: number = 1
+  parentEstimatedQuantity: number = 1
 ) => {
-  const baseQuantity = tree.data.quantity * parentQuantity;
+  // Target quantity for this node:
+  // - For root: targetQuantity = parentEstimatedQuantity (which is productionQuantity from job)
+  // - For children: targetQuantity = parentEstimatedQuantity * quantity (quantity per parent)
+  const targetQuantity = tree.data.isRoot
+    ? parentEstimatedQuantity
+    : tree.data.quantity * parentEstimatedQuantity;
 
-  // For Make-type items, inflate quantity to account for scrap rate
-  let currentQuantity = baseQuantity;
-  if (tree.data.methodType === "Make" && !tree.data.isRoot) {
-    const itemReplenishment = await trx
-      .selectFrom("itemReplenishment")
-      .select("scrapPercentage")
-      .where("itemId", "=", tree.data.itemId)
+  // Get scrap percentage from jobMaterial (stored at job creation time)
+  // Fall back to itemReplenishment if not stored
+  let scrapPercentage = 0;
+  if (tree.data.methodType === "Make") {
+    const jobMaterial = await trx
+      .selectFrom("jobMaterial")
+      .select("itemScrapPercentage")
+      .where("id", "=", tree.id)
       .executeTakeFirst();
 
-    const scrapPercentage = Number(itemReplenishment?.scrapPercentage ?? 0);
-    if (scrapPercentage > 0 && scrapPercentage < 100) {
-      currentQuantity = Math.ceil(baseQuantity / (1 - scrapPercentage / 100));
+    if (
+      jobMaterial?.itemScrapPercentage != null &&
+      jobMaterial.itemScrapPercentage > 0
+    ) {
+      scrapPercentage = Number(jobMaterial.itemScrapPercentage);
+    } else {
+      // Fall back to itemReplenishment
+      const itemReplenishment = await trx
+        .selectFrom("itemReplenishment")
+        .select("scrapPercentage")
+        .where("itemId", "=", tree.data.itemId)
+        .executeTakeFirst();
+      scrapPercentage = Number(itemReplenishment?.scrapPercentage ?? 0);
     }
   }
 
-  // Update jobMaterial
+  // Calculate scrap and estimated quantities
+  // scrapQuantity = portion attributable to scrap (only for Make parts)
+  // totalWithScrap = target + scrap allowance (what we need to make/procure)
+  // estimatedQuantity: For Make = good quantity (without scrap), For Buy/Pick = total
+  const scrapQuantity =
+    tree.data.methodType === "Make" ? targetQuantity * scrapPercentage : 0;
+  const totalWithScrap = Math.ceil(targetQuantity + scrapQuantity);
+  // For Make: estimatedQuantity is good quantity (without scrap)
+  // For Buy/Pick: estimatedQuantity = total (but scrap is 0, so same as target)
+  const estimatedQuantity =
+    tree.data.methodType === "Make" ? targetQuantity : totalWithScrap;
+
+  // Update jobMaterial with scrap and estimated quantities
   await trx
     .updateTable("jobMaterial")
-    .set({ estimatedQuantity: currentQuantity })
+    .set({
+      scrapQuantity: scrapQuantity,
+      estimatedQuantity: estimatedQuantity,
+    })
     .where("id", "=", tree.id)
     .execute();
 
@@ -242,7 +274,10 @@ const updateJobQuantities = async (
         .execute(),
       trx
         .updateTable("jobOperation")
-        .set({ operationQuantity: currentQuantity })
+        .set({
+          targetQuantity: targetQuantity,
+          operationQuantity: totalWithScrap,
+        })
         .where("jobMakeMethodId", "=", tree.data.jobMaterialMakeMethodId)
         .execute(),
     ]);
@@ -251,17 +286,18 @@ const updateJobQuantities = async (
       await trx
         .updateTable("trackedEntity")
         .set({
-          quantity: jobMakeMethod.requiresSerialTracking ? 1 : currentQuantity,
+          quantity: jobMakeMethod.requiresSerialTracking ? 1 : totalWithScrap,
         })
         .where("id", "=", jobMakeMethod.trackedEntityId)
         .execute();
     }
   }
 
-  // Recursively update children
+  // Recursively update children with this node's total (estimated + scrap)
+  // Children use the total for their target calculation to properly cascade scrap
   if (tree.children) {
     for (const child of tree.children) {
-      await updateJobQuantities(trx, child, currentQuantity);
+      await updateJobQuantities(trx, child, totalWithScrap);
     }
   }
 };

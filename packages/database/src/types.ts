@@ -10049,6 +10049,7 @@ export type Database = {
           customFields: Json | null
           id: string
           itemId: string
+          itemScrapPercentage: number
           jobId: string
           parentMaterialId: string | null
           quantityPerParent: number
@@ -10066,6 +10067,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           itemId: string
+          itemScrapPercentage?: number
           jobId: string
           parentMaterialId?: string | null
           quantityPerParent?: number
@@ -10083,6 +10085,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           itemId?: string
+          itemScrapPercentage?: number
           jobId?: string
           parentMaterialId?: string | null
           quantityPerParent?: number
@@ -10289,6 +10292,7 @@ export type Database = {
           estimatedQuantity: number | null
           id: string
           itemId: string
+          itemScrapPercentage: number
           itemType: string
           jobId: string
           jobMakeMethodId: string
@@ -10318,6 +10322,7 @@ export type Database = {
           estimatedQuantity?: number | null
           id?: string
           itemId: string
+          itemScrapPercentage?: number
           itemType?: string
           jobId: string
           jobMakeMethodId: string
@@ -10347,6 +10352,7 @@ export type Database = {
           estimatedQuantity?: number | null
           id?: string
           itemId?: string
+          itemScrapPercentage?: number
           itemType?: string
           jobId?: string
           jobMakeMethodId?: string
@@ -10619,6 +10625,7 @@ export type Database = {
           startDate: string | null
           status: Database["public"]["Enums"]["jobOperationStatus"]
           tags: string[] | null
+          targetQuantity: number | null
           updatedAt: string | null
           updatedBy: string | null
           workCenterId: string | null
@@ -10663,6 +10670,7 @@ export type Database = {
           startDate?: string | null
           status?: Database["public"]["Enums"]["jobOperationStatus"]
           tags?: string[] | null
+          targetQuantity?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
           workCenterId?: string | null
@@ -10707,6 +10715,7 @@ export type Database = {
           startDate?: string | null
           status?: Database["public"]["Enums"]["jobOperationStatus"]
           tags?: string[] | null
+          targetQuantity?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
           workCenterId?: string | null
@@ -31325,6 +31334,48 @@ export type Database = {
           },
         ]
       }
+      searchIndex_7XFgHYBbyiscTuvDxncdhj: {
+        Row: {
+          createdAt: string
+          description: string | null
+          entityId: string
+          entityType: string
+          id: number
+          link: string
+          metadata: Json | null
+          searchVector: unknown
+          tags: string[] | null
+          title: string
+          updatedAt: string | null
+        }
+        Insert: {
+          createdAt?: string
+          description?: string | null
+          entityId: string
+          entityType: string
+          id?: number
+          link: string
+          metadata?: Json | null
+          searchVector?: unknown
+          tags?: string[] | null
+          title: string
+          updatedAt?: string | null
+        }
+        Update: {
+          createdAt?: string
+          description?: string | null
+          entityId?: string
+          entityType?: string
+          id?: number
+          link?: string
+          metadata?: Json | null
+          searchVector?: unknown
+          tags?: string[] | null
+          title?: string
+          updatedAt?: string | null
+        }
+        Relationships: []
+      }
       searchIndexRegistry: {
         Row: {
           companyId: string
@@ -46751,14 +46802,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["supplierCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["supplierCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -49442,14 +49493,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["invoiceCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["invoiceCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -52935,6 +52986,7 @@ export type Database = {
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
           tags: string[]
+          targetQuantity: number
           thumbnailPath: string
           workCenterId: string
         }[]
@@ -53272,6 +53324,7 @@ export type Database = {
           quantityScrapped: number
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
+          targetQuantity: number
           workCenterId: string
           workInstruction: Json
         }[]
@@ -53327,6 +53380,7 @@ export type Database = {
           quantityScrapped: number
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
+          targetQuantity: number
           workCenterId: string
         }[]
       }

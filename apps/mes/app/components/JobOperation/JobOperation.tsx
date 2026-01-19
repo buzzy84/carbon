@@ -626,8 +626,7 @@ export const JobOperation = ({
                   </div>
                   <div className="p-6 pt-0">
                     <Heading size="h1">
-                      {operation.quantityComplete} of{" "}
-                      {operation.operationQuantity}
+                      {operation.quantityComplete} of {operation.targetQuantity}
                     </Heading>
                   </div>
                 </div>

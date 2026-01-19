@@ -129,7 +129,7 @@ export function ItemCard({
               </span>
             </div>
             <Heading size="h4" className="text-muted-foreground/70">
-              {item.operationQuantity}
+              {item.targetQuantity}
             </Heading>
           </div>
 

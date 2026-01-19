@@ -34,7 +34,7 @@ import {
     getNextRevisionSequence,
     getNextSequence,
 } from "../shared/get-next-sequence.ts";
-import { KyselyDatabase } from "../lib/postgres/index.js";
+import { KyselyDatabase } from "../lib/postgres/index.ts";
 
 const pool = getConnectionPool(1);
 const db = getDatabaseClient<DB>(pool);
@@ -304,7 +304,7 @@ serve(async (req: Request) => {
               .eq("companyId", companyId),
             client
               .from("job")
-              .select("locationId")
+              .select("locationId, quantity")
               .eq("id", jobId)
               .eq("companyId", companyId)
               .single(),
@@ -421,8 +421,42 @@ serve(async (req: Request) => {
           // - jobMakeMethodMaterial
           async function traverseMethod(
             node: MethodTreeItem,
-            parentJobMakeMethodId: string | null
+            parentJobMakeMethodId: string | null,
+            parentEstimatedQuantity: number
           ) {
+            // For root node, targetQuantity equals the job quantity (parentEstimatedQuantity passed in)
+            // For children, targetQuantity = parentEstimatedQuantity * quantityPerParent
+            const targetQuantity = node.data.isRoot
+              ? parentEstimatedQuantity
+              : parentEstimatedQuantity * (node.data.quantity ?? 1);
+
+            // Get scrap percentage for this node's item
+            const nodeItemReplenishment = await trx
+              .selectFrom("itemReplenishment")
+              .select("scrapPercentage")
+              .where("itemId", "=", node.data.itemId)
+              .executeTakeFirst();
+            const nodeScrapPercentage = Number(
+              nodeItemReplenishment?.scrapPercentage ?? 0
+            );
+
+            // Calculate quantities:
+            // - For Make parts: estimatedQuantity = targetQuantity (good quantity, NOT including scrap)
+            // - For Buy/Pick parts: estimatedQuantity = target + scrap (what we need to procure)
+            // - scrapQuantity = targetQuantity * scrapRate (the extra needed for scrap)
+            // - totalForChildren = target + scrap (passed to children for cascade)
+            const nodeScrapQuantity = targetQuantity * nodeScrapPercentage;
+            const totalWithScrap = Math.ceil(targetQuantity + nodeScrapQuantity);
+
+            // For Make: estimatedQuantity is the good quantity (without scrap)
+            // For Buy/Pick: estimatedQuantity includes scrap since that's what we procure
+            const estimatedQuantity =
+              node.data.methodType === "Make" ? targetQuantity : totalWithScrap;
+            // operationQuantity should be the total (including scrap) since that's what we need to make
+            const operationQuantity = totalWithScrap;
+            // Pass total (including scrap) to children so cascade works correctly
+            const totalQuantityForChildren = totalWithScrap;
+
             const nodeLevelConfigurationKey = `${
               node.data.materialMakeMethodId
             }:${node.data.isRoot ? "undefined" : node.data.methodMaterialId}`;
@@ -536,6 +570,8 @@ serve(async (req: Request) => {
                   op.operationSupplierProcessId
                 ),
                 workInstruction: op.workInstruction,
+                targetQuantity,
+                operationQuantity,
                 companyId,
                 createdBy: userId,
                 customFields: {},
@@ -767,6 +803,19 @@ serve(async (req: Request) => {
                 itemReplenishment?.scrapPercentage ?? 0
               );
 
+              // Calculate scrap quantities for this material
+              // targetQuantity for this child = parent's total (including scrap) * quantity per parent
+              const childTargetQuantity = totalQuantityForChildren * quantity;
+              // scrapQuantity = portion attributable to scrap
+              const childScrapQuantity = childTargetQuantity * itemScrapPercentage;
+              const childTotalWithScrap = Math.ceil(
+                childTargetQuantity + childScrapQuantity
+              );
+              // For Make: estimatedQuantity is the good quantity (without scrap)
+              // For Buy/Pick: estimatedQuantity includes scrap since that's what we procure
+              const childEstimatedQuantity =
+                methodType === "Make" ? childTargetQuantity : childTotalWithScrap;
+
               return {
                 jobId,
                 jobMakeMethodId: parentJobMakeMethodId!,
@@ -779,6 +828,8 @@ serve(async (req: Request) => {
                 order: child.data.order,
                 description,
                 quantity,
+                scrapQuantity: childScrapQuantity,
+                estimatedQuantity: childEstimatedQuantity,
                 shelfId: locationId
                   ? await getShelfId(
                       trx,
@@ -877,10 +928,20 @@ serve(async (req: Request) => {
                 const jobMakeMethodId = materialId
                   ? materialIdToJobMakeMethodId[materialId]
                   : null;
+                // Get the total quantity (estimated + scrap) for this child material
+                // This is what we pass to children for the cascade
+                const material = madeMaterials[index];
+                const childTotalForCascade =
+                  (material?.estimatedQuantity ?? 0) +
+                  (material?.scrapQuantity ?? 0);
 
                 // prevent an infinite loop
                 if (child.data.itemId !== itemId && jobMakeMethodId) {
-                  await traverseMethod(child, jobMakeMethodId);
+                  await traverseMethod(
+                    child,
+                    jobMakeMethodId,
+                    childTotalForCascade || 1
+                  );
                 }
               }
             }
@@ -893,7 +954,12 @@ serve(async (req: Request) => {
             }
           }
 
-          await traverseMethod(methodTree, jobMakeMethod.data.id);
+          // Start traversal with job quantity as the root's target/parent estimated quantity
+          await traverseMethod(
+            methodTree,
+            jobMakeMethod.data.id,
+            job.data?.quantity ?? 1
+          );
         });
 
         break;
@@ -942,6 +1008,27 @@ serve(async (req: Request) => {
           itemId,
           companyId
         );
+
+        // Get parent estimated quantity context
+        let parentEstimatedQuantity = 1;
+        if (jobMakeMethod.data.parentMaterialId) {
+          // This is a sub-item - get the parent material's estimated quantity
+          const parentMaterial = await client
+            .from("jobMaterial")
+            .select("estimatedQuantity")
+            .eq("id", jobMakeMethod.data.parentMaterialId)
+            .single();
+          parentEstimatedQuantity =
+            parentMaterial.data?.estimatedQuantity ?? 1;
+        } else {
+          // This is the root - get job's quantity
+          const rootJob = await client
+            .from("job")
+            .select("quantity")
+            .eq("id", jobMakeMethod.data.jobId)
+            .single();
+          parentEstimatedQuantity = rootJob.data?.quantity ?? 1;
+        }
 
         const [job, methodTrees, configurationRules] = await Promise.all([
           client
@@ -1006,8 +1093,34 @@ serve(async (req: Request) => {
           // - jobMakeMethodMaterial
           async function traverseMethod(
             node: MethodTreeItem,
-            parentJobMakeMethodId: string | null
+            parentJobMakeMethodId: string | null,
+            nodeParentEstimatedQuantity: number
           ) {
+            // Calculate target and estimated quantities for this node
+            const targetQuantity = node.data.isRoot
+              ? nodeParentEstimatedQuantity
+              : nodeParentEstimatedQuantity * (node.data.quantity ?? 1);
+
+            // Get scrap percentage for this node's item
+            const nodeItemReplenishment = await trx
+              .selectFrom("itemReplenishment")
+              .select("scrapPercentage")
+              .where("itemId", "=", node.data.itemId)
+              .executeTakeFirst();
+            const nodeScrapPercentage = Number(
+              nodeItemReplenishment?.scrapPercentage ?? 0
+            );
+
+            // Calculate quantities:
+            // - For Make parts: estimatedQuantity = targetQuantity (good quantity, NOT including scrap)
+            // - For Buy/Pick parts: estimatedQuantity = target + scrap (what we need to procure)
+            const nodeScrapQuantity = targetQuantity * nodeScrapPercentage;
+            const totalWithScrap = Math.ceil(targetQuantity + nodeScrapQuantity);
+            const estimatedQuantity =
+              node.data.methodType === "Make" ? targetQuantity : totalWithScrap;
+            const operationQuantity = totalWithScrap;
+            const totalQuantityForChildren = totalWithScrap;
+
             const relatedOperations = await client
               .from("methodOperation")
               .select(
@@ -1041,6 +1154,8 @@ serve(async (req: Request) => {
                 ),
                 tags: op.tags ?? [],
                 workInstruction: op.workInstruction,
+                targetQuantity,
+                operationQuantity,
                 companyId,
                 createdBy: userId,
                 customFields: {},
@@ -1158,6 +1273,22 @@ serve(async (req: Request) => {
                 itemReplenishment?.scrapPercentage ?? 0
               );
 
+              // Calculate scrap quantities for this material
+              // Use totalQuantityForChildren (parent's total including scrap) for child calculations
+              const childTargetQuantity =
+                totalQuantityForChildren * (child.data.quantity ?? 1);
+              const childScrapQuantity =
+                childTargetQuantity * itemScrapPercentage;
+              const childTotalWithScrap = Math.ceil(
+                childTargetQuantity + childScrapQuantity
+              );
+              // For Make: estimatedQuantity is the good quantity (without scrap)
+              // For Buy/Pick: estimatedQuantity includes scrap since that's what we procure
+              const childEstimatedQuantity =
+                child.data.methodType === "Make"
+                  ? childTargetQuantity
+                  : childTotalWithScrap;
+
               return {
                 jobId: jobMakeMethod.data?.jobId!,
                 jobMakeMethodId: parentJobMakeMethodId!,
@@ -1170,6 +1301,8 @@ serve(async (req: Request) => {
                 order: child.data.order,
                 description: child.data.description,
                 quantity: child.data.quantity,
+                scrapQuantity: childScrapQuantity,
+                estimatedQuantity: childEstimatedQuantity,
                 requiresBatchTracking: child.data.itemTrackingType === "Batch",
                 requiresSerialTracking:
                   child.data.itemTrackingType === "Serial",
@@ -1236,10 +1369,20 @@ serve(async (req: Request) => {
                 const jobMakeMethodId = materialId
                   ? materialIdToJobMakeMethodId[materialId]
                   : null;
+                // Get the total quantity (estimated + scrap) for this child material
+                // This is what we pass to children for the cascade
+                const material = madeMaterials[index];
+                const childTotalForCascade =
+                  (material?.estimatedQuantity ?? 0) +
+                  (material?.scrapQuantity ?? 0);
 
                 // prevent an infinite loop
                 if (child.data.itemId !== itemId && jobMakeMethodId) {
-                  await traverseMethod(child, jobMakeMethodId);
+                  await traverseMethod(
+                    child,
+                    jobMakeMethodId,
+                    childTotalForCascade || 1
+                  );
                 }
               }
             }
@@ -1252,7 +1395,12 @@ serve(async (req: Request) => {
             }
           }
 
-          await traverseMethod(methodTree, jobMakeMethod.data.id);
+          // Start traversal with the parent's estimated quantity
+          await traverseMethod(
+            methodTree,
+            jobMakeMethod.data.id,
+            parentEstimatedQuantity
+          );
         });
         break;
       }
@@ -3713,7 +3861,7 @@ serve(async (req: Request) => {
         ] = await Promise.all([
           client
             .from("job")
-            .select("locationId")
+            .select("locationId, quantity")
             .eq("id", jobId)
             .eq("companyId", companyId)
             .single(),
@@ -3785,6 +3933,11 @@ serve(async (req: Request) => {
 
         const quoteMaterialIdToJobMaterialId: Record<string, string> = {};
         const quoteMakeMethodIdToJobMakeMethodId: Record<string, string> = {};
+        // Track estimated quantities for each make method to set on operations
+        const quoteMakeMethodIdToQuantities: Record<
+          string,
+          { targetQuantity: number; estimatedQuantity: number }
+        > = {};
 
         await db.transaction().execute(async (trx) => {
           // Delete existing jobMakeMethods, jobMaterials, and jobOperations for this job
@@ -3810,6 +3963,51 @@ serve(async (req: Request) => {
               const jobMakeMethodInserts: Database["public"]["Tables"]["jobMakeMethod"]["Insert"][] =
                 [];
 
+              // Get the total quantity for this node (parent level) to pass to children
+              // This is estimated + scrap for Make parts (what children use for their target calculation)
+              let nodeTotalForChildren: number;
+              if (node.data.isRoot) {
+                // Root: target = job quantity, calculate scrap and total
+                const rootItemReplenishment = await trx
+                  .selectFrom("itemReplenishment")
+                  .select("scrapPercentage")
+                  .where("itemId", "=", node.data.itemId)
+                  .executeTakeFirst();
+                const rootScrapPercentage = Number(
+                  rootItemReplenishment?.scrapPercentage ?? 0
+                );
+                const rootTarget = job.data?.quantity ?? 1;
+                const rootScrapQuantity =
+                  node.data.methodType === "Make"
+                    ? rootTarget * rootScrapPercentage
+                    : 0;
+                const rootTotalWithScrap = Math.ceil(
+                  rootTarget + rootScrapQuantity
+                );
+                // For Make: estimatedQuantity is good quantity (without scrap)
+                // For Buy/Pick: estimatedQuantity = total (but scrap is 0, so same as target)
+                const rootEstimatedQuantity =
+                  node.data.methodType === "Make"
+                    ? rootTarget
+                    : rootTotalWithScrap;
+
+                nodeTotalForChildren = rootTotalWithScrap;
+
+                // Store root quantities
+                quoteMakeMethodIdToQuantities[quoteMakeMethod.data.id] = {
+                  targetQuantity: rootTarget,
+                  estimatedQuantity: rootEstimatedQuantity,
+                  totalWithScrap: rootTotalWithScrap,
+                };
+              } else {
+                // Non-root: get from stored quantities using parent's quoteMakeMethodId
+                const parentQuoteMakeMethodId = node.data.quoteMaterialMakeMethodId;
+                const parentQuantities =
+                  quoteMakeMethodIdToQuantities[parentQuoteMakeMethodId ?? ""];
+                // Children receive parent's total (estimated + scrap) for cascade
+                nodeTotalForChildren = parentQuantities?.totalWithScrap ?? 1;
+              }
+
               for await (const child of node.children) {
                 const newMaterialId = nanoid();
                 quoteMaterialIdToJobMaterialId[child.id] = newMaterialId;
@@ -3823,6 +4021,35 @@ serve(async (req: Request) => {
                 const itemScrapPercentage = Number(
                   itemReplenishment?.scrapPercentage ?? 0
                 );
+
+                // Calculate scrap quantities for this child material
+                // Target = parent's total (including scrap) * quantity per parent
+                const childTargetQuantity =
+                  nodeTotalForChildren * (child.data.quantity ?? 1);
+                const childScrapQuantity =
+                  child.data.methodType === "Make"
+                    ? childTargetQuantity * itemScrapPercentage
+                    : 0;
+                const childTotalWithScrap = Math.ceil(
+                  childTargetQuantity + childScrapQuantity
+                );
+                // For Make: estimatedQuantity is good quantity (without scrap)
+                // For Buy/Pick: estimatedQuantity = total (but scrap is 0, so same as target)
+                const childEstimatedQuantity =
+                  child.data.methodType === "Make"
+                    ? childTargetQuantity
+                    : childTotalWithScrap;
+
+                // Store quantities for this child's make method (if it has one)
+                if (child.data.quoteMaterialMakeMethodId) {
+                  quoteMakeMethodIdToQuantities[
+                    child.data.quoteMaterialMakeMethodId
+                  ] = {
+                    targetQuantity: childTargetQuantity,
+                    estimatedQuantity: childEstimatedQuantity,
+                    totalWithScrap: childTotalWithScrap,
+                  };
+                }
 
                 jobMaterialInserts.push({
                   id: newMaterialId,
@@ -3840,6 +4067,8 @@ serve(async (req: Request) => {
                           child.data.quoteMakeMethodId
                         ],
                   quantity: child.data.quantity,
+                  scrapQuantity: childScrapQuantity,
+                  estimatedQuantity: childEstimatedQuantity,
                   itemScrapPercentage,
                   shelfId: await getShelfId(
                     trx,
@@ -3898,35 +4127,42 @@ serve(async (req: Request) => {
           );
 
           const jobOperationInserts: Database["public"]["Tables"]["jobOperation"]["Insert"][] =
-            quoteOperations.data.map((op) => ({
-              jobId,
-              jobMakeMethodId:
-                op.quoteMakeMethodId === quoteMakeMethod.data.id
-                  ? jobMakeMethod.data.id
-                  : quoteMakeMethodIdToJobMakeMethodId[op.quoteMakeMethodId!],
-              processId: op.processId,
-              procedureId: op.procedureId,
-              workCenterId: op.workCenterId,
-              description: op.description,
-              setupTime: op.setupTime,
-              setupUnit: op.setupUnit,
-              laborTime: op.laborTime,
-              laborUnit: op.laborUnit,
-              machineTime: op.machineTime,
-              machineUnit: op.machineUnit,
-              order: op.order,
-              operationOrder: op.operationOrder,
-              operationType: op.operationType,
-              operationSupplierProcessId: op.operationSupplierProcessId,
-              operationMinimumCost: op.operationMinimumCost ?? 0,
-              operationLeadTime: op.operationLeadTime ?? 0,
-              operationUnitCost: op.operationUnitCost ?? 0,
-              tags: op.tags ?? [],
-              workInstruction: op.workInstruction,
-              companyId,
-              createdBy: userId,
-              customFields: {},
-            }));
+            quoteOperations.data.map((op) => {
+              // Get quantities for this operation's make method
+              const opQuantities =
+                quoteMakeMethodIdToQuantities[op.quoteMakeMethodId ?? ""];
+              return {
+                jobId,
+                jobMakeMethodId:
+                  op.quoteMakeMethodId === quoteMakeMethod.data.id
+                    ? jobMakeMethod.data.id
+                    : quoteMakeMethodIdToJobMakeMethodId[op.quoteMakeMethodId!],
+                processId: op.processId,
+                procedureId: op.procedureId,
+                workCenterId: op.workCenterId,
+                description: op.description,
+                setupTime: op.setupTime,
+                setupUnit: op.setupUnit,
+                laborTime: op.laborTime,
+                laborUnit: op.laborUnit,
+                machineTime: op.machineTime,
+                machineUnit: op.machineUnit,
+                order: op.order,
+                operationOrder: op.operationOrder,
+                operationType: op.operationType,
+                operationSupplierProcessId: op.operationSupplierProcessId,
+                operationMinimumCost: op.operationMinimumCost ?? 0,
+                operationLeadTime: op.operationLeadTime ?? 0,
+                operationUnitCost: op.operationUnitCost ?? 0,
+                tags: op.tags ?? [],
+                workInstruction: op.workInstruction,
+                targetQuantity: opQuantities?.targetQuantity ?? 0,
+                operationQuantity: opQuantities?.totalWithScrap ?? 0,
+                companyId,
+                createdBy: userId,
+                customFields: {},
+              };
+            });
 
           if (jobOperationInserts.length > 0) {
             const operationIds = await trx
