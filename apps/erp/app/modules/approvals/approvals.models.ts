@@ -41,7 +41,8 @@ export const approvalConfigurationValidator = z.object({
   enabled: z.boolean().default(true),
   approverGroupIds: zfd.repeatableOfType(z.string()).optional(),
   defaultApproverId: zfd.text(z.string().optional()),
-  thresholdAmount: zfd.numeric(z.number().min(0).optional()),
+  lowerBoundAmount: zfd.numeric(z.number().min(0).default(0)),
+  upperBoundAmount: zfd.numeric(z.number().min(0).nullable()).optional(),
   escalationDaysLimit: zfd.numeric(z.number().min(0).optional())
 });
 
