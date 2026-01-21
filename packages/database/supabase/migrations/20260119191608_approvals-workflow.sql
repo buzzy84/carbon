@@ -44,14 +44,16 @@ CREATE INDEX "approvalRequest_requestedBy_idx" ON "approvalRequest"("requestedBy
 CREATE INDEX "approvalRequest_approverId_idx" ON "approvalRequest"("approverId");
 CREATE INDEX "approvalRequest_approverGroupIds_idx" ON "approvalRequest" USING GIN("approverGroupIds");
 
--- Approval configuration per document type
+-- Multiple approval configuration per document type
+-- Each configuration defines an amount range and associated approver groups
 CREATE TABLE "approvalConfiguration" (
   "id" TEXT NOT NULL DEFAULT id('apc'),
   "documentType" "approvalDocumentType" NOT NULL,
   "enabled" BOOLEAN NOT NULL DEFAULT true,
   "approverGroupIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
   "defaultApproverId" TEXT,
-  "thresholdAmount" NUMERIC,
+  "lowerBoundAmount" NUMERIC NOT NULL DEFAULT 0,
+  "upperBoundAmount" NUMERIC,
   "escalationDays" INTEGER,
   "companyId" TEXT NOT NULL,
   "createdBy" TEXT NOT NULL,
@@ -64,13 +66,16 @@ CREATE TABLE "approvalConfiguration" (
   CONSTRAINT "approvalConfiguration_defaultApproverId_fkey" FOREIGN KEY ("defaultApproverId") REFERENCES "user"("id") ON DELETE SET NULL,
   CONSTRAINT "approvalConfiguration_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id"),
   CONSTRAINT "approvalConfiguration_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id"),
-  -- Ensure only one configuration per document type per company
-  CONSTRAINT "approvalConfiguration_companyId_documentType_key" UNIQUE ("companyId", "documentType")
+  CONSTRAINT "approvalConfiguration_lowerBoundAmount_check" CHECK ("lowerBoundAmount" >= 0),
+  CONSTRAINT "approvalConfiguration_amountRange_check" CHECK (
+    "upperBoundAmount" IS NULL OR "upperBoundAmount" > "lowerBoundAmount"
+  )
 );
 
 -- Indexes for approval configuration
 CREATE INDEX "approvalConfiguration_companyId_idx" ON "approvalConfiguration"("companyId");
 CREATE INDEX "approvalConfiguration_documentType_idx" ON "approvalConfiguration"("documentType");
+CREATE INDEX "approvalConfiguration_amountRange_idx" ON "approvalConfiguration"("companyId", "documentType", "lowerBoundAmount", "upperBoundAmount") WHERE "enabled" = true;
 
 -- View for approval requests with related data
 CREATE OR REPLACE VIEW "approvalRequests" WITH (SECURITY_INVOKER=true) AS
