@@ -43,7 +43,7 @@ export const approvalConfigurationValidator = z.object({
   defaultApproverId: zfd.text(z.string().optional()),
   lowerBoundAmount: zfd.numeric(z.number().min(0).default(0)),
   upperBoundAmount: zfd.numeric(z.number().min(0).nullable()).optional(),
-  escalationDaysLimit: zfd.numeric(z.number().min(0).optional())
+  escalationDays: zfd.numeric(z.number().min(0).optional())
 });
 
 export const approvalFiltersValidator = z.object({
