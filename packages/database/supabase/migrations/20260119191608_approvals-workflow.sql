@@ -1,6 +1,9 @@
 -- Approvals System Migration
 -- This migration creates tables for a unified approval workflow system
 
+-- Add "Needs Approval" status to purchaseOrderStatus enum
+ALTER TYPE "purchaseOrderStatus" ADD VALUE 'Needs Approval';
+
 -- Create approval status enum
 CREATE TYPE "approvalStatus" AS ENUM ('Pending', 'Approved', 'Rejected', 'Cancelled');
 
@@ -9,7 +12,7 @@ CREATE TYPE "approvalDocumentType" AS ENUM ('purchaseOrder', 'qualityDocument');
 
 -- Core approval request table
 CREATE TABLE "approvalRequest" (
-  "id" TEXT NOT NULL DEFAULT id('apr'),
+  "id" TEXT NOT NULL DEFAULT id('aprq'),
   "documentType" "approvalDocumentType" NOT NULL,
   "documentId" TEXT NOT NULL,
   "status" "approvalStatus" NOT NULL DEFAULT 'Pending',
@@ -44,10 +47,11 @@ CREATE INDEX "approvalRequest_requestedBy_idx" ON "approvalRequest"("requestedBy
 CREATE INDEX "approvalRequest_approverId_idx" ON "approvalRequest"("approverId");
 CREATE INDEX "approvalRequest_approverGroupIds_idx" ON "approvalRequest" USING GIN("approverGroupIds");
 
--- Multiple approval configuration per document type
--- Each configuration defines an amount range and associated approver groups
-CREATE TABLE "approvalConfiguration" (
-  "id" TEXT NOT NULL DEFAULT id('apc'),
+-- Multiple approval rules per document type
+-- Each rule defines conditions (amount range for POs) and associated approver groups/users
+CREATE TABLE "approvalRule" (
+  "id" TEXT NOT NULL DEFAULT id('aprl'),
+  "name" TEXT NOT NULL,
   "documentType" "approvalDocumentType" NOT NULL,
   "enabled" BOOLEAN NOT NULL DEFAULT true,
   "approverGroupIds" TEXT[] DEFAULT ARRAY[]::TEXT[],
@@ -61,21 +65,23 @@ CREATE TABLE "approvalConfiguration" (
   "updatedBy" TEXT,
   "updatedAt" TIMESTAMP WITH TIME ZONE,
 
-  CONSTRAINT "approvalConfiguration_pkey" PRIMARY KEY ("id", "companyId"),
-  CONSTRAINT "approvalConfiguration_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT "approvalConfiguration_defaultApproverId_fkey" FOREIGN KEY ("defaultApproverId") REFERENCES "user"("id") ON DELETE SET NULL,
-  CONSTRAINT "approvalConfiguration_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id"),
-  CONSTRAINT "approvalConfiguration_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id"),
-  CONSTRAINT "approvalConfiguration_lowerBoundAmount_check" CHECK ("lowerBoundAmount" >= 0),
-  CONSTRAINT "approvalConfiguration_amountRange_check" CHECK (
+  CONSTRAINT "approvalRule_pkey" PRIMARY KEY ("id", "companyId"),
+  CONSTRAINT "approvalRule_companyId_fkey" FOREIGN KEY ("companyId") REFERENCES "company"("id") ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT "approvalRule_defaultApproverId_fkey" FOREIGN KEY ("defaultApproverId") REFERENCES "user"("id") ON DELETE SET NULL,
+  CONSTRAINT "approvalRule_createdBy_fkey" FOREIGN KEY ("createdBy") REFERENCES "user"("id"),
+  CONSTRAINT "approvalRule_updatedBy_fkey" FOREIGN KEY ("updatedBy") REFERENCES "user"("id"),
+  CONSTRAINT "approvalRule_name_check" CHECK (LENGTH("name") > 0 AND LENGTH("name") <= 100),
+  CONSTRAINT "approvalRule_lowerBoundAmount_check" CHECK ("lowerBoundAmount" >= 0),
+  CONSTRAINT "approvalRule_amountRange_check" CHECK (
     "upperBoundAmount" IS NULL OR "upperBoundAmount" > "lowerBoundAmount"
   )
 );
 
--- Indexes for approval configuration
-CREATE INDEX "approvalConfiguration_companyId_idx" ON "approvalConfiguration"("companyId");
-CREATE INDEX "approvalConfiguration_documentType_idx" ON "approvalConfiguration"("documentType");
-CREATE INDEX "approvalConfiguration_amountRange_idx" ON "approvalConfiguration"("companyId", "documentType", "lowerBoundAmount", "upperBoundAmount") WHERE "enabled" = true;
+-- Indexes for approval rules
+CREATE INDEX "approvalRule_companyId_idx" ON "approvalRule"("companyId");
+CREATE INDEX "approvalRule_documentType_idx" ON "approvalRule"("documentType");
+CREATE INDEX "approvalRule_name_idx" ON "approvalRule"("companyId", "documentType", "name");
+CREATE INDEX "approvalRule_amountRange_idx" ON "approvalRule"("companyId", "documentType", "lowerBoundAmount", "upperBoundAmount") WHERE "enabled" = true;
 
 -- View for approval requests with related data
 CREATE OR REPLACE VIEW "approvalRequests" WITH (SECURITY_INVOKER=true) AS
@@ -131,5 +137,5 @@ LEFT JOIN "user" du ON ar."decisionBy" = du."id";
 -- Enable RLS on approvalRequest
 ALTER TABLE "approvalRequest" ENABLE ROW LEVEL SECURITY;
 
--- Enable RLS on approvalConfiguration
-ALTER TABLE "approvalConfiguration" ENABLE ROW LEVEL SECURITY;
+-- Enable RLS on approval rules table
+ALTER TABLE "approvalRule" ENABLE ROW LEVEL SECURITY;
