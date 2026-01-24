@@ -267,7 +267,7 @@ export const supplierValidator = z.object({
   currencyCode: zfd.text(z.string().optional()),
   purchasingContactId: zfd.text(z.string().optional()),
   invoicingContactId: zfd.text(z.string().optional()),
-  website: zfd.text(z.string().optional())
+  website: zfd.text(z.string().url().optional())
 });
 
 export const supplierContactValidator = z.object({

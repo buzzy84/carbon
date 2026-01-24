@@ -74,7 +74,7 @@ export const customerValidator = z.object({
   ),
   salesContactId: zfd.text(z.string().optional()),
   invoicingContactId: zfd.text(z.string().optional()),
-  website: zfd.text(z.string().optional())
+  website: zfd.text(z.string().url().optional())
 });
 
 export const customerPaymentValidator = z.object({
