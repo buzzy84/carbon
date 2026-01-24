@@ -49,7 +49,14 @@ export const notifyTask = task({
     from?: string;
   }) => {
     if (isLocal) {
-      console.log("Skipping notify task on local", { payload });
+      console.log("Skipping notify task on local environment", {
+        event: payload.event,
+        documentId: payload.documentId,
+        recipient: payload.recipient,
+        companyId: payload.companyId,
+        from: payload.from,
+        note: "Notifications are only sent in deployed environments. In local dev, check the approval requests page at /x/settings/approvals/requests"
+      });
       return;
     }
 
@@ -57,6 +64,10 @@ export const notifyTask = task({
 
     function getWorkflow(type: NotificationEvent) {
       switch (type) {
+        case NotificationEvent.ApprovalRequested:
+        case NotificationEvent.ApprovalApproved:
+        case NotificationEvent.ApprovalRejected:
+          return NotificationWorkflow.Approval;
         case NotificationEvent.JobAssignment:
         case NotificationEvent.JobOperationAssignment:
         case NotificationEvent.MaintenanceDispatchAssignment:
@@ -91,6 +102,47 @@ export const notifyTask = task({
 
     async function getDescription(type: NotificationEvent, documentId: string) {
       switch (type) {
+        case NotificationEvent.ApprovalRequested:
+        case NotificationEvent.ApprovalApproved:
+        case NotificationEvent.ApprovalRejected:
+          const approval = await client
+            .from("approvalRequest")
+            .select("*, user:requestedBy(fullName)")
+            .eq("id", documentId)
+            .single();
+
+          if (approval.error) {
+            console.error("Failed to get approval", approval.error);
+            throw approval.error;
+          }
+
+          // Get document readable ID based on type
+          let docReadableId = "";
+          if (approval.data.documentType === "purchaseOrder") {
+            const po = await client
+              .from("purchaseOrder")
+              .select("purchaseOrderId")
+              .eq("id", approval.data.documentId)
+              .single();
+            docReadableId = po.data?.purchaseOrderId || approval.data.documentId;
+          } else if (approval.data.documentType === "qualityDocument") {
+            const qd = await client
+              .from("qualityDocument")
+              .select("name")
+              .eq("id", approval.data.documentId)
+              .single();
+            docReadableId = qd.data?.name || approval.data.documentId;
+          }
+
+          if (type === NotificationEvent.ApprovalRequested) {
+            return `Approval requested for ${approval.data.documentType === "purchaseOrder" ? "Purchase Order" : "Quality Document"} ${docReadableId}`;
+          } else if (type === NotificationEvent.ApprovalApproved) {
+            return `${approval.data.documentType === "purchaseOrder" ? "Purchase Order" : "Quality Document"} ${docReadableId} has been approved`;
+          } else if (type === NotificationEvent.ApprovalRejected) {
+            return `${approval.data.documentType === "purchaseOrder" ? "Purchase Order" : "Quality Document"} ${docReadableId} has been rejected`;
+          }
+          break;
+
         case NotificationEvent.SalesRfqReady:
         case NotificationEvent.SalesRfqAssignment:
           const salesRfq = await client
