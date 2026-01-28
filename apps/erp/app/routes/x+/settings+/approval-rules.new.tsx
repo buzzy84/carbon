@@ -1,4 +1,9 @@
-import { error, getCarbonServiceRole, success } from "@carbon/auth";
+import {
+  assertIsPost,
+  error,
+  getCarbonServiceRole,
+  success
+} from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
@@ -21,6 +26,16 @@ export async function loader({ request }: LoaderFunctionArgs) {
     .eq("isCustomerOrgGroup", false)
     .eq("isSupplierOrgGroup", false);
 
+  if (groupsResult.error) {
+    throw redirect(
+      path.to.approvalRules,
+      await flash(
+        request,
+        error(groupsResult.error, "Failed to load approver groups")
+      )
+    );
+  }
+
   return {
     rule: null,
     documentType: null,
@@ -29,6 +44,8 @@ export async function loader({ request }: LoaderFunctionArgs) {
 }
 
 export async function action({ request }: ActionFunctionArgs) {
+  assertIsPost(request);
+
   const { companyId, userId } = await requirePermissions(request, {
     update: "settings",
     role: "employee"
@@ -58,8 +75,14 @@ export async function action({ request }: ActionFunctionArgs) {
 
   if (result.error) {
     throw redirect(
-      path.to.newApprovalRule(),
-      await flash(request, error(result.error, result.error.message))
+      path.to.approvalRules,
+      await flash(
+        request,
+        error(
+          result.error,
+          result.error?.message ?? "Failed to create approval rule."
+        )
+      )
     );
   }
 

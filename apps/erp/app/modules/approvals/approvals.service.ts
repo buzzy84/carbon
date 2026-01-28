@@ -1,5 +1,5 @@
 import type { Database } from "@carbon/database";
-import { getPurchaseOrderStatus } from "@carbon/utils";
+import { getPurchaseOrderStatus, roundAmount } from "@carbon/utils";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { getPurchaseOrderLines } from "~/modules/purchasing";
 import type { GenericQueryFilters } from "~/utils/query";
@@ -160,7 +160,7 @@ export async function getLatestApprovalForDocument(
     .eq("documentId", documentId)
     .order("requestedAt", { ascending: false })
     .limit(1)
-    .single();
+    .maybeSingle();
 }
 
 export async function createApprovalRequest(
@@ -422,8 +422,39 @@ export async function getApprovalRuleByAmount(
 
   return query
     .order("lowerBoundAmount", { ascending: false })
+    .order("id", { ascending: true })
     .limit(1)
     .maybeSingle();
+}
+
+async function checkApprovalRuleRangeDuplicate(
+  client: SupabaseClient<Database>,
+  companyId: string,
+  documentType: (typeof approvalDocumentType)[number],
+  lowerBoundAmount: number,
+  upperBoundAmount: number | null,
+  excludeId?: string
+): Promise<boolean> {
+  const lower = roundAmount(lowerBoundAmount);
+  let query = client
+    .from("approvalRule")
+    .select("id")
+    .eq("companyId", companyId)
+    .eq("documentType", documentType)
+    .eq("lowerBoundAmount", lower);
+
+  if (upperBoundAmount == null) {
+    query = query.is("upperBoundAmount", null);
+  } else {
+    query = query.eq("upperBoundAmount", roundAmount(upperBoundAmount));
+  }
+
+  if (excludeId) {
+    query = query.neq("id", excludeId);
+  }
+
+  const { data } = await query.limit(1);
+  return Array.isArray(data) && data.length > 0;
 }
 
 export async function getApprovalRules(
@@ -437,6 +468,13 @@ export async function upsertApprovalRule(
   client: SupabaseClient<Database>,
   rule: UpsertApprovalRuleInput
 ) {
+  const lower = roundAmount(Number(rule.lowerBoundAmount ?? 0));
+  const rawUpper = rule.upperBoundAmount;
+  const upper =
+    rawUpper != null && !Number.isNaN(Number(rawUpper))
+      ? roundAmount(Number(rawUpper))
+      : null;
+
   if ("id" in rule) {
     const existing = await client
       .from("approvalRule")
@@ -451,6 +489,24 @@ export async function upsertApprovalRule(
       };
     }
 
+    const duplicate = await checkApprovalRuleRangeDuplicate(
+      client,
+      existing.data.companyId,
+      rule.documentType,
+      lower,
+      upper,
+      rule.id
+    );
+    if (duplicate) {
+      return {
+        data: null,
+        error: {
+          message:
+            "Another approval rule already exists for this amount range. Use a different range or edit the existing rule."
+        }
+      };
+    }
+
     return client
       .from("approvalRule")
       .update(sanitize(rule))
@@ -459,6 +515,24 @@ export async function upsertApprovalRule(
       .select("id")
       .single();
   }
+
+  const duplicate = await checkApprovalRuleRangeDuplicate(
+    client,
+    rule.companyId,
+    rule.documentType,
+    lower,
+    upper
+  );
+  if (duplicate) {
+    return {
+      data: null,
+      error: {
+        message:
+          "Another approval rule already exists for this amount range. Use a different range or edit the existing rule."
+      }
+    };
+  }
+
   return client.from("approvalRule").insert([rule]).select("id").single();
 }
 

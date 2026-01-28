@@ -1,4 +1,9 @@
-import { error, getCarbonServiceRole, success } from "@carbon/auth";
+import {
+  assertIsPost,
+  error,
+  getCarbonServiceRole,
+  success
+} from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
 import { flash } from "@carbon/auth/session.server";
 import { validationError, validator } from "@carbon/form";
@@ -71,6 +76,8 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 }
 
 export async function action({ request, params }: ActionFunctionArgs) {
+  assertIsPost(request);
+
   const { companyId, userId } = await requirePermissions(request, {
     update: "settings",
     role: "employee"
@@ -125,7 +132,13 @@ export async function action({ request, params }: ActionFunctionArgs) {
   if (result.error) {
     throw redirect(
       `${path.to.approvalRule(id)}?${getParams(request)}`,
-      await flash(request, error(result.error, result.error.message))
+      await flash(
+        request,
+        error(
+          result.error,
+          result.error?.message ?? "Failed to update approval rule."
+        )
+      )
     );
   }
 
