@@ -3,7 +3,6 @@ import {
   Number as FormNumber,
   Hidden,
   Input,
-  MultiSelect,
   SelectControlled,
   Submit,
   ValidatedForm
@@ -20,7 +19,7 @@ import {
   VStack
 } from "@carbon/react";
 import { useState } from "react";
-import { User } from "~/components/Form";
+import { Employee, Users } from "~/components/Form";
 import { usePermissions } from "~/hooks";
 import {
   ApprovalDocumentType,
@@ -32,7 +31,7 @@ import { path } from "~/utils/path";
 type ApprovalRuleDrawerProps = {
   rule: ApprovalRule | null;
   documentType: ApprovalDocumentType | null;
-  groups: Array<{ id: string; name: string }>;
+  groups?: Array<{ id: string; name: string }>;
   canEdit?: boolean;
   onClose: () => void;
 };
@@ -51,11 +50,6 @@ const ApprovalRuleDrawer = ({
 
   const [selectedDocumentType, setSelectedDocumentType] =
     useState<ApprovalDocumentType | null>(documentType || null);
-
-  const groupOptions = groups.map((g) => ({
-    value: g.id,
-    label: g.name
-  }));
 
   const documentTypeOptions: Array<{
     value: ApprovalDocumentType;
@@ -143,16 +137,16 @@ const ApprovalRuleDrawer = ({
 
               <Input name="name" label="Rule Name" required />
 
-              <MultiSelect
+              <Users
+                type="employee"
                 name="approverGroupIds"
                 label="Approver Groups"
                 placeholder="Select approver groups"
-                options={groupOptions}
               />
 
-              <User
+              <Employee
                 name="defaultApproverId"
-                label="Default Approver"
+                label="Default Approver (Optional)"
                 placeholder="Select a default approver"
               />
 
@@ -162,7 +156,6 @@ const ApprovalRuleDrawer = ({
                   <FormNumber
                     name="lowerBoundAmount"
                     label="Minimum Amount"
-                    step={100}
                     formatOptions={{
                       style: "currency",
                       currency: "USD"
@@ -172,7 +165,6 @@ const ApprovalRuleDrawer = ({
                   <FormNumber
                     name="upperBoundAmount"
                     label="Maximum Amount (Optional)"
-                    step={100}
                     formatOptions={{
                       style: "currency",
                       currency: "USD"
