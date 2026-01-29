@@ -39,6 +39,44 @@ export async function canApproveRequest(
   approvalRequest: ApprovalRequestForApproveCheck,
   userId: string
 ): Promise<boolean> {
+  const rules = await getApprovalRulesForApprover(
+    client,
+    approvalRequest.documentType,
+    approvalRequest.companyId
+  );
+
+  if (!rules.data || rules.data.length === 0) {
+    return false;
+  }
+
+  const userGroups = await client.rpc("groups_for_user", { uid: userId });
+  const userGroupIds = userGroups.data || [];
+
+  // Check if user can approve via any rule (higher amount approvers can approve lower amounts)
+  return rules.data.some((rule) => {
+    if (rule.defaultApproverId === userId) {
+      return true;
+    }
+
+    const approverGroupIds = rule.approverGroupIds;
+    if (!approverGroupIds || approverGroupIds.length === 0) {
+      return false;
+    }
+
+    return approverGroupIds.some((groupId) => userGroupIds.includes(groupId));
+  });
+}
+
+/**
+ * Checks if a user can approve a request based on the specific rule matching the amount.
+ * This is the original approval check logic - user must be on the rule that matches the amount.
+ * Used for "Assigned to Me" lists.
+ */
+export async function canApproveRequestInWindow(
+  client: SupabaseClient<Database>,
+  approvalRequest: ApprovalRequestForApproveCheck,
+  userId: string
+): Promise<boolean> {
   const rule = await getApprovalRuleByAmount(
     client,
     approvalRequest.documentType,
@@ -514,8 +552,9 @@ export async function getPendingApprovalsForApprover(
     })
   );
 
+  // Use canApproveRequestInWindow to only show requests within user's specific approval window
   const canApprovePromises = pendingWithReadableFields.map(async (approval) => {
-    const canApprove = await canApproveRequest(
+    const canApprove = await canApproveRequestInWindow(
       client,
       {
         amount: approval.amount,
@@ -623,6 +662,20 @@ export async function getApprovalRuleByAmount(
     .order("id", { ascending: true })
     .limit(1)
     .maybeSingle();
+}
+
+export async function getApprovalRulesForApprover(
+  client: SupabaseClient<Database>,
+  documentType: (typeof approvalDocumentType)[number],
+  companyId: string
+) {
+  return client
+    .from("approvalRule")
+    .select("*")
+    .eq("documentType", documentType)
+    .eq("companyId", companyId)
+    .eq("enabled", true)
+    .order("lowerBoundAmount", { ascending: false });
 }
 
 export async function isApprovalRequired(

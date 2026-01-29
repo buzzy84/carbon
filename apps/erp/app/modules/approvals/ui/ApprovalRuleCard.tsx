@@ -3,7 +3,6 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-  Badge,
   Card,
   DropdownMenu,
   DropdownMenuContent,
@@ -13,6 +12,7 @@ import {
   Heading,
   HStack,
   IconButton,
+  Status,
   useDisclosure
 } from "@carbon/react";
 import { memo, useCallback } from "react";
@@ -78,12 +78,12 @@ const ApprovalRuleCard = memo(
                       ) &&
                         ` over ${currencyFormatter.format(rule.lowerBoundAmount ?? 0)}`}
                     </Heading>
-                    <Badge
-                      variant={rule.enabled ? "green" : "gray"}
+                    <Status
+                      color={rule.enabled ? "green" : "gray"}
                       className="text-xs font-medium"
                     >
                       {rule.enabled ? "Enabled" : "Disabled"}
-                    </Badge>
+                    </Status>
                   </HStack>
                 </AccordionTrigger>
                 <div className="absolute right-12 top-1/2 -translate-y-1/2 z-10">
