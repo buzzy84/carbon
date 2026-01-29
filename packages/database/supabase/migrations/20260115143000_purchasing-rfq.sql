@@ -6,6 +6,9 @@ CREATE TYPE "purchasingRfqStatus" AS ENUM (
   'Closed'
 );
 
+-- Add Purchasing Request for Quote to documentSourceType enum
+ALTER TYPE "documentSourceType" ADD VALUE IF NOT EXISTS 'Purchasing Request for Quote';
+
 -- Custom Field Table Entries
 INSERT INTO "customFieldTable" ("table", "name", "module")
 VALUES ('purchasingRfq', 'Purchasing RFQ', 'Purchasing')
@@ -334,3 +337,6 @@ FOR DELETE USING (
     AND has_company_permission('purchasing_delete', (storage.foldername(name))[1])
     AND (storage.foldername(name))[2] = 'purchasing-rfq'
 );
+
+-- Allow null unitCost in itemCost (for items without cost data)
+ALTER TABLE "itemCost" ALTER COLUMN "unitCost" DROP NOT NULL;

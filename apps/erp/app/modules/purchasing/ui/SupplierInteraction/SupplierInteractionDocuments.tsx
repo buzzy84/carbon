@@ -42,7 +42,7 @@ type SupplierInteractionDocumentsProps = {
     | "Supplier Quote"
     | "Purchase Order"
     | "Purchase Invoice"
-    | "Purchasing RFQ";
+    | "Purchasing Request For Quote";
 };
 
 const SupplierInteractionDocuments = ({

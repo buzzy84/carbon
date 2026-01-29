@@ -48,6 +48,7 @@ import { zfd } from "zod-form-data";
 import { usePanels } from "~/components/Layout";
 import ConfirmDelete from "~/components/Modals/ConfirmDelete";
 import { usePermissions, useRouteData, useUser } from "~/hooks";
+import { useIntegrations } from "~/hooks/useIntegrations";
 import { path } from "~/utils/path";
 import type { PurchasingRFQ, PurchasingRFQLine } from "../../types";
 import { SupplierQuoteCompareDrawer } from "../SupplierQuote";
@@ -66,6 +67,9 @@ const PurchasingRFQHeader = () => {
   const { toggleExplorer, toggleProperties } = usePanels();
 
   const permissions = usePermissions();
+  const integrations = useIntegrations();
+  const canEmail = integrations.has("resend");
+  const finalizeFetcher = useFetcher<{ error: string | null }>();
 
   const routeData = useRouteData<{
     rfqSummary: PurchasingRFQ;
@@ -133,11 +137,7 @@ const PurchasingRFQHeader = () => {
         <HStack>
           {/* Preview Button - for Draft status */}
           {status === "Draft" && (
-            <Button
-              variant="secondary"
-              leftIcon={<LuEye />}
-              asChild
-            >
+            <Button variant="secondary" leftIcon={<LuEye />} asChild>
               <Link to={path.to.purchasingRfqPreview(rfqId)} target="_blank">
                 Preview
               </Link>
@@ -187,18 +187,56 @@ const PurchasingRFQHeader = () => {
           )}
 
           {hasSuppliers ? (
-            <Button
-              isDisabled={
-                status !== "Draft" ||
-                routeData?.lines?.length === 0 ||
-                !permissions.can("create", "purchasing")
-              }
-              leftIcon={<LuSend />}
-              variant={status === "Draft" ? "primary" : "secondary"}
-              onClick={finalizeModal.onOpen}
-            >
-              Finalize
-            </Button>
+            canEmail ? (
+              // With Resend: Open modal for contact selection
+              <Button
+                isDisabled={
+                  status !== "Draft" ||
+                  routeData?.lines?.length === 0 ||
+                  !permissions.can("create", "purchasing")
+                }
+                leftIcon={<LuSend />}
+                variant={status === "Draft" ? "primary" : "secondary"}
+                onClick={finalizeModal.onOpen}
+              >
+                Finalize
+              </Button>
+            ) : (
+              // Without Resend: Submit directly
+              <finalizeFetcher.Form
+                method="post"
+                action={path.to.purchasingRfqFinalize(rfqId)}
+              >
+                {routeData?.suppliers?.map((supplier, index) => (
+                  <span key={supplier.id}>
+                    <input
+                      type="hidden"
+                      name={`suppliers[${index}].supplierId`}
+                      value={supplier.supplierId}
+                    />
+                    <input
+                      type="hidden"
+                      name={`suppliers[${index}].rfqSupplierId`}
+                      value={supplier.id}
+                    />
+                  </span>
+                ))}
+                <Button
+                  type="submit"
+                  isDisabled={
+                    status !== "Draft" ||
+                    routeData?.lines?.length === 0 ||
+                    !permissions.can("create", "purchasing") ||
+                    finalizeFetcher.state !== "idle"
+                  }
+                  isLoading={finalizeFetcher.state !== "idle"}
+                  leftIcon={<LuSend />}
+                  variant={status === "Draft" ? "primary" : "secondary"}
+                >
+                  Finalize
+                </Button>
+              </finalizeFetcher.Form>
+            )
           ) : (
             <Button
               isDisabled={
