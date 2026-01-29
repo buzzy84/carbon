@@ -23,11 +23,13 @@ export async function loader({ request }: LoaderFunctionArgs) {
 
   if (type === "employee") {
     query.eq("isCustomerOrgGroup", false);
+    query.eq("isCustomerTypeGroup", false);
     query.eq("isSupplierOrgGroup", false);
+    query.eq("isSupplierTypeGroup", false);
   } else if (type === "customer") {
-    query.eq("isCustomerTypeGroup", true);
+    query.or("isCustomerTypeGroup.eq.true, isCustomerOrgGroup.eq.true");
   } else if (type === "supplier") {
-    query.eq("isSupplierTypeGroup", true);
+    query.or("isSupplierTypeGroup.eq.true, isSupplierOrgGroup.eq.true");
   }
 
   const groups = await query;
