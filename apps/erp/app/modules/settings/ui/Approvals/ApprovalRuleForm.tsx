@@ -110,6 +110,7 @@ const ApprovalRuleForm = ({
               <Users
                 name="approverGroupIds"
                 label="Approvers"
+                type="employee"
                 placeholder="Select approver groups"
               />
 

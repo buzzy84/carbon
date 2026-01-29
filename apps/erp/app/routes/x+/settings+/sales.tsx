@@ -225,6 +225,7 @@ export default function SalesSettingsRoute() {
                   <Users
                     name="digitalQuoteNotificationGroup"
                     label="Who should receive notifications when a digital quote is accepted or expired?"
+                    type="employee"
                   />
                 </div>
               </div>
@@ -266,6 +267,7 @@ export default function SalesSettingsRoute() {
                   <Users
                     name="rfqReadyNotificationGroup"
                     label="Who should receive notifications when a RFQ is marked ready for quote?"
+                    type="employee"
                   />
                 </div>
               </div>
