@@ -50,6 +50,7 @@ export const purchaseOrderTypeType = [
 export const purchaseOrderStatusType = [
   "Draft",
   "Planned",
+  "Needs Approval",
   "To Review",
   "To Receive",
   "To Receive and Invoice",
@@ -236,6 +237,23 @@ export const purchaseOrderPaymentValidator = z.object({
 
 export const purchaseOrderFinalizeValidator = z
   .object({
+    notification: z.enum(["Email", "None"]).optional(),
+    supplierContact: zfd.text(z.string().optional())
+  })
+  .refine(
+    (data) => (data.notification === "Email" ? data.supplierContact : true),
+    {
+      message: "Supplier contact is required for email",
+      path: ["supplierContact"] // path of error
+    }
+  );
+
+export const purchaseOrderApprovalValidator = z
+  .object({
+    approvalRequestId: z
+      .string()
+      .min(1, { message: "Approval request is required" }),
+    decision: z.enum(["Approved", "Rejected"]),
     notification: z.enum(["Email", "None"]).optional(),
     supplierContact: zfd.text(z.string().optional())
   })

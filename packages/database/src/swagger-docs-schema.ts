@@ -3918,6 +3918,90 @@ export default {
         tags: ["companyUsage"],
       },
     },
+    "/approvalRequests": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.documentId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.requestedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.requestedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.approverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.decisionBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.decisionAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.decisionNotes",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.documentReadableId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequests.documentDescription",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/approvalRequests",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["approvalRequests"],
+      },
+    },
     "/jobOperationsWithDependencies": {
       get: {
         parameters: [
@@ -38742,6 +38826,240 @@ export default {
         tags: ["companyPlan"],
       },
     },
+    "/approvalRequest": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.documentId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.amount",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.requestedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.requestedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.approverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionNotes",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.updatedAt",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/approvalRequest",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["approvalRequest"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.approvalRequest",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["approvalRequest"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.documentId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.amount",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.requestedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.requestedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.approverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionNotes",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.updatedAt",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["approvalRequest"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.documentId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.amount",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.requestedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.requestedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.approverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.decisionNotes",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRequest.updatedAt",
+          },
+          {
+            $ref: "#/parameters/body.approvalRequest",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["approvalRequest"],
+      },
+    },
     "/salesRfqLines": {
       get: {
         parameters: [
@@ -60081,6 +60399,204 @@ export default {
         tags: ["part"],
       },
     },
+    "/approvalRule": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.enabled",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.approverGroupIds",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.defaultApproverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.lowerBoundAmount",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.escalationDays",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.updatedAt",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/approvalRule",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["approvalRule"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.approvalRule",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["approvalRule"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.enabled",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.approverGroupIds",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.defaultApproverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.lowerBoundAmount",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.escalationDays",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.updatedAt",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["approvalRule"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.documentType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.enabled",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.approverGroupIds",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.defaultApproverId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.lowerBoundAmount",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.escalationDays",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.approvalRule.updatedAt",
+          },
+          {
+            $ref: "#/parameters/body.approvalRule",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["approvalRule"],
+      },
+    },
     "/employeeTypePermission": {
       get: {
         parameters: [
@@ -66661,6 +67177,78 @@ export default {
       },
       type: "object",
     },
+    approvalRequests: {
+      properties: {
+        id: {
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        documentType: {
+          enum: ["purchaseOrder", "qualityDocument"],
+          format: 'public."approvalDocumentType"',
+          type: "string",
+        },
+        documentId: {
+          format: "text",
+          type: "string",
+        },
+        status: {
+          enum: ["Pending", "Approved", "Rejected", "Cancelled"],
+          format: 'public."approvalStatus"',
+          type: "string",
+        },
+        requestedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        requestedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        approverId: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        decisionBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        decisionAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        decisionNotes: {
+          format: "text",
+          type: "string",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        documentReadableId: {
+          format: "text",
+          type: "string",
+        },
+        documentDescription: {
+          format: "text",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
     jobOperationsWithDependencies: {
       properties: {
         id: {
@@ -69878,6 +70466,7 @@ export default {
             "Completed",
             "Closed",
             "Planned",
+            "Needs Approval",
           ],
           format: 'public."purchaseOrderStatus"',
           type: "string",
@@ -75481,6 +76070,7 @@ export default {
             "Completed",
             "Closed",
             "Planned",
+            "Needs Approval",
           ],
           format: 'public."purchaseOrderStatus"',
           type: "string",
@@ -82368,6 +82958,7 @@ export default {
             "Completed",
             "Closed",
             "Planned",
+            "Needs Approval",
           ],
           format: 'public."purchaseOrderStatus"',
           type: "string",
@@ -82961,6 +83552,105 @@ export default {
         },
         updatedAt: {
           default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
+    approvalRequest: {
+      required: [
+        "id",
+        "documentType",
+        "documentId",
+        "status",
+        "requestedBy",
+        "requestedAt",
+        "companyId",
+        "createdBy",
+        "createdAt",
+      ],
+      properties: {
+        id: {
+          default: "public.id('aprq'::text)",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        documentType: {
+          enum: ["purchaseOrder", "qualityDocument"],
+          format: 'public."approvalDocumentType"',
+          type: "string",
+        },
+        documentId: {
+          format: "text",
+          type: "string",
+        },
+        status: {
+          default: "Pending",
+          enum: ["Pending", "Approved", "Rejected", "Cancelled"],
+          format: 'public."approvalStatus"',
+          type: "string",
+        },
+        amount: {
+          format: "numeric",
+          type: "number",
+        },
+        requestedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        requestedAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        approverId: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        decisionBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        decisionAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        decisionNotes: {
+          format: "text",
+          type: "string",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        updatedAt: {
           format: "timestamp with time zone",
           type: "string",
         },
@@ -89835,6 +90525,7 @@ export default {
             "Completed",
             "Closed",
             "Planned",
+            "Needs Approval",
           ],
           format: 'public."purchaseOrderStatus"',
           type: "string",
@@ -93608,6 +94299,85 @@ export default {
       },
       type: "object",
     },
+    approvalRule: {
+      required: [
+        "id",
+        "documentType",
+        "enabled",
+        "lowerBoundAmount",
+        "companyId",
+        "createdBy",
+        "createdAt",
+      ],
+      properties: {
+        id: {
+          default: "public.id('approval'::text)",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        documentType: {
+          enum: ["purchaseOrder", "qualityDocument"],
+          format: 'public."approvalDocumentType"',
+          type: "string",
+        },
+        enabled: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        approverGroupIds: {
+          format: "text[]",
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        defaultApproverId: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        lowerBoundAmount: {
+          default: 0,
+          format: "numeric",
+          type: "number",
+        },
+        escalationDays: {
+          format: "integer",
+          type: "integer",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
     employeeTypePermission: {
       required: [
         "employeeTypeId",
@@ -95861,6 +96631,99 @@ export default {
     },
     "rowFilter.companyUsage.updatedAt": {
       name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "body.approvalRequests": {
+      name: "approvalRequests",
+      description: "approvalRequests",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/approvalRequests",
+      },
+    },
+    "rowFilter.approvalRequests.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.documentType": {
+      name: "documentType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.documentId": {
+      name: "documentId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.status": {
+      name: "status",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.requestedBy": {
+      name: "requestedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.requestedAt": {
+      name: "requestedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.approverId": {
+      name: "approverId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.decisionBy": {
+      name: "decisionBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.decisionAt": {
+      name: "decisionAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.decisionNotes": {
+      name: "decisionNotes",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.documentReadableId": {
+      name: "documentReadableId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequests.documentDescription": {
+      name: "documentDescription",
       required: false,
       in: "query",
       type: "string",
@@ -114177,6 +115040,111 @@ export default {
       in: "query",
       type: "string",
     },
+    "body.approvalRequest": {
+      name: "approvalRequest",
+      description: "approvalRequest",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/approvalRequest",
+      },
+    },
+    "rowFilter.approvalRequest.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.documentType": {
+      name: "documentType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.documentId": {
+      name: "documentId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.status": {
+      name: "status",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.amount": {
+      name: "amount",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.requestedBy": {
+      name: "requestedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.requestedAt": {
+      name: "requestedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.approverId": {
+      name: "approverId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.decisionBy": {
+      name: "decisionBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.decisionAt": {
+      name: "decisionAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.decisionNotes": {
+      name: "decisionNotes",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRequest.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.salesRfqLines": {
       name: "salesRfqLines",
       description: "salesRfqLines",
@@ -126127,6 +127095,87 @@ export default {
     },
     "rowFilter.part.tags": {
       name: "tags",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "body.approvalRule": {
+      name: "approvalRule",
+      description: "approvalRule",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/approvalRule",
+      },
+    },
+    "rowFilter.approvalRule.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.documentType": {
+      name: "documentType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.enabled": {
+      name: "enabled",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.approverGroupIds": {
+      name: "approverGroupIds",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.defaultApproverId": {
+      name: "defaultApproverId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.lowerBoundAmount": {
+      name: "lowerBoundAmount",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.escalationDays": {
+      name: "escalationDays",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.approvalRule.updatedAt": {
+      name: "updatedAt",
       required: false,
       in: "query",
       type: "string",

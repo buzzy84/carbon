@@ -306,6 +306,7 @@ export default function PurchasingSettingsRoute() {
                   <Users
                     name="supplierQuoteNotificationGroup"
                     label="Who should receive notifications when a supplier quote is submitted?"
+                    type="employee"
                   />
                 </div>
               </div>
