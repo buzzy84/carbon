@@ -345,6 +345,7 @@ const SupplierQuoteHeader = () => {
           onClose={sendModal.onClose}
           fetcher={sendFetcher}
           externalLinkId={routeData?.quote?.externalLinkId ?? ""}
+          defaultCc={routeData?.defaultCc ?? []}
         />
       )}
       <ShareQuoteModal

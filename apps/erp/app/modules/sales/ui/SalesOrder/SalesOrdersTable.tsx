@@ -165,7 +165,7 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
               status={status}
               jobs={jobs.map((job) => ({
                 salesOrderLineId: job.salesOrderLineId,
-                productionQuantity: job.productionQuantity,
+                productionQuantity: job.quantity,
                 quantityComplete: job.quantityComplete,
                 status: job.status
               }))}
@@ -213,7 +213,7 @@ const SalesOrdersTable = memo(({ data, count }: SalesOrdersTableProps) => {
             const relevantJobs =
               jobs.filter?.((job) => job.salesOrderLineId === line.id) ?? [];
             const totalJobQuantity = relevantJobs.reduce(
-              (acc, job) => acc + job.productionQuantity,
+              (acc, job) => acc + job.quantity,
               0
             );
 

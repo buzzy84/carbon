@@ -1692,6 +1692,446 @@ export type Database = {
           },
         ]
       }
+      approvalRequest: {
+        Row: {
+          amount: number | null
+          approverId: string | null
+          companyId: string
+          createdAt: string
+          createdBy: string
+          decisionAt: string | null
+          decisionBy: string | null
+          decisionNotes: string | null
+          documentId: string
+          documentType: Database["public"]["Enums"]["approvalDocumentType"]
+          id: string
+          requestedAt: string
+          requestedBy: string
+          status: Database["public"]["Enums"]["approvalStatus"]
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          amount?: number | null
+          approverId?: string | null
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          decisionAt?: string | null
+          decisionBy?: string | null
+          decisionNotes?: string | null
+          documentId: string
+          documentType: Database["public"]["Enums"]["approvalDocumentType"]
+          id?: string
+          requestedAt?: string
+          requestedBy: string
+          status?: Database["public"]["Enums"]["approvalStatus"]
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          amount?: number | null
+          approverId?: string | null
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          decisionAt?: string | null
+          decisionBy?: string | null
+          decisionNotes?: string | null
+          documentId?: string
+          documentType?: Database["public"]["Enums"]["approvalDocumentType"]
+          id?: string
+          requestedAt?: string
+          requestedBy?: string
+          status?: Database["public"]["Enums"]["approvalStatus"]
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
+      approvalRule: {
+        Row: {
+          approverGroupIds: string[] | null
+          companyId: string
+          createdAt: string
+          createdBy: string
+          defaultApproverId: string | null
+          documentType: Database["public"]["Enums"]["approvalDocumentType"]
+          enabled: boolean
+          escalationDays: number | null
+          id: string
+          lowerBoundAmount: number
+          updatedAt: string | null
+          updatedBy: string | null
+        }
+        Insert: {
+          approverGroupIds?: string[] | null
+          companyId: string
+          createdAt?: string
+          createdBy: string
+          defaultApproverId?: string | null
+          documentType: Database["public"]["Enums"]["approvalDocumentType"]
+          enabled?: boolean
+          escalationDays?: number | null
+          id?: string
+          lowerBoundAmount?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Update: {
+          approverGroupIds?: string[] | null
+          companyId?: string
+          createdAt?: string
+          createdBy?: string
+          defaultApproverId?: string | null
+          documentType?: Database["public"]["Enums"]["approvalDocumentType"]
+          enabled?: boolean
+          escalationDays?: number | null
+          id?: string
+          lowerBoundAmount?: number
+          updatedAt?: string | null
+          updatedBy?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvalRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "approvalRule_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "approvalRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_createdBy_fkey"
+            columns: ["createdBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRule_defaultApproverId_fkey"
+            columns: ["defaultApproverId"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_defaultApproverId_fkey"
+            columns: ["defaultApproverId"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_defaultApproverId_fkey"
+            columns: ["defaultApproverId"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_defaultApproverId_fkey"
+            columns: ["defaultApproverId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_defaultApproverId_fkey"
+            columns: ["defaultApproverId"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRule_updatedBy_fkey"
+            columns: ["updatedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       attributeDataType: {
         Row: {
           id: number
@@ -2250,6 +2690,8 @@ export type Database = {
       }
       companySettings: {
         Row: {
+          defaultCustomerCc: string[] | null
+          defaultSupplierCc: string[] | null
           digitalQuoteEnabled: boolean
           digitalQuoteIncludesPurchaseOrders: boolean
           digitalQuoteNotificationGroup: string[]
@@ -2273,6 +2715,8 @@ export type Database = {
           useMetric: boolean
         }
         Insert: {
+          defaultCustomerCc?: string[] | null
+          defaultSupplierCc?: string[] | null
           digitalQuoteEnabled?: boolean
           digitalQuoteIncludesPurchaseOrders?: boolean
           digitalQuoteNotificationGroup?: string[]
@@ -2296,6 +2740,8 @@ export type Database = {
           useMetric?: boolean
         }
         Update: {
+          defaultCustomerCc?: string[] | null
+          defaultSupplierCc?: string[] | null
           digitalQuoteEnabled?: boolean
           digitalQuoteIncludesPurchaseOrders?: boolean
           digitalQuoteNotificationGroup?: string[]
@@ -3611,6 +4057,7 @@ export type Database = {
           customerStatusId: string | null
           customerTypeId: string | null
           customFields: Json | null
+          defaultCc: string[] | null
           embedding: unknown
           externalId: Json | null
           fax: string | null
@@ -3637,6 +4084,7 @@ export type Database = {
           customerStatusId?: string | null
           customerTypeId?: string | null
           customFields?: Json | null
+          defaultCc?: string[] | null
           embedding?: unknown
           externalId?: Json | null
           fax?: string | null
@@ -3663,6 +4111,7 @@ export type Database = {
           customerStatusId?: string | null
           customerTypeId?: string | null
           customFields?: Json | null
+          defaultCc?: string[] | null
           embedding?: unknown
           externalId?: Json | null
           fax?: string | null
@@ -10049,6 +10498,7 @@ export type Database = {
           customFields: Json | null
           id: string
           itemId: string
+          itemScrapPercentage: number
           jobId: string
           parentMaterialId: string | null
           quantityPerParent: number
@@ -10066,6 +10516,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           itemId: string
+          itemScrapPercentage?: number
           jobId: string
           parentMaterialId?: string | null
           quantityPerParent?: number
@@ -10083,6 +10534,7 @@ export type Database = {
           customFields?: Json | null
           id?: string
           itemId?: string
+          itemScrapPercentage?: number
           jobId?: string
           parentMaterialId?: string | null
           quantityPerParent?: number
@@ -10289,6 +10741,7 @@ export type Database = {
           estimatedQuantity: number | null
           id: string
           itemId: string
+          itemScrapPercentage: number
           itemType: string
           jobId: string
           jobMakeMethodId: string
@@ -10318,6 +10771,7 @@ export type Database = {
           estimatedQuantity?: number | null
           id?: string
           itemId: string
+          itemScrapPercentage?: number
           itemType?: string
           jobId: string
           jobMakeMethodId: string
@@ -10347,6 +10801,7 @@ export type Database = {
           estimatedQuantity?: number | null
           id?: string
           itemId?: string
+          itemScrapPercentage?: number
           itemType?: string
           jobId?: string
           jobMakeMethodId?: string
@@ -10619,6 +11074,7 @@ export type Database = {
           startDate: string | null
           status: Database["public"]["Enums"]["jobOperationStatus"]
           tags: string[] | null
+          targetQuantity: number | null
           updatedAt: string | null
           updatedBy: string | null
           workCenterId: string | null
@@ -10663,6 +11119,7 @@ export type Database = {
           startDate?: string | null
           status?: Database["public"]["Enums"]["jobOperationStatus"]
           tags?: string[] | null
+          targetQuantity?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
           workCenterId?: string | null
@@ -10707,6 +11164,7 @@ export type Database = {
           startDate?: string | null
           status?: Database["public"]["Enums"]["jobOperationStatus"]
           tags?: string[] | null
+          targetQuantity?: number | null
           updatedAt?: string | null
           updatedBy?: string | null
           workCenterId?: string | null
@@ -34402,6 +34860,7 @@ export type Database = {
           createdBy: string | null
           currencyCode: string | null
           customFields: Json | null
+          defaultCc: string[] | null
           embedding: unknown
           externalId: Json | null
           fax: string | null
@@ -34428,6 +34887,7 @@ export type Database = {
           createdBy?: string | null
           currencyCode?: string | null
           customFields?: Json | null
+          defaultCc?: string[] | null
           embedding?: unknown
           externalId?: Json | null
           fax?: string | null
@@ -34454,6 +34914,7 @@ export type Database = {
           createdBy?: string | null
           currencyCode?: string | null
           customFields?: Json | null
+          defaultCc?: string[] | null
           embedding?: unknown
           externalId?: Json | null
           fax?: string | null
@@ -41746,6 +42207,161 @@ export type Database = {
           },
         ]
       }
+      approvalRequests: {
+        Row: {
+          approverId: string | null
+          companyId: string | null
+          createdAt: string | null
+          decisionAt: string | null
+          decisionBy: string | null
+          decisionNotes: string | null
+          documentDescription: string | null
+          documentId: string | null
+          documentReadableId: string | null
+          documentType:
+            | Database["public"]["Enums"]["approvalDocumentType"]
+            | null
+          id: string | null
+          requestedAt: string | null
+          requestedBy: string | null
+          status: Database["public"]["Enums"]["approvalStatus"] | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_approverId_fkey"
+            columns: ["approverId"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "companies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "company"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "customFieldTables"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_companyId_fkey"
+            columns: ["companyId"]
+            isOneToOne: false
+            referencedRelation: "integrations"
+            referencedColumns: ["companyId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_decisionBy_fkey"
+            columns: ["decisionBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "employees"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "employeesAcrossCompanies"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "employeeSummary"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "user"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "approvalRequest_requestedBy_fkey"
+            columns: ["requestedBy"]
+            isOneToOne: false
+            referencedRelation: "userDefaults"
+            referencedColumns: ["userId"]
+          },
+        ]
+      }
       companies: {
         Row: {
           addressLine1: string | null
@@ -42241,6 +42857,7 @@ export type Database = {
           customerStatusId: string | null
           customerTypeId: string | null
           customFields: Json | null
+          defaultCc: string[] | null
           fax: string | null
           id: string | null
           invoicingContactId: string | null
@@ -46191,14 +46808,14 @@ export type Database = {
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["id"]
+            columns: ["supplierLocationId"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "partner_id_fkey"
-            columns: ["supplierLocationId"]
+            columns: ["id"]
             isOneToOne: false
             referencedRelation: "supplierLocation"
             referencedColumns: ["id"]
@@ -53186,6 +53803,7 @@ export type Database = {
           createdBy: string | null
           currencyCode: string | null
           customFields: Json | null
+          defaultCc: string[] | null
           embedding: unknown
           externalId: Json | null
           fax: string | null
@@ -54107,6 +54725,7 @@ export type Database = {
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
           tags: string[]
+          targetQuantity: number
           thumbnailPath: string
           workCenterId: string
         }[]
@@ -54146,6 +54765,7 @@ export type Database = {
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
           tags: string[]
+          targetQuantity: number
           thumbnailPath: string
           workCenterId: string
         }[]
@@ -54182,6 +54802,7 @@ export type Database = {
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
           tags: string[]
+          targetQuantity: number
           thumbnailPath: string
           workCenterId: string
         }[]
@@ -54347,6 +54968,7 @@ export type Database = {
           reorderPoint: number
           reorderQuantity: number
           replenishmentSystem: Database["public"]["Enums"]["itemReplenishmentSystem"]
+          tags: string[]
           thumbnailPath: string
           type: Database["public"]["Enums"]["itemType"]
           unitOfMeasureCode: string
@@ -54482,6 +55104,7 @@ export type Database = {
           quantityScrapped: number
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
+          targetQuantity: number
           workCenterId: string
           workInstruction: Json
         }[]
@@ -55190,6 +55813,7 @@ export type Database = {
           setupTime: number
           setupUnit: Database["public"]["Enums"]["factor"]
           tags: string[]
+          targetQuantity: number
           thumbnailPath: string
           workCenterId: string
         }[]
@@ -55513,6 +56137,8 @@ export type Database = {
     }
     Enums: {
       accountingPeriodStatus: "Inactive" | "Active"
+      approvalDocumentType: "purchaseOrder" | "qualityDocument"
+      approvalStatus: "Pending" | "Approved" | "Rejected" | "Cancelled"
       configurationParameterDataType:
         | "text"
         | "numeric"
@@ -55839,6 +56465,7 @@ export type Database = {
         | "Completed"
         | "Closed"
         | "Planned"
+        | "Needs Approval"
       purchaseOrderTransactionType:
         | "Edit"
         | "Favorite"
@@ -56625,6 +57252,8 @@ export const Constants = {
   public: {
     Enums: {
       accountingPeriodStatus: ["Inactive", "Active"],
+      approvalDocumentType: ["purchaseOrder", "qualityDocument"],
+      approvalStatus: ["Pending", "Approved", "Rejected", "Cancelled"],
       configurationParameterDataType: [
         "text",
         "numeric",
@@ -56981,6 +57610,7 @@ export const Constants = {
         "Completed",
         "Closed",
         "Planned",
+        "Needs Approval",
       ],
       purchaseOrderTransactionType: [
         "Edit",

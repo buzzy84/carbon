@@ -129,7 +129,7 @@ export function ItemCard({
               </span>
             </div>
             <Heading size="h4" className="text-muted-foreground/70">
-              {item.operationQuantity}
+              {item.targetQuantity}
             </Heading>
           </div>
 
@@ -171,10 +171,14 @@ export function ItemCard({
               <HStack className="mt-2">
                 <ProgressComponent
                   numerator={(item.quantityCompleted ?? 0).toString()}
-                  denominator={(item.quantity ?? 0).toString()}
+                  denominator={(
+                    item.targetQuantity ??
+                    item.quantity ??
+                    0
+                  ).toString()}
                   value={
-                    item.quantityCompleted && item.quantity
-                      ? (item.quantityCompleted / item.quantity) * 100
+                    item.quantityCompleted && item.targetQuantity
+                      ? (item.quantityCompleted / item.targetQuantity) * 100
                       : 0
                   }
                 />
