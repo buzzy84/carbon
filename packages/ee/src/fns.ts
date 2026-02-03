@@ -48,7 +48,7 @@ export function defineIntegration<T extends IntegrationOptions>(
   if (!options.name) {
     throw new Error(`Integration '${options.id}' must have a 'name' defined`);
   }
-  if (options.oauth && !options.oauth.clientId) {
+  if (options.active && options.oauth && !options.oauth.clientId) {
     throw new Error(
       `Integration '${options.id}' has OAuth config but missing clientId`
     );
