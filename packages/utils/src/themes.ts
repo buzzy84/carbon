@@ -30,7 +30,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "220 5.9% 90%",
         input: "220 5.9% 90%",
-        ring: "220 5.9% 10%"
+        ring: "220 5.9% 10%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "220 10% 6.9%",
@@ -53,7 +55,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "220 10% 15.9%",
         input: "220 10% 15.9%",
-        ring: "220 4.9% 83.9%"
+        ring: "220 4.9% 83.9%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -86,7 +90,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "0 0% 80%",
         input: "0 0% 80%",
-        ring: "0 0% 3.9%"
+        ring: "0 0% 3.9%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "20 33% 4%",
@@ -109,7 +115,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "0 0% 14.9%",
         input: "0 0% 14.9%",
-        ring: "0 0% 83.1%"
+        ring: "0 0% 83.1%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -142,7 +150,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "0 0% 89.8%",
         input: "0 0% 89.8%",
-        ring: "0 72.2% 50.6%"
+        ring: "0 72.2% 50.6%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "0 0% 6.9%",
@@ -166,7 +176,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "0 0% 14.9%",
         input: "0 0% 14.9%",
-        ring: "0 72.2% 50.6%"
+        ring: "0 72.2% 50.6%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -199,7 +211,9 @@ export const themes = [
         "destructive-foreground": "60 9.1% 97.8%",
         border: "20 5.9% 90%",
         input: "20 5.9% 90%",
-        ring: "24.6 95% 53.1%"
+        ring: "24.6 95% 53.1%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "20 14.3% 6.1%",
@@ -222,7 +236,9 @@ export const themes = [
         "destructive-foreground": "60 9.1% 97.8%",
         border: "12 6.5% 15.1%",
         input: "12 6.5% 15.1%",
-        ring: "20.5 90.2% 48.2%"
+        ring: "20.5 90.2% 48.2%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -255,7 +271,9 @@ export const themes = [
         "destructive-foreground": "60 9.1% 97.8%",
         border: "20 5.9% 90%",
         input: "20 5.9% 90%",
-        ring: "20 14.3% 4.1%"
+        ring: "20 14.3% 4.1%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "20 14.3% 6.1%",
@@ -278,7 +296,9 @@ export const themes = [
         "destructive-foreground": "61 9.1% 97.8%",
         border: "12 6.5% 15.1%",
         input: "12 6.5% 15.1%",
-        ring: "61 91.7% 32.9%"
+        ring: "61 91.7% 32.9%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -312,7 +332,9 @@ export const themes = [
         "destructive-foreground": "0 0% 98%",
         border: "171 5.9% 90%",
         input: "171 5.9% 90%",
-        ring: "171 62% 41%"
+        ring: "171 62% 41%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "20 14.3% 6.1%",
@@ -335,7 +357,9 @@ export const themes = [
         "destructive-foreground": "0 85.7% 97.3%",
         border: "151 3.7% 15.9%",
         input: "151 3.7% 15.9%",
-        ring: "142.4 71.8% 29.2%"
+        ring: "142.4 71.8% 29.2%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -368,7 +392,9 @@ export const themes = [
         "destructive-foreground": "210 40% 98%",
         border: "214.3 31.8% 91.4%",
         input: "214.3 31.8% 91.4%",
-        ring: "237.2 83.2% 53.3%"
+        ring: "237.2 83.2% 53.3%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "220 14.3% 6.1%",
@@ -391,7 +417,9 @@ export const themes = [
         "destructive-foreground": "0 85.7% 97.3%",
         border: "220 10% 15.9%",
         input: "220 10% 15.9%",
-        ring: "216 71.8% 29.2%"
+        ring: "216 71.8% 29.2%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       }
     }
   },
@@ -424,7 +452,9 @@ export const themes = [
         "destructive-foreground": "210 20% 98%",
         border: "220 13% 91%",
         input: "220 13% 91%",
-        ring: "262.1 83.3% 57.8%"
+        ring: "262.1 83.3% 57.8%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
       },
       dark: {
         background: "263 41.4 6.1%",
@@ -447,7 +477,69 @@ export const themes = [
         "destructive-foreground": "210 20% 98%",
         border: "263 27.9% 16.9%",
         input: "263 27.9% 16.9%",
-        ring: "263.4 70% 50.4%"
+        ring: "263.4 70% 50.4%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 98%"
+      }
+    }
+  },
+  {
+    name: "vercel",
+    label: "Vercel",
+    activeColor: {
+      light: "0 0% 93%",
+      dark: "0 0% 93%"
+    },
+    cssVars: {
+      light: {
+        background: "0 0% 4%",
+        foreground: "0 0% 93%",
+        card: "0 0% 9%",
+        "card-foreground": "0 0% 93%",
+        popover: "0 0% 9%",
+        "popover-foreground": "0 0% 93%",
+        primary: "0 0% 93%",
+        "primary-foreground": "0 0% 4%",
+        active: "0 0% 14%",
+        "active-foreground": "0 0% 93%",
+        secondary: "0 0% 14%",
+        "secondary-foreground": "0 0% 93%",
+        muted: "0 0% 14%",
+        "muted-foreground": "0 0% 45%",
+        accent: "0 0% 14%",
+        "accent-foreground": "0 0% 93%",
+        destructive: "0 84% 60%",
+        "destructive-foreground": "0 0% 93%",
+        border: "0 0% 18%",
+        input: "0 0% 14%",
+        ring: "0 0% 32%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 93%"
+      },
+      dark: {
+        background: "0 0% 4%",
+        foreground: "0 0% 93%",
+        card: "0 0% 9%",
+        "card-foreground": "0 0% 93%",
+        popover: "0 0% 9%",
+        "popover-foreground": "0 0% 93%",
+        primary: "0 0% 93%",
+        "primary-foreground": "0 0% 4%",
+        active: "0 0% 14%",
+        "active-foreground": "0 0% 93%",
+        secondary: "0 0% 14%",
+        "secondary-foreground": "0 0% 93%",
+        muted: "0 0% 14%",
+        "muted-foreground": "0 0% 45%",
+        accent: "0 0% 14%",
+        "accent-foreground": "0 0% 93%",
+        destructive: "0 62% 31%",
+        "destructive-foreground": "0 0% 93%",
+        border: "0 0% 18%",
+        input: "0 0% 14%",
+        ring: "0 0% 32%",
+        success: "142 70% 45%",
+        "success-foreground": "0 0% 93%"
       }
     }
   }
@@ -479,6 +571,8 @@ export const BASE_THEME_WITH_VARIABLES = `
   --input: <%- colors.light["input"] %>;
   --ring: <%- colors.light["ring"] %>;
   --radius: <%- radius %>rem;
+  --success: <%- colors.light["success"] %>;
+  --success-foreground: <%- colors.light["success-foreground"] %>;
 }
 
 .dark {
@@ -503,6 +597,8 @@ export const BASE_THEME_WITH_VARIABLES = `
   --border: <%- colors.dark["border"] %>;
   --input: <%- colors.dark["input"] %>;
   --ring: <%- colors.dark["ring"] %>;
+  --success: <%- colors.dark["success"] %>;
+  --success-foreground: <%- colors.dark["success-foreground"] %>;
 }`;
 
 export function getThemeCode(theme: Theme) {

@@ -172,12 +172,12 @@ export const themes = [
   "zinc",
   "neutral",
   "red",
-  "rose",
   "orange",
+  "yellow",
   "green",
   "blue",
-  "yellow",
-  "violet"
+  "violet",
+  "vercel"
 ] as const;
 export type Theme = (typeof themes)[number];
 

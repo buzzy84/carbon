@@ -5,12 +5,12 @@ const themes = [
   "zinc",
   "neutral",
   "red",
-  "rose",
+  "orange",
+  "yellow",
   "green",
   "blue",
-  "yellow",
-  "orange",
-  "violet"
+  "violet",
+  "vercel"
 ] as const;
 type Theme = (typeof themes)[number];
 
