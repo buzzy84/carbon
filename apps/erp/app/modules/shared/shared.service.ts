@@ -617,6 +617,7 @@ export async function getLatestApprovalRequestForDocument(
     .select("*")
     .eq("documentType", documentType)
     .eq("documentId", documentId)
+    .eq("status", "Pending")
     .order("requestedAt", { ascending: false })
     .limit(1)
     .maybeSingle();
