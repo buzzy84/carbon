@@ -117,7 +117,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const headers = new Headers({
     "Content-Type": "application/pdf",
-    "Content-Disposition": `inline; filename="${stockTransfer.data.stockTransferId}.pdf"`
+    "Content-Disposition": `inline; filename="${company.data.name} - ${stockTransfer.data.stockTransferId}.pdf"`
   });
   return new Response(body, { status: 200, headers });
 }

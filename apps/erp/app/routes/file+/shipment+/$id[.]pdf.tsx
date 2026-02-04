@@ -178,7 +178,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         stream.on("error", reject);
       });
 
-      const headers = new Headers({ "Content-Type": "application/pdf" });
+      const headers = new Headers({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
+      });
       return new Response(body, { status: 200, headers });
     }
     case "Sales Invoice": {
@@ -290,7 +293,10 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
         stream.on("error", reject);
       });
 
-      const headers = new Headers({ "Content-Type": "application/pdf" });
+      const headers = new Headers({
+        "Content-Type": "application/pdf",
+        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
+      });
       return new Response(body, { status: 200, headers });
     }
     case "Purchase Order": {
@@ -399,7 +405,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
       const poHeaders = new Headers({
         "Content-Type": "application/pdf",
-        "Content-Disposition": `inline; filename="${shipment.data.shipmentId}.pdf"`
+        "Content-Disposition": `inline; filename="${company.data.name} - ${shipment.data.shipmentId}.pdf"`
       });
       return new Response(poBody, { status: 200, headers: poHeaders });
     }
