@@ -1,9 +1,13 @@
 import { VERCEL_URL, XERO_CLIENT_ID, XERO_CLIENT_SECRET } from "@carbon/auth";
 import { requirePermissions } from "@carbon/auth/auth.server";
-import { Xero } from "@carbon/ee";
-import { getProviderIntegration, ProviderID } from "@carbon/ee/accounting";
-import { XeroProvider } from "@carbon/ee/xero";
-import { data, type LoaderFunctionArgs, redirect } from "react-router";
+import { getIntegrationConfigById, Xero } from "@carbon/ee";
+import {
+  DEFAULT_SYNC_CONFIG,
+  getProviderIntegration,
+  ProviderID
+} from "@carbon/ee/accounting";
+import type { LoaderFunctionArgs } from "react-router";
+import { data, redirect } from "react-router";
 import { upsertCompanyIntegration } from "~/modules/settings/settings.server";
 import { oAuthCallbackSchema } from "~/modules/shared";
 import { path } from "~/utils/path";
@@ -78,8 +82,9 @@ export async function loader({ request }: LoaderFunctionArgs) {
       return data({ error: "No Xero connections found" }, { status: 500 });
     }
 
-    // Get the first connection's tenant ID
+    // Get the first connection's tenant ID and name
     const tenantId = connections[0].tenantId;
+    const tenantName = connections[0].tenantName;
 
     if (!tenantId) {
       return data(
@@ -93,12 +98,21 @@ export async function loader({ request }: LoaderFunctionArgs) {
       active: true,
       // @ts-ignore
       metadata: {
-        ...auth,
-        tenantId
+        syncConfig: DEFAULT_SYNC_CONFIG,
+        credentials: {
+          ...auth,
+          tenantId,
+          tenantName: tenantName ?? undefined
+        }
       },
       updatedBy: userId,
       companyId: companyId
     });
+
+    const config = getIntegrationConfigById(Xero.id);
+
+    typeof config?.onInstall === "function" &&
+      (await config.onInstall(companyId));
 
     if (createdXeroIntegration?.data?.metadata) {
       const requestUrl = new URL(request.url);
@@ -117,6 +131,7 @@ export async function loader({ request }: LoaderFunctionArgs) {
       );
     }
   } catch (err) {
+    console.error("Xero OAuth Error:", err);
     return data(
       { error: "Failed to exchange code for token" },
       { status: 500 }

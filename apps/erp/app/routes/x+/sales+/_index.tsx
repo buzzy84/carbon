@@ -29,8 +29,8 @@ import {
   Thead,
   Tr
 } from "@carbon/react";
+import type { ChartConfig } from "@carbon/react/Chart";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent
@@ -52,13 +52,8 @@ import {
   RiProgress4Line,
   RiProgress8Line
 } from "react-icons/ri";
-import {
-  Await,
-  Link,
-  type LoaderFunctionArgs,
-  useFetcher,
-  useLoaderData
-} from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { Await, Link, useFetcher, useLoaderData } from "react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { CustomerAvatar, Empty, Hyperlink } from "~/components";
 import { useCurrencyFormatter } from "~/hooks/useCurrencyFormatter";

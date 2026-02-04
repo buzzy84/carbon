@@ -4,7 +4,7 @@ import { JobTravelerPDF } from "@carbon/documents/pdf";
 import type { JSONContent } from "@carbon/react";
 import { flattenTree, generateBomIds } from "@carbon/utils";
 import { renderToStream } from "@react-pdf/renderer";
-import { type LoaderFunctionArgs } from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
 import {
   getJob,
   getJobMakeMethodById,
@@ -148,7 +148,7 @@ export async function loader({ request, params }: LoaderFunctionArgs) {
 
   const headers = new Headers({
     "Content-Type": "application/pdf",
-    "Content-Disposition": `inline; filename="${job.data.jobId}.pdf"`
+    "Content-Disposition": `inline; filename="${company.data.name} - ${job.data.jobId}.pdf"`
   });
   return new Response(body, { status: 200, headers });
 }

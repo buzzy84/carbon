@@ -8,7 +8,8 @@ import { Link, useNavigate } from "react-router";
 import { Hyperlink, Table } from "~/components";
 import { Enumerable } from "~/components/Enumerable";
 import { usePermissions, useUrlParams } from "~/hooks";
-import { type CustomFieldsTableType, modulesType } from "~/modules/settings";
+import type { CustomFieldsTableType } from "~/modules/settings";
+import { modulesType } from "~/modules/settings";
 import { tablesWithTags } from "~/modules/shared";
 import { path } from "~/utils/path";
 

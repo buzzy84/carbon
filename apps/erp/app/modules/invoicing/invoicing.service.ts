@@ -1,6 +1,7 @@
 import type { Database, Json } from "@carbon/database";
 import { getLocalTimeZone, now, today } from "@internationalized/date";
-import { FunctionRegion, type SupabaseClient } from "@supabase/supabase-js";
+import type { SupabaseClient } from "@supabase/supabase-js";
+import { FunctionRegion } from "@supabase/supabase-js";
 import type { z } from "zod";
 import {
   getSupplierPayment,

@@ -18,16 +18,16 @@ const styles = StyleSheet.create({
     marginBottom: 20
   },
   logo: {
-    height: 70
+    height: 50
   },
   titleWithoutSubtitle: {
-    height: 70,
-    fontSize: 26,
+    height: 50,
+    fontSize: 20,
     letterSpacing: -1,
     fontWeight: 700
   },
   title: {
-    fontSize: 26,
+    fontSize: 20,
     letterSpacing: -1,
     fontWeight: 700
   },

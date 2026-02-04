@@ -44,8 +44,8 @@ import {
   VStack
 } from "@carbon/react";
 import { useNumberFormatter } from "@react-aria/i18n";
+import type { ColumnDef } from "@tanstack/react-table";
 import {
-  type ColumnDef,
   flexRender,
   getCoreRowModel,
   useReactTable

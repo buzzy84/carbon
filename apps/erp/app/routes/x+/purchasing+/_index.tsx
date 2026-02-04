@@ -29,8 +29,8 @@ import {
   Thead,
   Tr
 } from "@carbon/react";
+import type { ChartConfig } from "@carbon/react/Chart";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent
@@ -54,13 +54,8 @@ import {
   LuLayoutList,
   LuPackageSearch
 } from "react-icons/lu";
-import {
-  Await,
-  Link,
-  type LoaderFunctionArgs,
-  useFetcher,
-  useLoaderData
-} from "react-router";
+import type { LoaderFunctionArgs } from "react-router";
+import { Await, Link, useFetcher, useLoaderData } from "react-router";
 import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
 import { Empty, Hyperlink, SupplierAvatar } from "~/components";
 import { useUser } from "~/hooks";

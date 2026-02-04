@@ -218,7 +218,7 @@ const PurchasingRFQsTable = memo(
       ];
 
       return [...defaultColumns, ...customColumns];
-    }, [people, customColumns]);
+    }, [people, customColumns, suppliers.find, suppliers.map]);
 
     const renderContextMenu = useMemo(() => {
       return (row: PurchasingRFQ) => (

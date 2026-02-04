@@ -1462,6 +1462,9 @@ export default {
             $ref: "#/parameters/rowFilter.consumables.itemPostingGroupId",
           },
           {
+            $ref: "#/parameters/rowFilter.consumables.externalId",
+          },
+          {
             $ref: "#/parameters/rowFilter.consumables.createdBy",
           },
           {
@@ -2488,9 +2491,6 @@ export default {
             $ref: "#/parameters/rowFilter.customerLocation.tags",
           },
           {
-            $ref: "#/parameters/rowFilter.customerLocation.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -2568,9 +2568,6 @@ export default {
             $ref: "#/parameters/rowFilter.customerLocation.tags",
           },
           {
-            $ref: "#/parameters/rowFilter.customerLocation.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -2600,9 +2597,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.customerLocation.tags",
-          },
-          {
-            $ref: "#/parameters/rowFilter.customerLocation.externalId",
           },
           {
             $ref: "#/parameters/body.customerLocation",
@@ -4108,6 +4102,141 @@ export default {
           },
         },
         tags: ["approvalRequests"],
+      },
+    },
+    "/eventSystemTrigger": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.tableName",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.type",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.attachedFunctions",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.systemTriggerName",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/eventSystemTrigger",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["eventSystemTrigger"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.eventSystemTrigger",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["eventSystemTrigger"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.tableName",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.type",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.attachedFunctions",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.systemTriggerName",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["eventSystemTrigger"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.tableName",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.type",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.attachedFunctions",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.status",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemTrigger.systemTriggerName",
+          },
+          {
+            $ref: "#/parameters/body.eventSystemTrigger",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["eventSystemTrigger"],
       },
     },
     "/jobOperationsWithDependencies": {
@@ -6370,9 +6499,6 @@ export default {
             $ref: "#/parameters/rowFilter.nonConformanceActionTask.supplierId",
           },
           {
-            $ref: "#/parameters/rowFilter.nonConformanceActionTask.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -6480,9 +6606,6 @@ export default {
             $ref: "#/parameters/rowFilter.nonConformanceActionTask.supplierId",
           },
           {
-            $ref: "#/parameters/rowFilter.nonConformanceActionTask.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -6542,9 +6665,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.nonConformanceActionTask.supplierId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.nonConformanceActionTask.externalId",
           },
           {
             $ref: "#/parameters/body.nonConformanceActionTask",
@@ -11110,9 +11230,6 @@ export default {
             $ref: "#/parameters/rowFilter.material.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.material.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.material.tags",
           },
           {
@@ -11220,9 +11337,6 @@ export default {
             $ref: "#/parameters/rowFilter.material.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.material.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.material.tags",
           },
           {
@@ -11282,9 +11396,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.material.updatedAt",
-          },
-          {
-            $ref: "#/parameters/rowFilter.material.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.material.tags",
@@ -13559,6 +13670,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.customers.defaultCc",
+          },
+          {
+            $ref: "#/parameters/rowFilter.customers.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.customers.type",
@@ -17113,9 +17227,6 @@ export default {
             $ref: "#/parameters/rowFilter.salesOrder.customerEngineeringContactId",
           },
           {
-            $ref: "#/parameters/rowFilter.salesOrder.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -17262,9 +17373,6 @@ export default {
             $ref: "#/parameters/rowFilter.salesOrder.customerEngineeringContactId",
           },
           {
-            $ref: "#/parameters/rowFilter.salesOrder.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -17363,9 +17471,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.salesOrder.customerEngineeringContactId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.salesOrder.externalId",
           },
           {
             $ref: "#/parameters/body.salesOrder",
@@ -19671,6 +19776,213 @@ export default {
         tags: ["openJobMaterialLines"],
       },
     },
+    "/externalIntegrationMapping": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.entityType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.entityId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.integration",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.externalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.allowDuplicateExternalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.metadata",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.lastSyncedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.remoteUpdatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.companyId",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/externalIntegrationMapping",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["externalIntegrationMapping"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.externalIntegrationMapping",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["externalIntegrationMapping"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.entityType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.entityId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.integration",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.externalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.allowDuplicateExternalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.metadata",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.lastSyncedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.remoteUpdatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.companyId",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["externalIntegrationMapping"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.entityType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.entityId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.integration",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.externalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.allowDuplicateExternalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.metadata",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.lastSyncedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.remoteUpdatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.updatedAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.externalIntegrationMapping.companyId",
+          },
+          {
+            $ref: "#/parameters/body.externalIntegrationMapping",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["externalIntegrationMapping"],
+      },
+    },
     "/sequence": {
       get: {
         parameters: [
@@ -20377,9 +20689,6 @@ export default {
             $ref: "#/parameters/rowFilter.consumable.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.consumable.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.consumable.tags",
           },
           {
@@ -20469,9 +20778,6 @@ export default {
             $ref: "#/parameters/rowFilter.consumable.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.consumable.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.consumable.tags",
           },
           {
@@ -20513,9 +20819,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.consumable.updatedAt",
-          },
-          {
-            $ref: "#/parameters/rowFilter.consumable.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.consumable.tags",
@@ -20974,6 +21277,126 @@ export default {
           },
         },
         tags: ["materialType"],
+      },
+    },
+    "/services": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.services.active",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.assignee",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.defaultMethodType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.description",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.itemTrackingType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.name",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.replenishmentSystem",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.unitOfMeasureCode",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.notes",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.revision",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.readableId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.readableIdWithRevision",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.thumbnailPath",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.supplierIds",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.unitOfMeasure",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.revisions",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.customFields",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.tags",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.itemPostingGroupId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.externalId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.createdBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.createdAt",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.updatedBy",
+          },
+          {
+            $ref: "#/parameters/rowFilter.services.updatedAt",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/services",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["services"],
       },
     },
     "/purchasePayment": {
@@ -22618,9 +23041,6 @@ export default {
             $ref: "#/parameters/rowFilter.contact.companyId",
           },
           {
-            $ref: "#/parameters/rowFilter.contact.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.contact.fullName",
           },
           {
@@ -22719,9 +23139,6 @@ export default {
             $ref: "#/parameters/rowFilter.contact.companyId",
           },
           {
-            $ref: "#/parameters/rowFilter.contact.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.contact.fullName",
           },
           {
@@ -22772,9 +23189,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.contact.companyId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.contact.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.contact.fullName",
@@ -23473,6 +23887,186 @@ export default {
           },
         },
         tags: ["purchaseOrderStatusHistory"],
+      },
+    },
+    "/eventSystemSubscription": {
+      get: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.name",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.table",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.operations",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.filter",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.handlerType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.config",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.active",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.createdAt",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/order",
+          },
+          {
+            $ref: "#/parameters/range",
+          },
+          {
+            $ref: "#/parameters/rangeUnit",
+          },
+          {
+            $ref: "#/parameters/offset",
+          },
+          {
+            $ref: "#/parameters/limit",
+          },
+          {
+            $ref: "#/parameters/preferCount",
+          },
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+            schema: {
+              items: {
+                $ref: "#/definitions/eventSystemSubscription",
+              },
+              type: "array",
+            },
+          },
+          "206": {
+            description: "Partial Content",
+          },
+        },
+        tags: ["eventSystemSubscription"],
+      },
+      post: {
+        parameters: [
+          {
+            $ref: "#/parameters/body.eventSystemSubscription",
+          },
+          {
+            $ref: "#/parameters/select",
+          },
+          {
+            $ref: "#/parameters/preferPost",
+          },
+        ],
+        responses: {
+          "201": {
+            description: "Created",
+          },
+        },
+        tags: ["eventSystemSubscription"],
+      },
+      delete: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.name",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.table",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.operations",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.filter",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.handlerType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.config",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.active",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.createdAt",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["eventSystemSubscription"],
+      },
+      patch: {
+        parameters: [
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.id",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.name",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.companyId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.table",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.operations",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.filter",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.handlerType",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.config",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.active",
+          },
+          {
+            $ref: "#/parameters/rowFilter.eventSystemSubscription.createdAt",
+          },
+          {
+            $ref: "#/parameters/body.eventSystemSubscription",
+          },
+          {
+            $ref: "#/parameters/preferReturn",
+          },
+        ],
+        responses: {
+          "204": {
+            description: "No Content",
+          },
+        },
+        tags: ["eventSystemSubscription"],
       },
     },
     "/nonConformanceWorkflow": {
@@ -34543,9 +35137,6 @@ export default {
             $ref: "#/parameters/rowFilter.fixture.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.fixture.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.fixture.tags",
           },
           {
@@ -34641,9 +35232,6 @@ export default {
             $ref: "#/parameters/rowFilter.fixture.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.fixture.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.fixture.tags",
           },
           {
@@ -34691,9 +35279,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.fixture.updatedAt",
-          },
-          {
-            $ref: "#/parameters/rowFilter.fixture.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.fixture.tags",
@@ -38536,9 +39121,6 @@ export default {
             $ref: "#/parameters/rowFilter.customer.website",
           },
           {
-            $ref: "#/parameters/rowFilter.customer.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.customer.taxPercent",
           },
           {
@@ -38670,9 +39252,6 @@ export default {
             $ref: "#/parameters/rowFilter.customer.website",
           },
           {
-            $ref: "#/parameters/rowFilter.customer.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.customer.taxPercent",
           },
           {
@@ -38756,9 +39335,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.customer.website",
-          },
-          {
-            $ref: "#/parameters/rowFilter.customer.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.customer.taxPercent",
@@ -38879,9 +39455,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.purchaseOrder.jobReadableId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.purchaseOrder.externalId",
           },
           {
             $ref: "#/parameters/select",
@@ -39027,9 +39600,6 @@ export default {
             $ref: "#/parameters/rowFilter.purchaseOrder.jobReadableId",
           },
           {
-            $ref: "#/parameters/rowFilter.purchaseOrder.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -39125,9 +39695,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.purchaseOrder.jobReadableId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.purchaseOrder.externalId",
           },
           {
             $ref: "#/parameters/body.purchaseOrder",
@@ -40792,6 +41359,9 @@ export default {
             $ref: "#/parameters/rowFilter.parts.itemPostingGroupId",
           },
           {
+            $ref: "#/parameters/rowFilter.parts.externalId",
+          },
+          {
             $ref: "#/parameters/rowFilter.parts.createdBy",
           },
           {
@@ -41074,9 +41644,6 @@ export default {
             $ref: "#/parameters/rowFilter.address.companyId",
           },
           {
-            $ref: "#/parameters/rowFilter.address.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -41166,9 +41733,6 @@ export default {
             $ref: "#/parameters/rowFilter.address.companyId",
           },
           {
-            $ref: "#/parameters/rowFilter.address.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -41210,9 +41774,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.address.companyId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.address.externalId",
           },
           {
             $ref: "#/parameters/body.address",
@@ -41330,6 +41891,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.materials.itemPostingGroupId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.materials.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.materials.createdBy",
@@ -42070,9 +42634,6 @@ export default {
             $ref: "#/parameters/rowFilter.tool.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.tool.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.tool.tags",
           },
           {
@@ -42162,9 +42723,6 @@ export default {
             $ref: "#/parameters/rowFilter.tool.updatedAt",
           },
           {
-            $ref: "#/parameters/rowFilter.tool.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.tool.tags",
           },
           {
@@ -42206,9 +42764,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.tool.updatedAt",
-          },
-          {
-            $ref: "#/parameters/rowFilter.tool.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.tool.tags",
@@ -42716,6 +43271,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.tools.itemPostingGroupId",
+          },
+          {
+            $ref: "#/parameters/rowFilter.tools.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.tools.createdBy",
@@ -48382,9 +48940,6 @@ export default {
             $ref: "#/parameters/rowFilter.company.ownerId",
           },
           {
-            $ref: "#/parameters/rowFilter.company.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.company.createdAt",
           },
           {
@@ -48513,9 +49068,6 @@ export default {
             $ref: "#/parameters/rowFilter.company.ownerId",
           },
           {
-            $ref: "#/parameters/rowFilter.company.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.company.createdAt",
           },
           {
@@ -48596,9 +49148,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.company.ownerId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.company.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.company.createdAt",
@@ -48823,9 +49372,6 @@ export default {
             $ref: "#/parameters/rowFilter.user.acknowledgedITAR",
           },
           {
-            $ref: "#/parameters/rowFilter.user.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -48927,9 +49473,6 @@ export default {
             $ref: "#/parameters/rowFilter.user.acknowledgedITAR",
           },
           {
-            $ref: "#/parameters/rowFilter.user.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -48983,9 +49526,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.user.acknowledgedITAR",
-          },
-          {
-            $ref: "#/parameters/rowFilter.user.externalId",
           },
           {
             $ref: "#/parameters/body.user",
@@ -49186,9 +49726,6 @@ export default {
             $ref: "#/parameters/rowFilter.supplierLocation.tags",
           },
           {
-            $ref: "#/parameters/rowFilter.supplierLocation.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -49266,9 +49803,6 @@ export default {
             $ref: "#/parameters/rowFilter.supplierLocation.tags",
           },
           {
-            $ref: "#/parameters/rowFilter.supplierLocation.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -49298,9 +49832,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.supplierLocation.tags",
-          },
-          {
-            $ref: "#/parameters/rowFilter.supplierLocation.externalId",
           },
           {
             $ref: "#/parameters/body.supplierLocation",
@@ -51166,9 +51697,6 @@ export default {
             $ref: "#/parameters/rowFilter.salesOrders.customerEngineeringContactId",
           },
           {
-            $ref: "#/parameters/rowFilter.salesOrders.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.salesOrders.thumbnailPath",
           },
           {
@@ -51203,6 +51731,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.salesOrders.shippingCost",
+          },
+          {
+            $ref: "#/parameters/rowFilter.salesOrders.externalId",
           },
           {
             $ref: "#/parameters/select",
@@ -54562,9 +55093,6 @@ export default {
             $ref: "#/parameters/rowFilter.supplier.website",
           },
           {
-            $ref: "#/parameters/rowFilter.supplier.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.supplier.tags",
           },
           {
@@ -54696,9 +55224,6 @@ export default {
             $ref: "#/parameters/rowFilter.supplier.website",
           },
           {
-            $ref: "#/parameters/rowFilter.supplier.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.supplier.tags",
           },
           {
@@ -54782,9 +55307,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.supplier.website",
-          },
-          {
-            $ref: "#/parameters/rowFilter.supplier.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.supplier.tags",
@@ -55600,9 +56122,6 @@ export default {
             $ref: "#/parameters/rowFilter.item.modelUploadId",
           },
           {
-            $ref: "#/parameters/rowFilter.item.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.item.thumbnailPath",
           },
           {
@@ -55731,9 +56250,6 @@ export default {
             $ref: "#/parameters/rowFilter.item.modelUploadId",
           },
           {
-            $ref: "#/parameters/rowFilter.item.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.item.thumbnailPath",
           },
           {
@@ -55814,9 +56330,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.item.modelUploadId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.item.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.item.thumbnailPath",
@@ -60214,9 +60727,6 @@ export default {
             $ref: "#/parameters/rowFilter.quote.customerEngineeringContactId",
           },
           {
-            $ref: "#/parameters/rowFilter.quote.externalId",
-          },
-          {
             $ref: "#/parameters/select",
           },
           {
@@ -60378,9 +60888,6 @@ export default {
             $ref: "#/parameters/rowFilter.quote.customerEngineeringContactId",
           },
           {
-            $ref: "#/parameters/rowFilter.quote.externalId",
-          },
-          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -60494,9 +61001,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.quote.customerEngineeringContactId",
-          },
-          {
-            $ref: "#/parameters/rowFilter.quote.externalId",
           },
           {
             $ref: "#/parameters/body.quote",
@@ -61165,6 +61669,12 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.defaultCustomerCc",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnSalesPdfs",
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -61293,6 +61803,12 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.defaultCustomerCc",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnSalesPdfs",
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -61375,6 +61891,12 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.defaultCustomerCc",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnSalesPdfs",
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs",
+          },
+          {
             $ref: "#/parameters/body.companySettings",
           },
           {
@@ -61424,9 +61946,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.part.customFields",
-          },
-          {
-            $ref: "#/parameters/rowFilter.part.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.part.tags",
@@ -61524,9 +62043,6 @@ export default {
             $ref: "#/parameters/rowFilter.part.customFields",
           },
           {
-            $ref: "#/parameters/rowFilter.part.externalId",
-          },
-          {
             $ref: "#/parameters/rowFilter.part.tags",
           },
           {
@@ -61574,9 +62090,6 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.part.customFields",
-          },
-          {
-            $ref: "#/parameters/rowFilter.part.externalId",
           },
           {
             $ref: "#/parameters/rowFilter.part.tags",
@@ -65113,6 +65626,48 @@ export default {
         tags: ["(rpc) get_supplier_ids_with_supplier_permission"],
       },
     },
+    "/rpc/attach_event_trigger": {
+      post: {
+        parameters: [
+          {
+            in: "body",
+            name: "args",
+            required: true,
+            schema: {
+              properties: {
+                sync_functions: {
+                  format: "text[]",
+                  items: {
+                    type: "string",
+                  },
+                  type: "array",
+                },
+                table_name_text: {
+                  format: "text",
+                  type: "string",
+                },
+              },
+              required: ["table_name_text"],
+              type: "object",
+            },
+          },
+          {
+            $ref: "#/parameters/preferParams",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) attach_event_trigger"],
+      },
+    },
     "/rpc/get_job_operation_by_id": {
       post: {
         parameters: [
@@ -67422,6 +67977,9 @@ export default {
           format: "text",
           type: "string",
         },
+        externalId: {
+          format: "jsonb",
+        },
         createdBy: {
           description:
             "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
@@ -67873,9 +68431,6 @@ export default {
             type: "string",
           },
           type: "array",
-        },
-        externalId: {
-          format: "jsonb",
         },
       },
       type: "object",
@@ -68553,6 +69108,31 @@ export default {
         },
         documentDescription: {
           format: "text",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
+    eventSystemTrigger: {
+      properties: {
+        tableName: {
+          format: "text",
+          type: "string",
+        },
+        type: {
+          format: "text",
+          type: "string",
+        },
+        attachedFunctions: {
+          format: "text",
+          type: "string",
+        },
+        status: {
+          format: "text",
+          type: "string",
+        },
+        systemTriggerName: {
+          format: "name",
           type: "string",
         },
       },
@@ -69637,9 +70217,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "json",
-        },
       },
       type: "object",
     },
@@ -70507,7 +71084,7 @@ export default {
       properties: {
         id: {
           description:
-            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
+            "Note:\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
           format: "text",
           type: "string",
         },
@@ -70556,7 +71133,7 @@ export default {
         },
         supplierLocationId: {
           description:
-            "Note:\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
+            "Note:\nThis is a Primary Key.<pk/>\nThis is a Foreign Key to `supplierLocation.id`.<fk table='supplierLocation' column='id'/>",
           format: "text",
           type: "string",
         },
@@ -72034,9 +72611,6 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         tags: {
           format: "text[]",
           items: {
@@ -73276,6 +73850,9 @@ export default {
             type: "string",
           },
           type: "array",
+        },
+        externalId: {
+          format: "jsonb",
         },
         type: {
           format: "text",
@@ -75029,9 +75606,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
       },
       type: "object",
     },
@@ -76201,6 +76775,81 @@ export default {
       },
       type: "object",
     },
+    externalIntegrationMapping: {
+      required: [
+        "id",
+        "entityType",
+        "entityId",
+        "integration",
+        "allowDuplicateExternalId",
+        "createdAt",
+        "updatedAt",
+        "companyId",
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        entityType: {
+          format: "text",
+          type: "string",
+        },
+        entityId: {
+          format: "text",
+          type: "string",
+        },
+        integration: {
+          format: "text",
+          type: "string",
+        },
+        externalId: {
+          format: "text",
+          type: "string",
+        },
+        allowDuplicateExternalId: {
+          default: false,
+          format: "boolean",
+          type: "boolean",
+        },
+        metadata: {
+          format: "jsonb",
+        },
+        lastSyncedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        remoteUpdatedAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        updatedAt: {
+          default: "now()",
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
     sequence: {
       required: ["id", "table", "name", "next", "size", "step", "companyId"],
       properties: {
@@ -76471,9 +77120,6 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         tags: {
           format: "text[]",
           items: {
@@ -76603,6 +77249,128 @@ export default {
           description:
             "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
           format: "text",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
+    services: {
+      properties: {
+        active: {
+          format: "boolean",
+          type: "boolean",
+        },
+        assignee: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        defaultMethodType: {
+          enum: ["Buy", "Make", "Pick"],
+          format: 'public."methodType"',
+          type: "string",
+        },
+        description: {
+          format: "text",
+          type: "string",
+        },
+        itemTrackingType: {
+          enum: ["Inventory", "Non-Inventory", "Serial", "Batch"],
+          format: 'public."itemTrackingType"',
+          type: "string",
+        },
+        name: {
+          format: "text",
+          type: "string",
+        },
+        replenishmentSystem: {
+          enum: ["Buy", "Make", "Buy and Make"],
+          format: 'public."itemReplenishmentSystem"',
+          type: "string",
+        },
+        unitOfMeasureCode: {
+          format: "text",
+          type: "string",
+        },
+        notes: {
+          format: "jsonb",
+        },
+        revision: {
+          format: "text",
+          type: "string",
+        },
+        readableId: {
+          format: "text",
+          type: "string",
+        },
+        readableIdWithRevision: {
+          format: "text",
+          type: "string",
+        },
+        id: {
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        thumbnailPath: {
+          format: "text",
+          type: "string",
+        },
+        supplierIds: {
+          format: "text",
+          type: "string",
+        },
+        unitOfMeasure: {
+          format: "text",
+          type: "string",
+        },
+        revisions: {
+          format: "json",
+        },
+        customFields: {
+          format: "jsonb",
+        },
+        tags: {
+          format: "text[]",
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        itemPostingGroupId: {
+          description:
+            "Note:\nThis is a Foreign Key to `itemPostingGroup.id`.<fk table='itemPostingGroup' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        externalId: {
+          format: "jsonb",
+        },
+        createdBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        createdAt: {
+          format: "timestamp with time zone",
+          type: "string",
+        },
+        updatedBy: {
+          description:
+            "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        updatedAt: {
+          format: "timestamp with time zone",
           type: "string",
         },
       },
@@ -77346,9 +78114,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         fullName: {
           format: "text",
           type: "string",
@@ -77629,6 +78394,67 @@ export default {
           description:
             "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
           format: "text",
+          type: "string",
+        },
+      },
+      type: "object",
+    },
+    eventSystemSubscription: {
+      required: [
+        "id",
+        "name",
+        "companyId",
+        "table",
+        "operations",
+        "handlerType",
+        "config",
+      ],
+      properties: {
+        id: {
+          default: "public.id()",
+          description: "Note:\nThis is a Primary Key.<pk/>",
+          format: "text",
+          type: "string",
+        },
+        name: {
+          format: "text",
+          type: "string",
+        },
+        companyId: {
+          description:
+            "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
+          format: "text",
+          type: "string",
+        },
+        table: {
+          format: "text",
+          type: "string",
+        },
+        operations: {
+          format: "text[]",
+          items: {
+            type: "string",
+          },
+          type: "array",
+        },
+        filter: {
+          format: "jsonb",
+        },
+        handlerType: {
+          format: "text",
+          type: "string",
+        },
+        config: {
+          format: "jsonb",
+        },
+        active: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        createdAt: {
+          default: "now()",
+          format: "timestamp with time zone",
           type: "string",
         },
       },
@@ -83038,9 +83864,6 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         tags: {
           format: "text[]",
           items: {
@@ -84593,9 +85416,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         taxPercent: {
           default: 0,
           format: "numeric",
@@ -84801,9 +85621,6 @@ export default {
         jobReadableId: {
           format: "text",
           type: "string",
-        },
-        externalId: {
-          format: "jsonb",
         },
       },
       type: "object",
@@ -85775,6 +86592,9 @@ export default {
           format: "text",
           type: "string",
         },
+        externalId: {
+          format: "jsonb",
+        },
         createdBy: {
           description:
             "Note:\nThis is a Foreign Key to `user.id`.<fk table='user' column='id'/>",
@@ -85923,9 +86743,6 @@ export default {
             "Note:\nThis is a Foreign Key to `company.id`.<fk table='company' column='id'/>",
           format: "text",
           type: "string",
-        },
-        externalId: {
-          format: "jsonb",
         },
       },
       type: "object",
@@ -86079,6 +86896,9 @@ export default {
             "Note:\nThis is a Foreign Key to `itemPostingGroup.id`.<fk table='itemPostingGroup' column='id'/>",
           format: "text",
           type: "string",
+        },
+        externalId: {
+          format: "jsonb",
         },
         createdBy: {
           description:
@@ -86445,9 +87265,6 @@ export default {
           format: "timestamp with time zone",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         tags: {
           format: "text[]",
           items: {
@@ -86723,6 +87540,9 @@ export default {
             "Note:\nThis is a Foreign Key to `itemPostingGroup.id`.<fk table='itemPostingGroup' column='id'/>",
           format: "text",
           type: "string",
+        },
+        externalId: {
+          format: "jsonb",
         },
         createdBy: {
           description:
@@ -89582,9 +90402,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         createdAt: {
           default: "now()",
           format: "timestamp with time zone",
@@ -89796,9 +90613,6 @@ export default {
           format: "boolean",
           type: "boolean",
         },
-        externalId: {
-          format: "jsonb",
-        },
       },
       type: "object",
     },
@@ -89889,9 +90703,6 @@ export default {
             type: "string",
           },
           type: "array",
-        },
-        externalId: {
-          format: "jsonb",
         },
       },
       type: "object",
@@ -90795,9 +91606,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         thumbnailPath: {
           format: "text",
           type: "string",
@@ -90859,6 +91667,9 @@ export default {
         shippingCost: {
           format: "numeric",
           type: "number",
+        },
+        externalId: {
+          format: "jsonb",
         },
       },
       type: "object",
@@ -92607,9 +93418,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
         tags: {
           format: "text[]",
           items: {
@@ -93202,9 +94010,6 @@ export default {
             "Note:\nThis is a Foreign Key to `modelUpload.id`.<fk table='modelUpload' column='id'/>",
           format: "text",
           type: "string",
-        },
-        externalId: {
-          format: "jsonb",
         },
         thumbnailPath: {
           format: "text",
@@ -95507,9 +96312,6 @@ export default {
           format: "text",
           type: "string",
         },
-        externalId: {
-          format: "jsonb",
-        },
       },
       type: "object",
     },
@@ -95803,6 +96605,8 @@ export default {
         "supplierQuoteNotificationGroup",
         "maintenanceGenerateInAdvance",
         "maintenanceAdvanceDays",
+        "includeThumbnailsOnSalesPdfs",
+        "includeThumbnailsOnPurchasingPdfs",
       ],
       properties: {
         id: {
@@ -95947,6 +96751,16 @@ export default {
           },
           type: "array",
         },
+        includeThumbnailsOnSalesPdfs: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        includeThumbnailsOnPurchasingPdfs: {
+          default: true,
+          format: "boolean",
+          type: "boolean",
+        },
       },
       type: "object",
     },
@@ -96006,9 +96820,6 @@ export default {
           type: "string",
         },
         customFields: {
-          format: "jsonb",
-        },
-        externalId: {
           format: "jsonb",
         },
         tags: {
@@ -97265,6 +98076,12 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.consumables.externalId": {
+      name: "externalId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "rowFilter.consumables.createdBy": {
       name: "createdBy",
       required: false,
@@ -97780,12 +98597,6 @@ export default {
     },
     "rowFilter.customerLocation.tags": {
       name: "tags",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.customerLocation.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -98587,6 +99398,45 @@ export default {
     },
     "rowFilter.approvalRequests.documentDescription": {
       name: "documentDescription",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "body.eventSystemTrigger": {
+      name: "eventSystemTrigger",
+      description: "eventSystemTrigger",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/eventSystemTrigger",
+      },
+    },
+    "rowFilter.eventSystemTrigger.tableName": {
+      name: "tableName",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemTrigger.type": {
+      name: "type",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemTrigger.attachedFunctions": {
+      name: "attachedFunctions",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemTrigger.status": {
+      name: "status",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemTrigger.systemTriggerName": {
+      name: "systemTriggerName",
       required: false,
       in: "query",
       type: "string",
@@ -99775,12 +100625,6 @@ export default {
     },
     "rowFilter.nonConformanceActionTask.supplierId": {
       name: "supplierId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.nonConformanceActionTask.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -102506,12 +103350,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.material.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.material.tags": {
       name: "tags",
       required: false,
@@ -103897,6 +104735,12 @@ export default {
     },
     "rowFilter.customers.defaultCc": {
       name: "defaultCc",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.customers.externalId": {
+      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -105845,12 +106689,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.salesOrder.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "body.jobOperationTool": {
       name: "jobOperationTool",
       description: "jobOperationTool",
@@ -107152,6 +107990,93 @@ export default {
       in: "query",
       type: "string",
     },
+    "body.externalIntegrationMapping": {
+      name: "externalIntegrationMapping",
+      description: "externalIntegrationMapping",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/externalIntegrationMapping",
+      },
+    },
+    "rowFilter.externalIntegrationMapping.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.entityType": {
+      name: "entityType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.entityId": {
+      name: "entityId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.integration": {
+      name: "integration",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.externalId": {
+      name: "externalId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.allowDuplicateExternalId": {
+      name: "allowDuplicateExternalId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.metadata": {
+      name: "metadata",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.lastSyncedAt": {
+      name: "lastSyncedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.remoteUpdatedAt": {
+      name: "remoteUpdatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.updatedAt": {
+      name: "updatedAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.externalIntegrationMapping.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.sequence": {
       name: "sequence",
       description: "sequence",
@@ -107461,12 +108386,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.consumable.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.consumable.tags": {
       name: "tags",
       required: false,
@@ -107610,6 +108529,171 @@ export default {
     },
     "rowFilter.materialType.companyId": {
       name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "body.services": {
+      name: "services",
+      description: "services",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/services",
+      },
+    },
+    "rowFilter.services.active": {
+      name: "active",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.assignee": {
+      name: "assignee",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.defaultMethodType": {
+      name: "defaultMethodType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.description": {
+      name: "description",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.itemTrackingType": {
+      name: "itemTrackingType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.name": {
+      name: "name",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.replenishmentSystem": {
+      name: "replenishmentSystem",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.unitOfMeasureCode": {
+      name: "unitOfMeasureCode",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.notes": {
+      name: "notes",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.revision": {
+      name: "revision",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.readableId": {
+      name: "readableId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.readableIdWithRevision": {
+      name: "readableIdWithRevision",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.thumbnailPath": {
+      name: "thumbnailPath",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.supplierIds": {
+      name: "supplierIds",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.unitOfMeasure": {
+      name: "unitOfMeasure",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.revisions": {
+      name: "revisions",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.customFields": {
+      name: "customFields",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.tags": {
+      name: "tags",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.itemPostingGroupId": {
+      name: "itemPostingGroupId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.externalId": {
+      name: "externalId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.createdBy": {
+      name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.createdAt": {
+      name: "createdAt",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.updatedBy": {
+      name: "updatedBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.services.updatedAt": {
+      name: "updatedAt",
       required: false,
       in: "query",
       type: "string",
@@ -108448,12 +109532,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.contact.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.contact.fullName": {
       name: "fullName",
       required: false,
@@ -108772,6 +109850,75 @@ export default {
     },
     "rowFilter.purchaseOrderStatusHistory.createdBy": {
       name: "createdBy",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "body.eventSystemSubscription": {
+      name: "eventSystemSubscription",
+      description: "eventSystemSubscription",
+      required: false,
+      in: "body",
+      schema: {
+        $ref: "#/definitions/eventSystemSubscription",
+      },
+    },
+    "rowFilter.eventSystemSubscription.id": {
+      name: "id",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.name": {
+      name: "name",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.companyId": {
+      name: "companyId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.table": {
+      name: "table",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.operations": {
+      name: "operations",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.filter": {
+      name: "filter",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.handlerType": {
+      name: "handlerType",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.config": {
+      name: "config",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.active": {
+      name: "active",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.eventSystemSubscription.createdAt": {
+      name: "createdAt",
       required: false,
       in: "query",
       type: "string",
@@ -114910,12 +116057,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.fixture.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.fixture.tags": {
       name: "tags",
       required: false,
@@ -116588,12 +117729,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.customer.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.customer.taxPercent": {
       name: "taxPercent",
       required: false,
@@ -116803,12 +117938,6 @@ export default {
     },
     "rowFilter.purchaseOrder.jobReadableId": {
       name: "jobReadableId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.purchaseOrder.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -117998,6 +119127,12 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.parts.externalId": {
+      name: "externalId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "rowFilter.parts.createdBy": {
       name: "createdBy",
       required: false,
@@ -118168,12 +119303,6 @@ export default {
     },
     "rowFilter.address.companyId": {
       name: "companyId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.address.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -118381,6 +119510,12 @@ export default {
     },
     "rowFilter.materials.itemPostingGroupId": {
       name: "itemPostingGroupId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.materials.externalId": {
+      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -118757,12 +119892,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.tool.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.tool.tags": {
       name: "tags",
       required: false,
@@ -119092,6 +120221,12 @@ export default {
     },
     "rowFilter.tools.itemPostingGroupId": {
       name: "itemPostingGroupId",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.tools.externalId": {
+      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -122269,12 +123404,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.company.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.company.createdAt": {
       name: "createdAt",
       required: false,
@@ -122542,12 +123671,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.user.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "body.externalLink": {
       name: "externalLink",
       description: "externalLink",
@@ -122646,12 +123769,6 @@ export default {
     },
     "rowFilter.supplierLocation.tags": {
       name: "tags",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.supplierLocation.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -123598,12 +124715,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.salesOrders.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.salesOrders.thumbnailPath": {
       name: "thumbnailPath",
       required: false,
@@ -123672,6 +124783,12 @@ export default {
     },
     "rowFilter.salesOrders.shippingCost": {
       name: "shippingCost",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.salesOrders.externalId": {
+      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -125701,12 +126818,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.supplier.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "rowFilter.supplier.tags": {
       name: "tags",
       required: false,
@@ -126318,12 +127429,6 @@ export default {
     },
     "rowFilter.item.modelUploadId": {
       name: "modelUploadId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.item.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",
@@ -128926,12 +130031,6 @@ export default {
       in: "query",
       type: "string",
     },
-    "rowFilter.quote.externalId": {
-      name: "externalId",
-      required: false,
-      in: "query",
-      type: "string",
-    },
     "body.salesInvoiceLine": {
       name: "salesInvoiceLine",
       description: "salesInvoiceLine",
@@ -129364,6 +130463,18 @@ export default {
       in: "query",
       type: "string",
     },
+    "rowFilter.companySettings.includeThumbnailsOnSalesPdfs": {
+      name: "includeThumbnailsOnSalesPdfs",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs": {
+      name: "includeThumbnailsOnPurchasingPdfs",
+      required: false,
+      in: "query",
+      type: "string",
+    },
     "body.part": {
       name: "part",
       description: "part",
@@ -129435,12 +130546,6 @@ export default {
     },
     "rowFilter.part.customFields": {
       name: "customFields",
-      required: false,
-      in: "query",
-      type: "string",
-    },
-    "rowFilter.part.externalId": {
-      name: "externalId",
       required: false,
       in: "query",
       type: "string",

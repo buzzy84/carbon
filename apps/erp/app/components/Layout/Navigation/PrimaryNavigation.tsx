@@ -1,5 +1,6 @@
 import { cn, useDisclosure, VStack } from "@carbon/react";
-import { type AnchorHTMLAttributes, forwardRef, memo } from "react";
+import type { AnchorHTMLAttributes } from "react";
+import { forwardRef, memo } from "react";
 import { Link, useMatches } from "react-router";
 import { useModules, useOptimisticLocation } from "~/hooks";
 import type { Authenticated, NavItem } from "~/types";

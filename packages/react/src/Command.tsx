@@ -1,6 +1,6 @@
 "use client";
 
-import { type DialogProps } from "@radix-ui/react-dialog";
+import type { DialogProps } from "@radix-ui/react-dialog";
 import type { VariantProps } from "class-variance-authority";
 import { cva } from "class-variance-authority";
 import { Command as CommandPrimitive } from "cmdk";

@@ -3,7 +3,7 @@ import type { JSONContent } from "@carbon/react";
 import { Text, View } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
 import type { PDF } from "../types";
-import { Footer, Header, Note, Summary, Template } from "./components";
+import { Header, Note, Summary, Template } from "./components";
 
 type ListItem = {
   id: string;
@@ -99,6 +99,7 @@ const IssuePDF = ({
         keywords: meta?.keywords ?? "issue report",
         subject: meta?.subject ?? "Issue Report"
       }}
+      footerLabel={`Issue #${nonConformance.nonConformanceId}`}
     >
       <View>
         <Header title={title} company={company} />
@@ -442,7 +443,6 @@ const IssuePDF = ({
           </View>
         )}
       </View>
-      <Footer nonConformanceId={nonConformance.nonConformanceId} />
     </Template>
   );
 };

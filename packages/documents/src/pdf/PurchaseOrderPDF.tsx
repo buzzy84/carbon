@@ -1,7 +1,7 @@
 import type { Database } from "@carbon/database";
 import type { JSONContent } from "@carbon/react";
 import { formatCityStatePostalCode } from "@carbon/utils";
-import { Text, View } from "@react-pdf/renderer";
+import { Image, Text, View } from "@react-pdf/renderer";
 import { createTw } from "react-pdf-tailwind";
 import type { PDF } from "../types";
 import {
@@ -18,6 +18,7 @@ interface PurchaseOrderPDFProps extends PDF {
   purchaseOrderLines: Database["public"]["Views"]["purchaseOrderLines"]["Row"][];
   purchaseOrderLocations: Database["public"]["Views"]["purchaseOrderLocations"]["Row"];
   terms: JSONContent;
+  thumbnails?: Record<string, string | null>;
 }
 
 // Initialize tailwind-styled-components
@@ -44,6 +45,7 @@ const PurchaseOrderPDF = ({
   purchaseOrderLines,
   purchaseOrderLocations,
   terms,
+  thumbnails,
   title = "Purchase Order"
 }: PurchaseOrderPDFProps) => {
   const {
@@ -214,6 +216,17 @@ const PurchaseOrderPDF = ({
                       <Text style={tw("text-[9px] opacity-80 mt-1")}>
                         {line.jobOperationDescription}
                       </Text>
+                    )}
+
+                  {thumbnails &&
+                    line.id in thumbnails &&
+                    thumbnails[line.id] && (
+                      <View style={tw("mt-2")}>
+                        <Image
+                          src={thumbnails[line.id]!}
+                          style={tw("w-full h-auto")}
+                        />
+                      </View>
                     )}
                 </View>
                 <Text style={tw("w-[15%] text-right")}>

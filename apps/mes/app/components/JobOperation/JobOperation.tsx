@@ -1,6 +1,7 @@
 import type { Result } from "@carbon/auth";
 import { useCarbon } from "@carbon/auth";
 import type { Database } from "@carbon/database";
+import type { JSONContent } from "@carbon/react";
 import {
   Badge,
   Button,
@@ -15,7 +16,6 @@ import {
   Heading,
   HStack,
   IconButton,
-  type JSONContent,
   ModelViewer,
   Progress,
   ScrollArea,

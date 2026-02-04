@@ -1,13 +1,10 @@
 import {
-  LuCalendarClock,
   LuChartLine,
-  LuCircleAlert,
   LuHardHat,
   LuListChecks,
   LuSquareChartGantt,
   LuSquareKanban,
-  LuTrash,
-  LuWrench
+  LuTrash
 } from "react-icons/lu";
 import { usePermissions } from "~/hooks";
 import { useSavedViews } from "~/hooks/useSavedViews";

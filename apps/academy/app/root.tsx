@@ -26,7 +26,8 @@ import { modeValidator } from "@carbon/utils";
 import { I18nProvider } from "@react-aria/i18n";
 import { Analytics } from "@vercel/analytics/react";
 import { motion } from "framer-motion";
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import { LuChevronDown, LuFingerprint, LuMoon, LuSun } from "react-icons/lu";
 import type {
   ActionFunctionArgs,

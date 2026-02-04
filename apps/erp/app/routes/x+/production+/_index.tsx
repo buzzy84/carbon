@@ -28,8 +28,8 @@ import {
   TooltipTrigger,
   useRealtimeChannel
 } from "@carbon/react";
+import type { ChartConfig } from "@carbon/react/Chart";
 import {
-  type ChartConfig,
   ChartContainer,
   ChartLegend,
   ChartLegendContent,

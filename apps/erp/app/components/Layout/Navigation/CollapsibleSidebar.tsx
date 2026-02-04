@@ -1,5 +1,5 @@
 import { cn, IconButton, useDisclosure } from "@carbon/react";
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import type { ComponentProps, PropsWithChildren } from "react";
 import { createContext, forwardRef, useContext, useMemo } from "react";
 import { LuPanelLeft } from "react-icons/lu";
@@ -62,19 +62,25 @@ export const CollapsibleSidebarTrigger = forwardRef<
 
 CollapsibleSidebarTrigger.displayName = "CollapsibleSidebarTrigger";
 
+// ease-out-quart: feels snappy and responsive for sidebar expand/collapse
+const easeOutQuart = [0.165, 0.84, 0.44, 1] as const;
+
 export const CollapsibleSidebar = ({
   children,
   width = 180
 }: PropsWithChildren<{ width?: number }>) => {
   const { isOpen } = useCollapsibleSidebar();
+  const shouldReduceMotion = useReducedMotion();
 
   const variants = useMemo(() => {
     return {
       visible: {
-        width
+        width,
+        opacity: 1
       },
       hidden: {
-        width: 0
+        width: 0,
+        opacity: 0
       }
     };
   }, [width]);
@@ -82,8 +88,16 @@ export const CollapsibleSidebar = ({
   return (
     <motion.div
       animate={isOpen ? "visible" : "hidden"}
-      initial={variants.visible}
-      transition={{ duration: 0.2, ease: "easeInOut" }}
+      initial={shouldReduceMotion ? false : variants.visible}
+      transition={
+        shouldReduceMotion
+          ? { duration: 0 }
+          : {
+              duration: 0.2,
+              ease: easeOutQuart,
+              opacity: { duration: 0.15 }
+            }
+      }
       variants={variants}
       className="relative flex h-[calc(100dvh-49px)]"
     >

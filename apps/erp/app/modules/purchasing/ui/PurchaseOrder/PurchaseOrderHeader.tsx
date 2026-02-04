@@ -64,6 +64,7 @@ const PurchaseOrderHeader = () => {
     canApprove: boolean;
     canReopen: boolean;
     canDelete: boolean;
+    defaultCc: string[];
   }>(path.to.purchaseOrder(orderId));
 
   if (!routeData?.purchaseOrder)
@@ -318,7 +319,7 @@ const PurchaseOrderHeader = () => {
                   ))}
                 </DropdownMenuContent>
               </DropdownMenu>
-            ) : isNeedsApproval && hasApprovalRequest ? (
+            ) : isNeedsApproval && hasApprovalRequest && canApprove ? (
               <>
                 <Button
                   leftIcon={<LuCheckCheck />}
@@ -327,7 +328,7 @@ const PurchaseOrderHeader = () => {
                     approvalFetcher.state !== "idle" &&
                     approvalFetcher.formData?.get("decision") === "Approved"
                   }
-                  isDisabled={!canApprove || approvalFetcher.state !== "idle"}
+                  isDisabled={approvalFetcher.state !== "idle"}
                   onClick={() => setApprovalDecision("Approved")}
                 >
                   Approve
@@ -339,7 +340,7 @@ const PurchaseOrderHeader = () => {
                     approvalFetcher.state !== "idle" &&
                     approvalFetcher.formData?.get("decision") === "Rejected"
                   }
-                  isDisabled={!canApprove || approvalFetcher.state !== "idle"}
+                  isDisabled={approvalFetcher.state !== "idle"}
                   onClick={() => setApprovalDecision("Rejected")}
                 >
                   Reject
@@ -505,6 +506,7 @@ const PurchaseOrderHeader = () => {
           fetcher={statusFetcher}
           purchaseOrder={routeData?.purchaseOrder}
           onClose={finalizeDisclosure.onClose}
+          defaultCc={routeData?.defaultCc ?? []}
         />
       )}
       {deleteModal.isOpen && (
@@ -528,6 +530,7 @@ const PurchaseOrderHeader = () => {
           decision={approvalDecision}
           fetcher={approvalFetcher}
           onClose={() => setApprovalDecision(null)}
+          defaultCc={routeData?.defaultCc ?? []}
         />
       )}
     </>

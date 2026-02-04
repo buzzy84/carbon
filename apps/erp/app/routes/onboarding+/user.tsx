@@ -12,12 +12,8 @@ import {
   HStack,
   VStack
 } from "@carbon/react";
-import {
-  type ActionFunctionArgs,
-  Link,
-  redirect,
-  useLoaderData
-} from "react-router";
+import type { ActionFunctionArgs } from "react-router";
+import { Link, redirect, useLoaderData } from "react-router";
 import type { z } from "zod";
 import { Hidden, Input, Submit } from "~/components/Form";
 import { useOnboarding } from "~/hooks";

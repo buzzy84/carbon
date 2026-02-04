@@ -15,7 +15,8 @@ import { modeValidator, themes } from "@carbon/utils";
 import { I18nProvider } from "@react-aria/i18n";
 import { QueryClient } from "@tanstack/react-query";
 import { Analytics } from "@vercel/analytics/react";
-import React, { useEffect } from "react";
+import type React from "react";
+import { useEffect } from "react";
 import type {
   ActionFunctionArgs,
   LinksFunction,

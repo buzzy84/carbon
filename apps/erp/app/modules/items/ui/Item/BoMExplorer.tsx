@@ -41,7 +41,7 @@ import { OnshapeSync } from "~/components/OnshapeSync";
 import type { FlatTreeItem } from "~/components/TreeView";
 import { LevelLine, TreeView, useTree } from "~/components/TreeView";
 import { useIntegrations } from "~/hooks/useIntegrations";
-import { type MethodItemType } from "~/modules/shared";
+import type { MethodItemType } from "~/modules/shared";
 import { generateBomIds } from "~/utils/bom";
 import { path } from "~/utils/path";
 import type { MakeMethod, Method, MethodOperation } from "../../types";

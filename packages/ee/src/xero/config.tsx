@@ -1,9 +1,36 @@
-import { XERO_CLIENT_ID } from "@carbon/auth";
+import { getCarbonServiceRole, XERO_CLIENT_ID } from "@carbon/auth";
+import type { CreateSubscriptionParams } from "@carbon/database/event";
+import {
+  createEventSystemSubscription,
+  deleteEventSystemSubscriptionsByName
+} from "@carbon/database/event";
+import {
+  getProviderIntegration,
+  ProviderID,
+  type ProviderIntegrationMetadata
+} from "@carbon/ee/accounting";
+import { PostgresDriver } from "kysely";
 import type { ComponentProps } from "react";
 import { z } from "zod";
-import type { IntegrationConfig } from "../types";
+import { defineIntegration } from "../fns";
 
-export const Xero: IntegrationConfig = {
+const coerceBoolean = z.preprocess(
+  (v) =>
+    v === "true" || v === "on" ? true : v === "false" || v === "" ? false : v,
+  z.boolean()
+);
+
+const XeroSettingsSchema = z.object({
+  backfillCustomers: coerceBoolean.optional().default(true),
+  backfillVendors: coerceBoolean.optional().default(true),
+  backfillItems: coerceBoolean.optional().default(true),
+  conflictResolution: z
+    .enum(["skip", "overwrite", "merge"])
+    .optional()
+    .default("merge")
+});
+
+export const Xero = defineIntegration({
   name: "Xero",
   id: "xero",
   active: false,
@@ -14,8 +41,63 @@ export const Xero: IntegrationConfig = {
   shortDescription:
     "Automatically post transactions from sales and purchase invoices.",
   images: [],
-  settings: [],
-  schema: z.object({}),
+  settings: [
+    {
+      name: "backfillCustomers",
+      label: "Customers",
+      description: "Include customers in sync",
+      group: "Entities to Sync",
+      type: "switch" as const,
+      required: false,
+      value: true
+    },
+    {
+      name: "backfillVendors",
+      label: "Vendors",
+      description: "Include vendors/suppliers in sync",
+      group: "Entities to Sync",
+      type: "switch" as const,
+      required: false,
+      value: true
+    },
+    {
+      name: "backfillItems",
+      label: "Items",
+      description: "Include items/products in sync",
+      group: "Entities to Sync",
+      type: "switch" as const,
+      required: false,
+      value: true
+    },
+    {
+      name: "conflictResolution",
+      label: "Conflict Resolution",
+      description:
+        "Determines how to handle records that exist in both systems",
+      group: "Sync Settings",
+      type: "options" as const,
+      listOptions: [
+        {
+          value: "skip",
+          label: "Skip",
+          description: "Keep existing Carbon data unchanged"
+        },
+        {
+          value: "overwrite",
+          label: "Overwrite",
+          description: "Replace Carbon data with Xero data"
+        },
+        {
+          value: "merge",
+          label: "Merge",
+          description: "Combine data from both systems"
+        }
+      ],
+      required: false,
+      value: "merge"
+    }
+  ],
+  schema: XeroSettingsSchema,
   oauth: {
     authUrl: "https://login.xero.com/identity/connect/authorize",
     clientId: XERO_CLIENT_ID!,
@@ -27,8 +109,66 @@ export const Xero: IntegrationConfig = {
       "accounting.settings"
     ],
     tokenUrl: "https://login.xero.com/identity/connect/token"
+  },
+  actions: [
+    {
+      id: "sync-data",
+      label: "Run Initial Sync",
+      description: "Runs the initial backfill for the selected entities above",
+      endpoint: "/api/integrations/xero/backfill"
+    }
+  ],
+  async onHealthcheck(companyId, metadata) {
+    const provider = getProviderIntegration(
+      getCarbonServiceRole(),
+      companyId,
+      ProviderID.XERO,
+      metadata as ProviderIntegrationMetadata
+    );
+
+    return await provider.validate();
+  },
+  async onInstall(companyId) {
+    const { getPostgresClient, getPostgresConnectionPool } = await import(
+      "@carbon/database/client"
+    );
+
+    const pg = getPostgresClient(getPostgresConnectionPool(1), PostgresDriver);
+
+    const tables: CreateSubscriptionParams["table"][] = [
+      "address",
+      "contact",
+      "customer",
+      "supplier",
+      "item",
+      "salesInvoice",
+      "purchaseInvoice"
+    ];
+
+    for (const table of tables) {
+      await createEventSystemSubscription(pg, {
+        table,
+        companyId,
+        name: "xero-sync",
+        operations: ["INSERT", "UPDATE", "DELETE"],
+        type: "SYNC",
+        config: {
+          provider: ProviderID.XERO
+        }
+      });
+    }
+  },
+  async onUninstall(companyId) {
+    const { getPostgresClient, getPostgresConnectionPool } = await import(
+      "@carbon/database/client"
+    );
+
+    const pg = getPostgresClient(getPostgresConnectionPool(1), PostgresDriver);
+
+    // Delete all Xero sync subscriptions for this company
+    await deleteEventSystemSubscriptionsByName(pg, companyId, "xero-sync");
   }
-};
+});
 
 function Logo(props: ComponentProps<"svg">) {
   return (

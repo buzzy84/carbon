@@ -10,7 +10,6 @@
     "./onshape": "./src/onshape/lib/index.ts",
     "./linear": "./src/linear/lib/index.ts",
     "./paperless-parts": "./src/paperless-parts/lib/index.ts",
-    "./quickbooks": "./src/accounting/providers/quickbooks.ts",
     "./slack.server": "./src/slack.server.ts",
     "./slack/messages": "./src/slack/lib/messages.ts",
     "./xero": "./src/accounting/providers/xero.ts"

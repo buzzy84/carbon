@@ -1,9 +1,9 @@
 import { Badge } from "@carbon/react";
 import type { SVGProps } from "react";
 import { z } from "zod";
-import type { IntegrationConfig } from "../types";
+import { defineIntegration } from "../fns";
 
-export const Onshape: IntegrationConfig = {
+export const Onshape = defineIntegration({
   name: "Onshape",
   id: "onshape",
   active: true,
@@ -57,7 +57,7 @@ export const Onshape: IntegrationConfig = {
     secretKey: z.string().min(1, { message: "Secret Key is required" }),
     companyId: z.string().min(1, { message: "Company ID is required" })
   })
-};
+});
 
 function SetupInstructions({ companyId }: { companyId: string }) {
   return (

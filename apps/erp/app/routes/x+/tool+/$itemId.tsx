@@ -167,7 +167,7 @@ export default function ToolRoute() {
                 <div className="flex-1 overflow-y-auto">
                   {isManufactured && (
                     <>
-                      <h4 className="text-sm text-muted-foreground px-4 pt-2">
+                      <h4 className="text-xxs text-foreground/70 uppercase font-light tracking-wide px-4 pt-2">
                         Manufacturing
                       </h4>
                       <Suspense
@@ -197,7 +197,7 @@ export default function ToolRoute() {
                       </Suspense>
                     </>
                   )}
-                  <h4 className="text-sm text-muted-foreground px-4 pt-2">
+                  <h4 className="text-xxs text-foreground/70 uppercase font-light tracking-wide px-4 pt-2">
                     Used In
                   </h4>
                   <Suspense fallback={<UsedInSkeleton />}>

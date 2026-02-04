@@ -4,8 +4,9 @@ import { fontFamily } from "tailwindcss/defaultTheme";
 export default {
   darkMode: ["class"],
   content: [
-    "../../apps/**/*.{ts,tsx}", // include packages if not transpiling
+    "../../apps/**/*.{ts,tsx}",
     "../../packages/**/*.{ts,tsx}",
+    "!**/node_modules/**",
   ],
   theme: {
     container: {

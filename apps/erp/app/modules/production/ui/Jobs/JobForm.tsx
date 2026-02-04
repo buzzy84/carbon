@@ -40,7 +40,7 @@ import type {
   ConfigurationParameter,
   ConfigurationParameterGroup
 } from "~/modules/items/types";
-import { type MethodItemType } from "~/modules/shared";
+import type { MethodItemType } from "~/modules/shared";
 import { path } from "~/utils/path";
 import type { jobStatus } from "../../production.models";
 import {
