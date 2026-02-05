@@ -511,14 +511,23 @@ const SidebarMenuItem = React.forwardRef<
 ));
 SidebarMenuItem.displayName = "SidebarMenuItem";
 
+/**
+ * SidebarMenuButton animation design:
+ * - Use `ease-out` for snappy, responsive feel
+ * - 100ms duration for fast micro-interactions (sidebar is used frequently)
+ * - Only animate background-color, color (GPU-friendly)
+ * - Active state gets subtle visual weight without jarring transitions
+ */
 const sidebarMenuButtonVariants = cva(
   "peer/menu-button flex w-full items-center gap-2 overflow-hidden rounded-md p-2 text-left text-sm outline-none ring-sidebar-ring transition-[width,height,padding,background-color,color] duration-150 ease hover:bg-sidebar-accent hover:text-sidebar-accent-foreground focus-visible:ring-2 active:bg-sidebar-accent active:text-sidebar-accent-foreground disabled:pointer-events-none disabled:opacity-50 group-has-[[data-sidebar=menu-action]]/menu-item:pr-8 aria-disabled:pointer-events-none aria-disabled:opacity-50 data-[active=true]:bg-sidebar-accent data-[active=true]:font-medium data-[active=true]:text-sidebar-accent-foreground data-[state=open]:hover:bg-sidebar-accent data-[state=open]:hover:text-sidebar-accent-foreground group-data-[collapsible=icon]:!size-8 group-data-[collapsible=icon]:!p-2 motion-reduce:transition-none [&>span:last-child]:truncate [&>svg]:size-4 [&>svg]:shrink-0",
   {
     variants: {
       variant: {
-        default: "hover:bg-sidebar-accent hover:text-sidebar-accent-foreground",
-        outline:
-          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))] hover:bg-sidebar-accent hover:text-sidebar-accent-foreground hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]"
+        default: "",
+        outline: [
+          "bg-background shadow-[0_0_0_1px_hsl(var(--sidebar-border))]",
+          "hover:shadow-[0_0_0_1px_hsl(var(--sidebar-accent))]"
+        ]
       },
       size: {
         default: "h-8 text-sm",
@@ -705,6 +714,12 @@ const SidebarMenuSubItem = React.forwardRef<
 >(({ ...props }, ref) => <li ref={ref} {...props} />);
 SidebarMenuSubItem.displayName = "SidebarMenuSubItem";
 
+/**
+ * SidebarMenuSubButton - nested menu items
+ * Same animation principles as SidebarMenuButton:
+ * - ease-out for snappy response, 100ms duration
+ * - Consistent with parent button styling
+ */
 const SidebarMenuSubButton = React.forwardRef<
   HTMLAnchorElement,
   React.ComponentProps<"a"> & {
@@ -726,8 +741,8 @@ const SidebarMenuSubButton = React.forwardRef<
         "data-[active=true]:bg-sidebar-accent data-[active=true]:text-sidebar-accent-foreground",
         size === "sm" && "text-xs",
         size === "md" && "text-sm",
+        // Collapsed mode
         "group-data-[collapsible=icon]:hidden",
-        isActive && "bg-active text-active-foreground shadow-button-base",
         className
       )}
       {...props}

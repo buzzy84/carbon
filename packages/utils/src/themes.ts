@@ -35,29 +35,30 @@ export const themes = [
         "success-foreground": "0 0% 98%"
       },
       dark: {
-        background: "220 10% 6.9%",
-        foreground: "0 0% 98%",
-        card: "220 10% 8.9%",
-        "card-foreground": "0 0% 98%",
-        popover: "220 10% 8.9%",
-        "popover-foreground": "0 0% 98%",
-        primary: "0 0% 98%",
-        "primary-foreground": "220 5.9% 10%",
-        active: "220 5.2% 13.9%",
-        "active-foreground": "0 0% 98%",
-        secondary: "220 10% 15.9%",
-        "secondary-foreground": "0 0% 98%",
-        muted: "220 10% 15.9%",
-        "muted-foreground": "220 5% 64.9%",
-        accent: "220 10% 15.9%",
-        "accent-foreground": "0 0% 98%",
-        destructive: "0 62.8% 30.6%",
-        "destructive-foreground": "0 0% 98%",
-        border: "220 10% 15.9%",
-        input: "220 10% 15.9%",
-        ring: "220 4.9% 83.9%",
-        success: "142 70% 45%",
-        "success-foreground": "0 0% 98%"
+        // Vercel/Geist-inspired dark mode - pure black base
+        background: "0 0% 0%",
+        foreground: "0 0% 93%",
+        card: "0 0% 4%",
+        "card-foreground": "0 0% 93%",
+        popover: "0 0% 7%",
+        "popover-foreground": "0 0% 93%",
+        primary: "0 0% 100%",
+        "primary-foreground": "0 0% 0%",
+        active: "0 0% 10%",
+        "active-foreground": "0 0% 100%",
+        secondary: "0 0% 7%",
+        "secondary-foreground": "0 0% 93%",
+        muted: "0 0% 7%",
+        "muted-foreground": "0 0% 63%",
+        accent: "0 0% 10%",
+        "accent-foreground": "0 0% 93%",
+        destructive: "0 100% 64%",
+        "destructive-foreground": "0 0% 100%",
+        border: "0 0% 15%",
+        input: "0 0% 7%",
+        ring: "0 0% 35%",
+        success: "152 72% 53%",
+        "success-foreground": "0 0% 0%"
       }
     }
   },
@@ -480,82 +481,6 @@ export const themes = [
         ring: "263.4 70% 50.4%",
         success: "142 70% 45%",
         "success-foreground": "0 0% 98%"
-      }
-    }
-  },
-  {
-    name: "vercel",
-    label: "Vercel",
-    activeColor: {
-      light: "0 0% 100%",
-      dark: "0 0% 100%"
-    },
-    cssVars: {
-      light: {
-        // Geist Background 1: Pure black #000000
-        background: "0 0% 0%",
-        // Geist Gray 12 (primary text): #ededed
-        foreground: "0 0% 93%",
-        // Geist Background 2: #0a0a0a - subtle elevation
-        card: "0 0% 4%",
-        "card-foreground": "0 0% 93%",
-        // Popovers slightly brighter than cards: #111111
-        popover: "0 0% 7%",
-        "popover-foreground": "0 0% 93%",
-        // Primary: Pure white #ffffff for maximum contrast
-        primary: "0 0% 100%",
-        "primary-foreground": "0 0% 0%",
-        // Active/hover states: Geist Gray 3 #1a1a1a
-        active: "0 0% 10%",
-        "active-foreground": "0 0% 100%",
-        // Secondary: Geist Gray 2 #111111
-        secondary: "0 0% 7%",
-        "secondary-foreground": "0 0% 93%",
-        // Muted: Geist Gray 2 with muted foreground
-        muted: "0 0% 7%",
-        // Geist Gray 9 (secondary text): #a1a1a1
-        "muted-foreground": "0 0% 63%",
-        // Accent: Geist Gray 3
-        accent: "0 0% 10%",
-        "accent-foreground": "0 0% 93%",
-        // Geist Red 9: #ff4444 - vibrant error red
-        destructive: "0 100% 64%",
-        "destructive-foreground": "0 0% 100%",
-        // Geist Gray 4: #262626 - subtle borders
-        border: "0 0% 15%",
-        // Input background: Geist Gray 2
-        input: "0 0% 7%",
-        // Focus ring: Geist Gray 6
-        ring: "0 0% 35%",
-        // Geist Green 9: #3ecf8e - Vercel's success green
-        success: "152 72% 53%",
-        "success-foreground": "0 0% 0%"
-      },
-      dark: {
-        // Identical to light - Vercel's always-dark aesthetic
-        background: "0 0% 0%",
-        foreground: "0 0% 93%",
-        card: "0 0% 4%",
-        "card-foreground": "0 0% 93%",
-        popover: "0 0% 7%",
-        "popover-foreground": "0 0% 93%",
-        primary: "0 0% 100%",
-        "primary-foreground": "0 0% 0%",
-        active: "0 0% 10%",
-        "active-foreground": "0 0% 100%",
-        secondary: "0 0% 7%",
-        "secondary-foreground": "0 0% 93%",
-        muted: "0 0% 7%",
-        "muted-foreground": "0 0% 63%",
-        accent: "0 0% 10%",
-        "accent-foreground": "0 0% 93%",
-        destructive: "0 100% 64%",
-        "destructive-foreground": "0 0% 100%",
-        border: "0 0% 15%",
-        input: "0 0% 7%",
-        ring: "0 0% 35%",
-        success: "152 72% 53%",
-        "success-foreground": "0 0% 0%"
       }
     }
   }

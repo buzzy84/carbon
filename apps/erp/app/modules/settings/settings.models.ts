@@ -184,8 +184,7 @@ export const themes = [
   "yellow",
   "green",
   "blue",
-  "violet",
-  "vercel"
+  "violet"
 ] as const;
 export type Theme = (typeof themes)[number];
 
