@@ -36,7 +36,7 @@ const Header = ({ company, title, documentId }: HeaderProps) => {
           {company.logoLightIcon ? (
             <Image
               src={company.logoLightIcon}
-              style={{ height: 50, width: 50, marginBottom: 4 }}
+              style={{ height: 50, width: "auto", marginBottom: 4 }}
             />
           ) : (
             <View>
