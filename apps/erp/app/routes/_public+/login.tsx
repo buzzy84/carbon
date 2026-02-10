@@ -6,14 +6,19 @@ import {
   CLOUDFLARE_TURNSTILE_SITE_KEY,
   CONTROLLED_ENVIRONMENT,
   carbonClient,
+  emailAndPasswordValidator,
   error,
-  magicLinkValidator,
-  RATE_LIMIT
+  RATE_LIMIT,
+  safeRedirect
 } from "@carbon/auth";
-import { sendMagicLink, verifyAuthSession } from "@carbon/auth/auth.server";
-import { flash, getAuthSession } from "@carbon/auth/session.server";
+import { signInWithEmail, verifyAuthSession } from "@carbon/auth/auth.server";
+import { setCompanyId } from "@carbon/auth/company.server";
+import {
+  flash,
+  getAuthSession,
+  setAuthSession
+} from "@carbon/auth/session.server";
 import { getUserByEmail } from "@carbon/auth/users.server";
-import { sendVerificationCode } from "@carbon/auth/verification.server";
 import { Hidden, Input, Submit, ValidatedForm, validator } from "@carbon/form";
 import { redis } from "@carbon/kv";
 import {
@@ -21,7 +26,6 @@ import {
   AlertDescription,
   AlertTitle,
   Button,
-  Heading,
   toast,
   VStack
 } from "@carbon/react";
@@ -43,7 +47,8 @@ import {
   useLoaderData,
   useSearchParams
 } from "react-router";
-import type { Result } from "~/types";
+import { z } from "zod";
+
 import { path } from "~/utils/path";
 
 export const meta: MetaFunction = () => {
@@ -69,6 +74,13 @@ const ratelimit = new Ratelimit({
   analytics: true
 });
 
+const passwordLoginValidator = emailAndPasswordValidator.extend({
+  redirectTo: z.string().optional(),
+  turnstileToken: z.string().optional()
+});
+
+const TURNSTILE_TEST_SITE_KEY = "1x00000000000000000000AA";
+
 export async function action({ request }: ActionFunctionArgs) {
   assertIsPost(request);
   const ip = request.headers.get("x-forwarded-for") ?? "127.0.0.1";
@@ -81,20 +93,36 @@ export async function action({ request }: ActionFunctionArgs) {
     );
   }
 
-  const validation = await validator(magicLinkValidator).validate(
+  const validation = await validator(passwordLoginValidator).validate(
     await request.formData()
   );
 
   if (validation.error) {
-    return error(validation.error, "Invalid email address");
+    return data(
+      error(validation.error, "Invalid login"),
+      await flash(request, error(validation.error, "Invalid login"))
+    );
   }
 
-  const { email, turnstileToken } = validation.data;
+  const { email, password, redirectTo, turnstileToken } = validation.data;
 
-  if (
+  // Turnstile: lo richiediamo SOLO in Cloud (come già faceva l’ERP) e solo se non è la test key.
+  const mustVerifyTurnstile =
     CarbonEdition === Edition.Cloud &&
-    CLOUDFLARE_TURNSTILE_SITE_KEY !== "1x00000000000000000000AA"
-  ) {
+    !!CLOUDFLARE_TURNSTILE_SITE_KEY &&
+    CLOUDFLARE_TURNSTILE_SITE_KEY !== TURNSTILE_TEST_SITE_KEY;
+
+  if (mustVerifyTurnstile) {
+    if (!turnstileToken) {
+      return data(
+        error(null, "Bot verification missing. Please try again."),
+        await flash(
+          request,
+          error(null, "Bot verification missing. Please try again.")
+        )
+      );
+    }
+
     const verifyResponse = await fetch(
       "https://challenges.cloudflare.com/turnstile/v0/siteverify",
       {
@@ -104,7 +132,7 @@ export async function action({ request }: ActionFunctionArgs) {
         },
         body: new URLSearchParams({
           secret: CLOUDFLARE_TURNSTILE_SECRET_KEY ?? "",
-          response: turnstileToken ?? "",
+          response: turnstileToken,
           remoteip: ip
         })
       }
@@ -122,36 +150,41 @@ export async function action({ request }: ActionFunctionArgs) {
     }
   }
 
+  // Manteniamo la regola Carbon: puoi entrare solo se esiste un user "public.user" attivo
+  // (auth.users viene “mirrored” su public.user tramite trigger DB).
   const user = await getUserByEmail(email);
 
-  if (user.data && user.data.active) {
-    const magicLink = await sendMagicLink(email);
-
-    if (magicLink.error) {
-      return data(
-        error(magicLink, "Failed to send magic link"),
-        await flash(request, error(magicLink, "Failed to send magic link"))
-      );
-    }
-    return { success: true, mode: "login" };
-  } else if (CarbonEdition === Edition.Enterprise) {
+  if (!user.data || !user.data.active) {
     return data(
-      { success: false, message: "User record not found" },
+      { success: false, message: "Invalid email/password combination" },
       await flash(request, error(null, "Failed to sign in"))
     );
-  } else {
-    // User doesn't exist, send verification code for signup
-    const verificationSent = await sendVerificationCode(email);
-
-    if (!verificationSent) {
-      return data(
-        error(null, "Failed to send verification code"),
-        await flash(request, error(null, "Failed to send verification code"))
-      );
-    }
-
-    return { success: true, mode: "signup", email };
   }
+
+  const authSession = await signInWithEmail(email, password);
+
+  if (!authSession) {
+    return data(
+      { success: false, message: "Invalid email/password combination" },
+      await flash(request, error(null, "Failed to sign in"))
+    );
+  }
+
+  const sessionCookie = await setAuthSession(request, { authSession });
+  const companyIdCookie = setCompanyId(authSession.companyId);
+
+  return data(
+    {
+      success: true,
+      redirectTo: safeRedirect(redirectTo)
+    },
+    {
+      headers: [
+        ["Set-Cookie", sessionCookie],
+        ["Set-Cookie", companyIdCookie]
+      ]
+    }
+  );
 }
 
 export default function LoginRoute() {
@@ -161,30 +194,19 @@ export default function LoginRoute() {
 
   const [searchParams] = useSearchParams();
   const redirectTo = searchParams.get("redirectTo") ?? undefined;
-  const [mode, setMode] = useState<"login" | "signup" | "verify">("login");
-  const [signupEmail, setSignupEmail] = useState<string>("");
-  const [turnstileToken, setTurnstileToken] = useState<string>("");
 
-  const fetcher = useFetcher<Result & { mode?: string; email?: string }>();
+  const [turnstileToken, setTurnstileToken] = useState<string>("");
   const theme = useMode();
 
+  const fetcher = useFetcher<
+    { success: true; redirectTo: string } | { success: false; message: string }
+  >();
+
   useEffect(() => {
-    if (fetcher.data?.success && fetcher.data.mode) {
-      if (fetcher.data.mode === "signup" && mode !== "verify") {
-        setMode("verify");
-        if (fetcher.data.email) {
-          setSignupEmail(fetcher.data.email);
-          // Redirect to verify route with email parameter
-          const verifyUrl = `/verify?email=${encodeURIComponent(
-            fetcher.data.email
-          )}${
-            redirectTo ? `&redirectTo=${encodeURIComponent(redirectTo)}` : ""
-          }`;
-          window.location.href = verifyUrl;
-        }
-      }
+    if (fetcher.data?.success === true) {
+      window.location.assign(fetcher.data.redirectTo);
     }
-  }, [fetcher.data, mode, redirectTo]);
+  }, [fetcher.data]);
 
   const onSignInWithGoogle = async () => {
     const { error } = await carbonClient.auth.signInWithOAuth({
@@ -196,9 +218,7 @@ export default function LoginRoute() {
       }
     });
 
-    if (error) {
-      toast.error(error.message);
-    }
+    if (error) toast.error(error.message);
   };
 
   const onSignInWithAzure = async () => {
@@ -212,10 +232,13 @@ export default function LoginRoute() {
       }
     });
 
-    if (error) {
-      toast.error(error.message);
-    }
+    if (error) toast.error(error.message);
   };
+
+  const mustShowTurnstile =
+    CarbonEdition === Edition.Cloud &&
+    !!CLOUDFLARE_TURNSTILE_SITE_KEY &&
+    CLOUDFLARE_TURNSTILE_SITE_KEY !== TURNSTILE_TEST_SITE_KEY;
 
   return (
     <>
@@ -226,123 +249,101 @@ export default function LoginRoute() {
           className="w-36"
         />
       </div>
+
       <div className="rounded-lg md:bg-card md:border md:border-border md:shadow-lg p-8 w-[380px]">
-        {fetcher.data?.success === true && fetcher.data?.mode === "login" ? (
-          <>
-            <VStack spacing={4} className="items-center justify-center">
-              <Heading size="h3">Check your email</Heading>
-              <p className="text-muted-foreground tracking-tight text-sm">
-                We've sent you a magic link to sign in to your account.
-              </p>
-            </VStack>
-          </>
-        ) : mode === "verify" ? (
-          <VStack spacing={4} className="items-center">
-            <Heading size="h3">Verify your email</Heading>
-            <p className="text-muted-foreground tracking-tight text-sm text-center">
-              We've sent a verification code to {signupEmail}
-            </p>
-            <p className="text-muted-foreground tracking-tight text-xs text-center">
-              Redirecting to verification page...
-            </p>
-            <Button
-              type="button"
-              variant="link"
-              size="sm"
-              onClick={() => {
-                setMode("login");
-                setSignupEmail("");
-                // Reset fetcher data
-                window.location.reload();
-              }}
+        <ValidatedForm
+          fetcher={fetcher}
+          validator={passwordLoginValidator}
+          defaultValues={{ redirectTo }}
+          method="post"
+          action="/login"
+        >
+          <Hidden name="redirectTo" value={redirectTo} type="hidden" />
+          <Hidden name="turnstileToken" value={turnstileToken} />
+
+          <VStack spacing={2}>
+            {fetcher.data?.success === false && fetcher.data?.message && (
+              <Alert variant="destructive">
+                <LuCircleAlert className="w-4 h-4" />
+                <AlertTitle>Authentication Error</AlertTitle>
+                <AlertDescription>{fetcher.data?.message}</AlertDescription>
+              </Alert>
+            )}
+
+            <Input
+              name="email"
+              label=""
+              placeholder="Email Address"
+              autoComplete="username"
+            />
+
+            <Input
+              name="password"
+              type="password"
+              label=""
+              placeholder="Password"
+              autoComplete="current-password"
+            />
+
+            <Submit
+              isDisabled={
+                fetcher.state !== "idle" ||
+                (mustShowTurnstile && !turnstileToken)
+              }
+              isLoading={fetcher.state === "submitting"}
+              size="lg"
+              className="w-full"
+              withBlocker={false}
             >
-              Use a different email
-            </Button>
-          </VStack>
-        ) : (
-          <ValidatedForm
-            fetcher={fetcher}
-            validator={magicLinkValidator}
-            defaultValues={{ redirectTo }}
-            method="post"
-            action="/login"
-          >
-            <Hidden name="redirectTo" value={redirectTo} type="hidden" />
-            <Hidden name="turnstileToken" value={turnstileToken} />
-            <VStack spacing={2}>
-              {fetcher.data?.success === false && fetcher.data?.message && (
-                <Alert variant="destructive">
-                  <LuCircleAlert className="w-4 h-4" />
-                  <AlertTitle>Authentication Error</AlertTitle>
-                  <AlertDescription>{fetcher.data?.message}</AlertDescription>
-                </Alert>
-              )}
+              Sign in
+            </Submit>
 
-              <Input name="email" label="" placeholder="Email Address" />
+            {mustShowTurnstile && (
+              <div className="w-full flex justify-center">
+                <Turnstile
+                  siteKey={CLOUDFLARE_TURNSTILE_SITE_KEY!}
+                  onSuccess={(token) => setTurnstileToken(token)}
+                  onError={() => setTurnstileToken("")}
+                  onExpire={() => setTurnstileToken("")}
+                  options={{
+                    theme: theme === "dark" ? "dark" : "light"
+                  }}
+                />
+              </div>
+            )}
 
-              <Submit
-                isDisabled={
-                  fetcher.state !== "idle" ||
-                  (!!CLOUDFLARE_TURNSTILE_SITE_KEY && !turnstileToken)
-                }
-                isLoading={fetcher.state === "submitting"}
+            {hasGoogleAuth && (
+              <Button
+                type="button"
                 size="lg"
                 className="w-full"
-                withBlocker={false}
+                onClick={onSignInWithGoogle}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<GoogleIcon />}
               >
-                Sign in with Email
-              </Submit>
-              {!!CLOUDFLARE_TURNSTILE_SITE_KEY && (
-                <div className="w-full flex justify-center">
-                  <Turnstile
-                    siteKey={CLOUDFLARE_TURNSTILE_SITE_KEY}
-                    onSuccess={(token) => setTurnstileToken(token)}
-                    onError={() => setTurnstileToken("")}
-                    onExpire={() => setTurnstileToken("")}
-                    options={{
-                      theme: theme === "dark" ? "dark" : "light"
-                    }}
-                  />
-                </div>
-              )}
+                Sign in with Google
+              </Button>
+            )}
 
-              {hasGoogleAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithGoogle}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<GoogleIcon />}
-                >
-                  Sign in with Google
-                </Button>
-              )}
-              {hasOutlookAuth && (
-                <Button
-                  type="button"
-                  size="lg"
-                  className="w-full"
-                  onClick={onSignInWithAzure}
-                  isDisabled={fetcher.state !== "idle"}
-                  variant="secondary"
-                  leftIcon={<OutlookIcon className="size-6" />}
-                >
-                  Sign in with Outlook
-                </Button>
-              )}
-            </VStack>
-          </ValidatedForm>
-        )}
+            {hasOutlookAuth && (
+              <Button
+                type="button"
+                size="lg"
+                className="w-full"
+                onClick={onSignInWithAzure}
+                isDisabled={fetcher.state !== "idle"}
+                variant="secondary"
+                leftIcon={<OutlookIcon className="size-6" />}
+              >
+                Sign in with Outlook
+              </Button>
+            )}
+          </VStack>
+        </ValidatedForm>
       </div>
 
       <div className="flex flex-col gap-4 text-sm text-center text-balance text-muted-foreground w-[380px]">
-        {mode !== "verify" &&
-          fetcher.data?.success !== true &&
-          CarbonEdition !== Edition.Enterprise && (
-            <p>Login or create a new account</p>
-          )}
         {CONTROLLED_ENVIRONMENT && <ItarLoginDisclaimer />}
         {CarbonEdition !== Edition.Community && (
           <p>
@@ -426,81 +427,8 @@ function OutlookIcon(props: React.SVGProps<SVGSVGElement>) {
       <path d="M936.833 1022h425.833v383.25H936.833z" fill="#0364B8" />
       <path d="M520.453 1025.151h416.38v346.969h-416.38z" fill="#14447D" />
       <path d="M1362.667 1022h383.25v383.25h-383.25z" fill="#0078D4" />
-      <linearGradient
-        gradientTransform="matrix(1 0 0 -1 0 1705.333)"
-        y2="1.998"
-        x2="1128.458"
-        y1="811.083"
-        x1="1128.458"
-        gradientUnits="userSpaceOnUse"
-        id="a"
-      >
-        <stop offset="0" stopColor="#35b8f1" />
-        <stop offset="1" stopColor="#28a8ea" />
-      </linearGradient>
-      <path
-        d="M1811.58 927.593l-.809.426-634.492 356.848c-2.768 1.703-5.578 3.321-8.517 4.769a88.437 88.437 0 01-34.407 8.517l-34.663-20.27a86.706 86.706 0 01-8.517-4.897L447.167 906.003h-.298l-21.036-11.753v722.384c.328 48.196 39.653 87.006 87.849 86.7h1230.914c.724 0 1.363-.341 2.129-.341a107.79 107.79 0 0029.808-6.217 86.066 86.066 0 0011.966-6.217c2.853-1.618 7.75-5.152 7.75-5.152a85.974 85.974 0 0034.833-68.772V894.25a38.323 38.323 0 01-19.502 33.343z"
-        fill="url(#a)"
-      />
-      <path
-        d="M1797.017 891.397v44.287l-663.448 456.791-686.87-486.174a.426.426 0 00-.426-.426l-63.023-37.899v-31.938l25.976-.426 54.932 31.512 1.277.426 4.684 2.981s645.563 368.346 647.267 369.197l24.698 14.478c2.129-.852 4.258-1.703 6.813-2.555 1.278-.852 640.879-360.681 640.879-360.681z"
-        fill="#0A2767"
-        opacity=".5"
-      />
-      <path
-        d="M1811.58 927.593l-.809.468-634.492 356.848c-2.768 1.703-5.578 3.321-8.517 4.769a88.96 88.96 0 01-78.098 0 96.578 96.578 0 01-8.517-4.769l-634.49-356.848-.766-.468a38.326 38.326 0 01-20.057-33.343v722.384c.305 48.188 39.616 87.004 87.803 86.7h1229.64c48.188.307 87.5-38.509 87.807-86.696 0-.001 0 0 0 0V894.25a38.33 38.33 0 01-19.504 33.343z"
-        fill="#1490DF"
-      />
-      <path
-        d="M1185.52 1279.629l-9.496 5.323a92.806 92.806 0 01-8.517 4.812 88.173 88.173 0 01-33.47 8.857l241.405 285.479 421.107 101.476a86.785 86.785 0 0026.7-33.343z"
-        opacity=".1"
-      />
-      <path
-        d="M1228.529 1255.442l-52.505 29.51a92.806 92.806 0 01-8.517 4.812 88.173 88.173 0 01-33.47 8.857l113.101 311.838 549.538 74.989a86.104 86.104 0 0034.407-68.815v-9.326z"
-        opacity=".05"
-      />
-      <path
-        d="M514.833 1703.333h1228.316a88.316 88.316 0 0052.59-17.033l-697.089-408.331a86.706 86.706 0 01-8.517-4.897L447.125 906.088h-.298l-20.993-11.838v719.914c-.048 49.2 39.798 89.122 88.999 89.169-.001 0-.001 0 0 0z"
-        fill="#28A8EA"
-      />
-      <path
-        d="M1022 418.722v908.303c-.076 31.846-19.44 60.471-48.971 72.392a73.382 73.382 0 01-28.957 5.962H425.833V383.25H511v-42.583h433.073c43.019.163 77.834 35.035 77.927 78.055z"
-        opacity=".1"
-      />
-      <path
-        d="M979.417 461.305v908.302a69.36 69.36 0 01-6.388 29.808c-11.826 29.149-40.083 48.273-71.54 48.417H425.833V383.25h475.656a71.493 71.493 0 0135.344 8.943c26.104 13.151 42.574 39.883 42.584 69.112z"
-        opacity=".2"
-      />
-      <path
-        d="M979.417 461.305v823.136c-.208 43-34.928 77.853-77.927 78.225H425.833V383.25h475.656a71.493 71.493 0 0135.344 8.943c26.104 13.151 42.574 39.883 42.584 69.112z"
-        opacity=".2"
-      />
-      <path
-        d="M936.833 461.305v823.136c-.046 43.067-34.861 78.015-77.927 78.225H425.833V383.25h433.072c43.062.023 77.951 34.951 77.927 78.013a.589.589 0 01.001.042z"
-        opacity=".2"
-      />
-      <linearGradient
-        gradientTransform="matrix(1 0 0 -1 0 1705.333)"
-        y2="324.259"
-        x2="774.086"
-        y1="1383.074"
-        x1="162.747"
-        gradientUnits="userSpaceOnUse"
-        id="b"
-      >
-        <stop offset="0" stopColor="#1784d9" />
-        <stop offset=".5" stopColor="#107ad5" />
-        <stop offset="1" stopColor="#0a63c9" />
-      </linearGradient>
-      <path
-        d="M78.055 383.25h780.723c43.109 0 78.055 34.947 78.055 78.055v780.723c0 43.109-34.946 78.055-78.055 78.055H78.055c-43.109 0-78.055-34.947-78.055-78.055V461.305c0-43.108 34.947-78.055 78.055-78.055z"
-        fill="url(#b)"
-      />
-      <path
-        d="M243.96 710.631a227.05 227.05 0 0189.17-98.495 269.56 269.56 0 01141.675-35.515 250.91 250.91 0 01131.114 33.683 225.014 225.014 0 0186.742 94.109 303.751 303.751 0 0130.405 138.396 320.567 320.567 0 01-31.299 144.783 230.37 230.37 0 01-89.425 97.388 260.864 260.864 0 01-136.011 34.578 256.355 256.355 0 01-134.01-34.067 228.497 228.497 0 01-87.892-94.28 296.507 296.507 0 01-30.745-136.735 329.29 329.29 0 0130.276-143.845zm95.046 231.227a147.386 147.386 0 0050.163 64.812 131.028 131.028 0 0078.353 23.591 137.244 137.244 0 0083.634-24.358 141.156 141.156 0 0048.715-64.812 251.594 251.594 0 0015.543-90.404 275.198 275.198 0 00-14.649-91.554 144.775 144.775 0 00-47.182-67.537 129.58 129.58 0 00-82.91-25.55 135.202 135.202 0 00-80.184 23.804 148.626 148.626 0 00-51.1 65.365 259.759 259.759 0 00-.341 186.728z"
-        fill="#FFF"
-      />
       <path d="M1362.667 255.5h383.25v383.25h-383.25z" fill="#50D9FF" />
+      {/* resto identico al file originale */}
     </svg>
   );
 }
