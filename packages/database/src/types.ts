@@ -44601,6 +44601,7 @@ export type Database = {
         Row: {
           companyId: string | null
           itemId: string | null
+          locationId: string | null
           quantityOnHand: number | null
         }
         Relationships: [
@@ -56959,7 +56960,6 @@ export type Database = {
         Args: { p_new: Json; p_old: Json; p_operation: string; p_table: string }
         Returns: undefined
       }
-      refresh_item_stock_quantities: { Args: never; Returns: undefined }
       search_company_index: {
         Args: {
           p_company_id: string
