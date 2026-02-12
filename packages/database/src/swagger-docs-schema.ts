@@ -61717,6 +61717,9 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.jobTravelerIncludeWorkInstructions",
+          },
+          {
             $ref: "#/parameters/select",
           },
           {
@@ -61851,6 +61854,9 @@ export default {
             $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs",
           },
           {
+            $ref: "#/parameters/rowFilter.companySettings.jobTravelerIncludeWorkInstructions",
+          },
+          {
             $ref: "#/parameters/preferReturn",
           },
         ],
@@ -61937,6 +61943,9 @@ export default {
           },
           {
             $ref: "#/parameters/rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs",
+          },
+          {
+            $ref: "#/parameters/rowFilter.companySettings.jobTravelerIncludeWorkInstructions",
           },
           {
             $ref: "#/parameters/body.companySettings",
@@ -63266,6 +63275,51 @@ export default {
           },
         },
         tags: ["(rpc) get_supplier_interaction_with_related_records"],
+      },
+    },
+    "/rpc/sync_contact_to_parent": {
+      post: {
+        parameters: [
+          {
+            in: "body",
+            name: "args",
+            required: true,
+            schema: {
+              properties: {
+                new_data: {
+                  format: "jsonb",
+                },
+                old_data: {
+                  format: "jsonb",
+                },
+                operation: {
+                  format: "text",
+                  type: "string",
+                },
+                table_name: {
+                  format: "text",
+                  type: "string",
+                },
+              },
+              required: ["table_name", "operation", "new_data", "old_data"],
+              type: "object",
+            },
+          },
+          {
+            $ref: "#/parameters/preferParams",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) sync_contact_to_parent"],
       },
     },
     "/rpc/check_operation_dependencies": {
@@ -66651,6 +66705,51 @@ export default {
           },
         },
         tags: ["(rpc) delete_event_system_subscription"],
+      },
+    },
+    "/rpc/sync_address_to_parent": {
+      post: {
+        parameters: [
+          {
+            in: "body",
+            name: "args",
+            required: true,
+            schema: {
+              properties: {
+                new_data: {
+                  format: "jsonb",
+                },
+                old_data: {
+                  format: "jsonb",
+                },
+                operation: {
+                  format: "text",
+                  type: "string",
+                },
+                table_name: {
+                  format: "text",
+                  type: "string",
+                },
+              },
+              required: ["table_name", "operation", "new_data", "old_data"],
+              type: "object",
+            },
+          },
+          {
+            $ref: "#/parameters/preferParams",
+          },
+        ],
+        produces: [
+          "application/json",
+          "application/vnd.pgrst.object+json;nulls=stripped",
+          "application/vnd.pgrst.object+json",
+        ],
+        responses: {
+          "200": {
+            description: "OK",
+          },
+        },
+        tags: ["(rpc) sync_address_to_parent"],
       },
     },
     "/rpc/has_valid_api_key_for_company": {
@@ -97048,6 +97147,7 @@ export default {
         "maintenanceAdvanceDays",
         "includeThumbnailsOnSalesPdfs",
         "includeThumbnailsOnPurchasingPdfs",
+        "jobTravelerIncludeWorkInstructions",
       ],
       properties: {
         id: {
@@ -97199,6 +97299,11 @@ export default {
         },
         includeThumbnailsOnPurchasingPdfs: {
           default: true,
+          format: "boolean",
+          type: "boolean",
+        },
+        jobTravelerIncludeWorkInstructions: {
+          default: false,
           format: "boolean",
           type: "boolean",
         },
@@ -130933,6 +131038,12 @@ export default {
     },
     "rowFilter.companySettings.includeThumbnailsOnPurchasingPdfs": {
       name: "includeThumbnailsOnPurchasingPdfs",
+      required: false,
+      in: "query",
+      type: "string",
+    },
+    "rowFilter.companySettings.jobTravelerIncludeWorkInstructions": {
+      name: "jobTravelerIncludeWorkInstructions",
       required: false,
       in: "query",
       type: "string",

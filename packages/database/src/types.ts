@@ -2663,6 +2663,7 @@ export type Database = {
           includeThumbnailsOnPurchasingPdfs: boolean
           includeThumbnailsOnSalesPdfs: boolean
           inventoryJobCompletedNotificationGroup: string[]
+          jobTravelerIncludeWorkInstructions: boolean
           kanbanOutput: Database["public"]["Enums"]["kanbanOutput"]
           maintenanceAdvanceDays: number
           maintenanceDispatchNotificationGroup: string[] | null
@@ -2690,6 +2691,7 @@ export type Database = {
           includeThumbnailsOnPurchasingPdfs?: boolean
           includeThumbnailsOnSalesPdfs?: boolean
           inventoryJobCompletedNotificationGroup?: string[]
+          jobTravelerIncludeWorkInstructions?: boolean
           kanbanOutput?: Database["public"]["Enums"]["kanbanOutput"]
           maintenanceAdvanceDays?: number
           maintenanceDispatchNotificationGroup?: string[] | null
@@ -2717,6 +2719,7 @@ export type Database = {
           includeThumbnailsOnPurchasingPdfs?: boolean
           includeThumbnailsOnSalesPdfs?: boolean
           inventoryJobCompletedNotificationGroup?: string[]
+          jobTravelerIncludeWorkInstructions?: boolean
           kanbanOutput?: Database["public"]["Enums"]["kanbanOutput"]
           maintenanceAdvanceDays?: number
           maintenanceDispatchNotificationGroup?: string[] | null
@@ -48757,14 +48760,14 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["supplierCountryCode"]
+            columns: ["customerCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
           },
           {
             foreignKeyName: "address_countryCode_fkey"
-            columns: ["customerCountryCode"]
+            columns: ["supplierCountryCode"]
             isOneToOne: false
             referencedRelation: "country"
             referencedColumns: ["alpha2"]
@@ -56990,6 +56993,24 @@ export type Database = {
           name: string
           similarity: number
         }[]
+      }
+      sync_address_to_parent: {
+        Args: {
+          new_data: Json
+          old_data: Json
+          operation: string
+          table_name: string
+        }
+        Returns: undefined
+      }
+      sync_contact_to_parent: {
+        Args: {
+          new_data: Json
+          old_data: Json
+          operation: string
+          table_name: string
+        }
+        Returns: undefined
       }
       update_receipt_line_batch_tracking: {
         Args: {
