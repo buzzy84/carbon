@@ -29,7 +29,9 @@ const supportedFileTypes: Record<string, string> = {
   fbx: "application/fbx",
   ply: "application/ply",
   off: "application/off",
-  step: "application/step"
+  step: "application/step",
+  html: "text/html; charset=utf-8",
+  htm: "text/html; charset=utf-8"
 };
 
 export let loader = async ({ request, params }: LoaderFunctionArgs) => {
@@ -48,7 +50,7 @@ export let loader = async ({ request, params }: LoaderFunctionArgs) => {
   if (!fileType) {
     return new Response(null, { status: 400 });
   }
-  const contentType = supportedFileTypes[fileType];
+  const contentType = supportedFileTypes[fileType] ?? "application/octet-stream";
 
   // Check if the decoded path includes companyId for security
   const decodedPath = decodeURIComponent(path);
@@ -84,6 +86,7 @@ export let loader = async ({ request, params }: LoaderFunctionArgs) => {
   });
 
   if (contentType) {
+    headers.set("X-Content-Type-Options", "nosniff");
     headers.set("Content-Type", contentType);
   }
 
